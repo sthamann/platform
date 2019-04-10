@@ -52,6 +52,10 @@
             <tag name="shopware.entity.definition" entity="product_property"/>
         </service>
 
+        <service id="Shopware\Core\Content\Product\Aggregate\ProductRating\ProductRatingDefinition">
+            <tag name="shopware.entity.definition" entity="product_rating"/>
+        </service>
+
         <service id="Shopware\Core\Content\Product\Aggregate\ProductManufacturer\ProductManufacturerDefinition">
             <tag name="shopware.entity.definition" entity="product_manufacturer"/>
             <tag name="shopware.composite_search.definition"  priority="300"/>

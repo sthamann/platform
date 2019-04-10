@@ -17,6 +17,7 @@ use Shopware\Core\Content\Media\Aggregate\MediaTranslation\MediaTranslationDefin
 use Shopware\Core\Content\Navigation\Aggregate\NavigationTranslation\NavigationTranslationDefinition;
 use Shopware\Core\Content\NewsletterReceiver\NewsletterReceiverDefinition;
 use Shopware\Core\Content\Product\Aggregate\ProductManufacturerTranslation\ProductManufacturerTranslationDefinition;
+use Shopware\Core\Content\Product\Aggregate\ProductRating\ProductRatingDefinition;
 use Shopware\Core\Content\Product\Aggregate\ProductTranslation\ProductTranslationDefinition;
 use Shopware\Core\Content\ProductStream\Aggregate\ProductStreamTranslation\ProductStreamTranslationDefinition;
 use Shopware\Core\Content\Property\Aggregate\PropertyGroupOptionTranslation\PropertyGroupOptionTranslationDefinition;
@@ -130,6 +131,8 @@ class LanguageDefinition extends EntityDefinition
             (new OneToManyAssociationField('mailHeaderFooterTranslations', MailHeaderFooterTranslationDefinition::class, 'language_id'))->addFlags(new CascadeDelete()),
             (new OneToManyAssociationField('numberRangeTypeTranslations', NumberRangeTypeTranslationDefinition::class, 'language_id'))->addFlags(new CascadeDelete()),
             (new OneToManyAssociationField('deliveryTimeTranslations', DeliveryTimeTranslationDefinition::class, 'language_id'))->addFlags(new CascadeDelete()),
+            (new OneToManyAssociationField('ratings', ProductRatingDefinition::class, 'language_id'))->addFlags(new CascadeDelete()),
+
         ]);
     }
 }

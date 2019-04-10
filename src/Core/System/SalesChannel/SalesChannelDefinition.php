@@ -13,6 +13,7 @@ use Shopware\Core\Content\MailTemplate\Aggregate\MailTemplateSalesChannel\MailTe
 use Shopware\Core\Content\MailTemplate\MailTemplateDefinition;
 use Shopware\Core\Content\Navigation\NavigationDefinition;
 use Shopware\Core\Content\NewsletterReceiver\NewsletterReceiverDefinition;
+use Shopware\Core\Content\Product\Aggregate\ProductRating\ProductRatingDefinition;
 use Shopware\Core\Content\Product\Aggregate\ProductVisibility\ProductVisibilityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\BoolField;
@@ -111,6 +112,8 @@ class SalesChannelDefinition extends EntityDefinition
             new ManyToManyAssociationField('mailTemplates', MailTemplateDefinition::class, MailTemplateSalesChannelDefinition::class, 'sales_channel_id', 'mail_template_id'),
             new OneToManyAssociationField('numberRangeSalesChannels', NumberRangeSalesChannelDefinition::class, 'sales_channel_id'),
             new OneToManyAssociationField('promotionSalesChannels', PromotionSalesChannelDefinition::class, 'sales_channel_id', 'id'),
+            new OneToManyAssociationField('ratings', ProductRatingDefinition::class, 'sales_channel_id', 'id'),
+
         ]);
     }
 }
