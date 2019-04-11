@@ -40,6 +40,7 @@ class StorefrontProductRepository
         $this->addProperties($criteria);
         $this->addMedia($criteria);
         $this->addPriceRules($criteria);
+        $this->addRatings($criteria);
 
         /** @var ProductCollection $basics */
         $basics = $this->productRepository
@@ -49,6 +50,12 @@ class StorefrontProductRepository
         return $this->loadListProducts($basics, $context);
     }
 
+    public function addRatings($criteria){
+        $ratingCriteria = new Criteria();
+        $ratingCriteria->addFilter(new EqualsFilter('status',1));
+        $criteria->addAssociation('ratings',$ratingCriteria);
+
+    }
     public function search(Criteria $criteria, SalesChannelContext $context): EntitySearchResult
     {
         $this->addActiveFilters($criteria, $context);

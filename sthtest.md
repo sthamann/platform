@@ -24,6 +24,14 @@ Todos
     * eMail Templates
     * Action-URL Frontend ?
 * Storefront
+    * Storefront API Controller
+        * Service aufrufen / Business Logik
+    * Storefront Controller 
+        * Argument SalesChannelContext action als Argument
+        * CustomerID / languageID ist im Context
+        * Service aufrufen
+    * Service Objekt
+        * Validator (Kunden Registrierung)
     * Ausgabe Bewertungen am Produkt
     * Ausgabe Durchschnittsbewertung / Sternesystem im Listing
     * Eingabe am Produkt 

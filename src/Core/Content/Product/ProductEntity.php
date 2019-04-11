@@ -14,6 +14,7 @@ use Shopware\Core\Content\Product\Aggregate\ProductMedia\ProductMediaCollection;
 use Shopware\Core\Content\Product\Aggregate\ProductMedia\ProductMediaEntity;
 use Shopware\Core\Content\Product\Aggregate\ProductPrice\ProductPriceCollection;
 use Shopware\Core\Content\Product\Aggregate\ProductPrice\ProductPriceEntity;
+use Shopware\Core\Content\Product\Aggregate\ProductRating\ProductRatingCollection;
 use Shopware\Core\Content\Product\Aggregate\ProductTranslation\ProductTranslationCollection;
 use Shopware\Core\Content\Product\Aggregate\ProductVisibility\ProductVisibilityCollection;
 use Shopware\Core\Content\Property\Aggregate\PropertyGroupOption\PropertyGroupOptionCollection;
@@ -340,6 +341,27 @@ class ProductEntity extends Entity
      * @var ProductVisibilityCollection|null
      */
     protected $visibilities;
+
+    /**
+     * @var ProductRatingCollection|null
+     */
+    protected $ratings;
+
+    /**
+     * @return ProductRatingCollection|null
+     */
+    public function getRatings(): ?ProductRatingCollection
+    {
+        return $this->ratings;
+    }
+
+    /**
+     * @param ProductRatingCollection|null $ratings
+     */
+    public function setRatings(?ProductRatingCollection $ratings): void
+    {
+        $this->ratings = $ratings;
+    }
 
     /**
      * @var array|null

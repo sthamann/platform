@@ -29,6 +29,9 @@ class ProductPageController extends StorefrontController
     {
         $page = $this->detailPageLoader->load($request, $context);
 
+        /*dd($page);
+        exit;*/
+
         return $this->renderStorefront('@Storefront/page/product-detail/index.html.twig', ['page' => $page]);
     }
 }
