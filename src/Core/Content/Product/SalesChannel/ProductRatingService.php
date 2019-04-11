@@ -67,36 +67,36 @@ class ProductRatingService
         $this->addressValidationService = $addressValidationService;
     }
 
-    public function register(DataBag $data, bool $isGuest, SalesChannelContext $context): string
+    public function saveRating(DataBag $data, SalesChannelContext $context): string
     {
-        $this->validateRegistrationData($data, $isGuest, $context->getContext());
+        $this->validateRating($data, false, $context->getContext());
+        /*
+                $customer = $this->mapCustomerData($data, $isGuest, $context);
+        
+                $billingAddress = $this->mapBillingAddress($data->get('billingAddress'), $context->getContext());
+                $billingAddress['id'] = Uuid::randomHex();
+                $billingAddress['customerId'] = $customer['id'];
+        
+                // if no shipping address is provided, use the billing address
+                $customer['defaultShippingAddressId'] = $billingAddress['id'];
+                $customer['defaultBillingAddressId'] = $billingAddress['id'];
+                $customer['addresses'][] = $billingAddress;
+        
+                if ($shipping = $data->get('shippingAddress')) {
+                    $shippingAddress = $this->mapShippingAddress($shipping, $context->getContext());
+                    $shippingAddress['id'] = Uuid::randomHex();
+                    $shippingAddress['customerId'] = $customer['id'];
+        
+                    $customer['defaultShippingAddressId'] = $shippingAddress['id'];
+                    $customer['addresses'][] = $shippingAddress;
+                }*/
 
-        $customer = $this->mapCustomerData($data, $isGuest, $context);
+//        $this->customerRepository->create([$customer], $context->getContext());
 
-        $billingAddress = $this->mapBillingAddress($data->get('billingAddress'), $context->getContext());
-        $billingAddress['id'] = Uuid::randomHex();
-        $billingAddress['customerId'] = $customer['id'];
-
-        // if no shipping address is provided, use the billing address
-        $customer['defaultShippingAddressId'] = $billingAddress['id'];
-        $customer['defaultBillingAddressId'] = $billingAddress['id'];
-        $customer['addresses'][] = $billingAddress;
-
-        if ($shipping = $data->get('shippingAddress')) {
-            $shippingAddress = $this->mapShippingAddress($shipping, $context->getContext());
-            $shippingAddress['id'] = Uuid::randomHex();
-            $shippingAddress['customerId'] = $customer['id'];
-
-            $customer['defaultShippingAddressId'] = $shippingAddress['id'];
-            $customer['addresses'][] = $shippingAddress;
-        }
-
-        $this->customerRepository->create([$customer], $context->getContext());
-
-        return $customer['id'];
+        return '';
     }
 
-    private function validateRegistrationData(DataBag $data, bool $isGuest, Context $context): void
+    private function validateRating(DataBag $data, bool $isGuest, Context $context): void
     {
         /** @var DataBag $addressData */
         $addressData = $data->get('billingAddress');

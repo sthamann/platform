@@ -2,6 +2,7 @@
 
 namespace Shopware\Storefront\PageController;
 
+use Shopware\Core\Content\Product\SalesChannel\ProductRatingService;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Framework\Controller\StorefrontController;
@@ -25,12 +26,19 @@ class ProductPageController extends StorefrontController
      */
     private $combinationFinder;
 
+    /**
+     * @var ProductRatingService
+     */
+    private $productRatingService;
+
     public function __construct(
         PageLoaderInterface $productPageLoader,
-        ProductCombinationFinder $combinationFinder
+        ProductCombinationFinder $combinationFinder,
+        ProductRatingService $productRatingService
     ) {
         $this->productPageLoader = $productPageLoader;
         $this->combinationFinder = $combinationFinder;
+        $this->productRatingService = $productRatingService;
     }
 
     /**
@@ -39,9 +47,6 @@ class ProductPageController extends StorefrontController
     public function index(SalesChannelContext $context, Request $request): Response
     {
         $page = $this->productPageLoader->load($request, $context);
-
-        /*dd($page);
-        exit;*/
 
         return $this->renderStorefront('@Storefront/page/product-detail/index.html.twig', ['page' => $page]);
     }
@@ -62,5 +67,46 @@ class ProductPageController extends StorefrontController
         );
 
         return $this->redirectToRoute('frontend.detail.page', ['productId' => $redirect->getVariantId()]);
+    }
+
+    /**
+     * @Route("/detail/{productId}/rating", name="frontend.detail.rating.save", methods={"POST"})
+     */
+    public function saveRating(string $productId, RequestDataBag $data, SalesChannelContext $context): Response
+    {
+        $customer = $context->getCustomer();
+        $languageId = $context->getContext()->getLanguageId();
+        $salesChannelId = $context->getSalesChannel()->getId();
+
+        /*
+         * ProductPageController.php on line 55:
+        RequestDataBag {#201 ▼
+        #parameters: array:7 [▼
+        "productId" => "0928425ff4714ae9aff1e54250e79b0e"
+        "productVersion" => "0fa91ce3e96a4bc2be4bd9ce752c3425"
+        "name" => "Stefan Hamann"
+        "email" => "sth@shopware.com"
+        "title" => "Voll behindert"
+        "content" => "Absolut nicht zu empfehlen"
+        "points" => "3"
+        ]
+        }
+         */
+
+        if ($context->getCustomer()) {
+            //return $this->redirectToRoute('frontend.account.home.page');
+            echo 'Eingeloggt';
+        }
+
+        /*
+        try {
+            $this->productRatingService->register($data, false, $context);
+        } catch (ConstraintViolationException $formViolations) {
+            return $this->forward('Shopware\Storefront\PageController\AccountPageController::register', ['formViolations' => $formViolations]);
+        }*/
+
+        // $this->accountService->login($data->get('email'), $context);
+
+        return new RedirectResponse($this->generateUrl('frontend.detail.page', ['productId' => $productId]));
     }
 }

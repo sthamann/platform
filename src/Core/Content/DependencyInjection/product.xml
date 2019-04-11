@@ -176,5 +176,15 @@
             <argument type="service" id="Shopware\Core\Content\Product\SearchKeyword\ProductSearchTermInterpreter"/>
             <argument type="service" id="event_dispatcher"/>
         </service>
+
+        <service id="Shopware\Core\Content\Product\Storefront\ProductRatingService">
+            <argument id="Shopware\Core\Content\Media\DataAbstractionLayer\MediaRepositoryDecorator" type="service"/>
+            <argument id="event_dispatcher" type="service"/>
+            <argument id="Shopware\Core\System\NumberRange\ValueGenerator\NumberRangeValueGeneratorInterface" type="service"/>
+            <argument id="Shopware\Core\Framework\Validation\DataValidator" type="service"/>
+            <argument id="Shopware\Core\Checkout\Customer\Validation\CustomerValidationService" type="service"/>
+            <argument id="Shopware\Core\Checkout\Customer\Validation\CustomerValidationService" type="service"/>
+        </service>
+
     </services>
 </container>                
