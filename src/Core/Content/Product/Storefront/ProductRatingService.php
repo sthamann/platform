@@ -65,10 +65,10 @@ class ProductRatingService
         $this->addressValidationService = $addressValidationService;
     }
 
-    public function register(DataBag $data, bool $isGuest, SalesChannelContext $context): string
+    public function saveRating(DataBag $data,  SalesChannelContext $context): string
     {
-        $this->validateRegistrationData($data, $isGuest, $context->getContext());
-
+        $this->validateRating($data, $isGuest, $context->getContext());
+/*
         $customer = $this->mapCustomerData($data, $isGuest, $context);
 
         $billingAddress = $this->mapBillingAddress($data->get('billingAddress'), $context->getContext());
@@ -87,7 +87,7 @@ class ProductRatingService
 
             $customer['defaultShippingAddressId'] = $shippingAddress['id'];
             $customer['addresses'][] = $shippingAddress;
-        }
+        }*/
 
         $this->customerRepository->create([$customer], $context->getContext());
 
