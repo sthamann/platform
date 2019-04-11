@@ -13,12 +13,8 @@
 
             {% block page_product_detail_rating_formular %}
                 <form class="login-form"
-                      action="{{ path('frontend.account.login.page') }}"
+                      action="{{ path('frontend.detail.rating.save', { productId: page.product.id }) }}"
                       method="post">
-
-                    {% block page_product_detail_rating_formular_redirect %}
-                        <input type="hidden" name="redirectTo" value="{{ redirectTo }}">
-                    {% endblock %}
 
                     {% block page_product_detail_rating_description %}
                         <p class="login-form-description">Test2
@@ -45,7 +41,7 @@
                                        class="form-control"
                                        id="loginMail"
                                        placeholder="Name"
-                                       name="username"
+                                       name="name"
                                        required="required">
                             {% endblock %}
                         </div>
@@ -64,7 +60,7 @@
                                        class="form-control"
                                        id="loginMail"
                                        placeholder="Mailadresse"
-                                       name="username"
+                                       name="email"
                                        required="required">
                             {% endblock %}
                         </div>
@@ -82,7 +78,7 @@
                                        class="form-control"
                                        id="loginMail"
                                        placeholder="Zusammenfassung"
-                                       name="username"
+                                       name="title"
                                        required="required">
                             {% endblock %}
                         </div>
@@ -100,7 +96,7 @@
                                        class="form-control"
                                        id="loginMail"
                                        placeholder="Text"
-                                       name="username"
+                                       name="content"
                                        required="required">
                             {% endblock %}
                         </div>
@@ -117,8 +113,8 @@
                                 <input type="text"
                                        class="form-control"
                                        id="loginMail"
-                                       placeholder="Stermne"
-                                       name="username"
+                                       placeholder="Punkte"
+                                       name="points"
                                        required="required">
                             {% endblock %}
                         </div>
