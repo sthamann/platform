@@ -17,7 +17,7 @@ class Migration1554900301AddRatingTable extends MigrationStep
         // implement update
 
         $connection->executeUpdate('
-            DROP TABLE `product_rating`;
+            DROP TABLE IF EXISTS `product_rating`;
         ');
         $connection->executeUpdate('
             CREATE TABLE `product_rating` (
