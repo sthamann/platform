@@ -1,7 +1,6 @@
 import { Module } from 'src/core/shopware';
 import './page/sw-rating-list';
 import './page/sw-rating-detail';
-import './page/sw-rating-create';
 
 import deDE from './snippet/de_DE.json';
 import enGB from './snippet/en_GB.json';
@@ -28,13 +27,6 @@ Module.register('sw-rating', {
                 default: 'sw-rating-list'
             },
             path: 'index'
-        },
-        create: {
-            component: 'sw-rating-create',
-            path: 'create',
-            meta: {
-                parentPath: 'sw.rating.index'
-            }
         },
         detail: {
             component: 'sw-rating-detail',

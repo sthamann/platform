@@ -1,79 +1,73 @@
-import { Component, Mixin, State } from 'src/core/shopware';
+import { Component } from 'src/core/shopware';
+import Criteria from 'src/core/data-new/criteria.data';
 import template from './sw-rating-list.html.twig';
 
 Component.register('sw-rating-list', {
     template,
 
-    mixins: [
-        Mixin.getByName('listing')
-    ],
+    inject: ['repositoryFactory', 'context'],
 
     data() {
         return {
-            ratings: [],
-            showDeleteModal: false,
             isLoading: false,
-            sortBy: 'createdAt',
-            sortDirection: 'DESC'
+            criteria: null,
+            repository: null,
+            items: null,
+            term: this.$route.query ? this.$route.query.term : null
         };
     },
 
     computed: {
-        ratingStore() {
-            return State.getStore('product_rating');
+        columns() {
+            return [{
+                property: 'title',
+                dataIndex: 'title',
+                label: 'Title',
+                routerLink: 'sw.rating.detail',
+                allowResize: true,
+                primary: true
+            },
+            {
+                property: 'externalUser',
+                dataIndex: 'externalUser',
+                label: 'External User',
+                allowResize: true
+            },
+            {
+                property: 'status',
+                dataIndex: 'status',
+                label: 'Freigegeben',
+                align: 'center'
+            }];
         }
     },
 
+    created() {
+        this.createdComponent();
+    },
+
     methods: {
-        onInlineEditSave(rating) {
-            this.isLoading = true;
+        createdComponent() {
+            this.repository = this.repositoryFactory.create('product_rating');
 
-            return rating.save().then(() => {
-                this.isLoading = false;
-            }).catch(() => {
-                this.isLoading = false;
-            });
-        },
+            this.criteria = new Criteria();
 
-        onChangeLanguage(languageId) {
-            this.getList(languageId);
-        },
-
-        onDeleteRating(id) {
-            this.showDeleteModal = id;
-        },
-
-        onCloseDeleteModal() {
-            this.showDeleteModal = false;
-        },
-
-        onConfirmDelete(id) {
-            this.showDeleteModal = false;
-
-            return this.ratingStore.store[id].delete(true).then(() => {
-                this.getList();
-            });
-        },
-
-        getList() {
-            this.isLoading = true;
-            const params = this.getListingParams();
-
-            // Default sorting
-            if (!params.sortBy && !params.sortDirection) {
-                params.sortBy = 'createdAt';
-                params.sortDirection = 'DESC';
+            if (this.term) {
+                this.criteria.setTerm(this.term);
             }
 
-            this.ratings = [];
+            this.isLoading = true;
 
-            return this.ratingStore.getList(params).then((response) => {
-                this.total = response.total;
-                this.ratings = response.items;
-                this.isLoading = false;
-
-                return this.ratings;
-            });
+            this.repository
+                .search(this.criteria, this.context)
+                .then((result) => {
+                    this.items = result;
+                    this.isLoading = false;
+                });
+        },
+        onSearch(term) {
+            this.criteria.setTerm(term);
+            this.$route.query.term = term;
         }
     }
 });
