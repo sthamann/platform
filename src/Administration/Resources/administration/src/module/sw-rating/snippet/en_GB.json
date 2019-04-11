@@ -1,0 +1,43 @@
+{
+  "sw-rating": {
+    "general": {
+      "mainMenuItemList": "Rating",
+      "mainMenuItemGeneral": "Rating",
+      "placeholderSearchBar": "Search ratings"
+    },
+    "list": {
+      "textManufacturerOverview": "Rating",
+      "textTotalManufacturer": "No rating | One rating | {count} ratings",
+      "buttonAddManufacturer": "Add rating",
+      "columnName": "Ratings",
+      "columnLink": "Website",
+      "columnDescription": "Description",
+      "columnActions": "Actions",
+      "contextMenuEdit": "Edit",
+      "contextMenuDelete": "Delete",
+      "contextMenuDuplicate": "Duplicate",
+      "modalTitleDelete": "Delete rating",
+      "textDeleteConfirm": "Are you sure you want to delete the rating \"{name}\"?",
+      "buttonCancel": "Cancel",
+      "buttonDelete": "Delete",
+      "titleSidebarItemRefresh": "Refresh"
+    },
+    "detail": {
+      "textHeadline": "New rating",
+      "textMediaSelection": "Media selection",
+      "buttonCancel": "Cancel",
+      "buttonSave": "Save",
+      "cardTitleManufacturerInfo": "Rating information",
+      "labelName": "Name",
+      "labelDescription": "Description",
+      "labelLink": "Website",
+      "placeholderName": "Enter rating name.",
+      "placeholderDescription": "Enter rating description.",
+      "placeholderLink": "Enter rating website.",
+      "titleSaveSuccess": "Success",
+      "messageSaveSuccess": "Rating \"{name}\" has been saved successfully.",
+      "labelLogo": "Logo",
+      "labelUseAsLogo": "Use as Logo"
+    }
+  }
+}

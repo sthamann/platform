@@ -14,6 +14,8 @@ use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\PrimaryKey;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\Required;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\FloatField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\IdField;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\LongTextWithHtmlField;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\VersionField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\IntField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\ManyToOneAssociationField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\ReferenceVersionField;
@@ -29,6 +31,16 @@ class ProductRatingDefinition extends MappingEntityDefinition
     public static function getEntityName(): string
     {
         return 'product_rating';
+    }
+
+    public static function getCollectionClass(): string
+    {
+        return ProductRatingCollection::class;
+    }
+
+    public static function getEntityClass(): string
+    {
+        return ProductRatingEntity::class;
     }
 
     /**
@@ -68,27 +80,28 @@ class ProductRatingDefinition extends MappingEntityDefinition
 
         return new FieldCollection([
             (new IdField('id', 'id'))->addFlags(new PrimaryKey(), new Required()),
+            new VersionField(),
             new FkField('product_id', 'productId', ProductDefinition::class),
             new FkField('customer_id', 'customerId', CustomerDefinition::class),
             new FkField('sales_channel_id', 'salesChannelId', SalesChannelDefinition::class),
             new FkField('language_id', 'languageId', LanguageDefinition::class),
-            new StringField('external_user', 'external_user'),
-            new StringField('external_email', 'external_email'),
+            new StringField('external_user', 'externalUser'),
+            new StringField('external_email', 'externalEmail'),
             new StringField('title', 'title'),
-            new StringField('content', 'content'),
+            new LongTextWithHtmlField('content', 'content'),
             new IntField('positive','positive'),
             new IntField('negative','negative'),
             new FloatField('points','points'),
             new BoolField('status','status'),
             new StringField('comment','comment'),
-            new DateField('comment_created_at','comment_created_at'),
+            new DateField('comment_created_at','commentCreatedAt'),
             new UpdatedAtField(),
             new CreatedAtField(),
             new ManyToOneAssociationField('product', 'product_id', ProductDefinition::class, 'id', false),
             new ManyToOneAssociationField('customer','customer_id',CustomerDefinition::class,'id',false),
             new ManyToOneAssociationField('sales_channel','sales_channel_id',SalesChannelDefinition::class,'id',false),
             new ManyToOneAssociationField('language','language_id',LanguageDefinition::class,'id',false),
-
+            (new ReferenceVersionField(ProductDefinition::class))->addFlags(new Required()),
         ]);
 
        /* return new FieldCollection([

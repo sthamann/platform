@@ -1,0 +1,43 @@
+{
+  "sw-rating": {
+    "general": {
+      "mainMenuItemList": "Bewertungen",
+      "mainMenuItemGeneral": "Bewertungen",
+      "placeholderSearchBar": "Durchsuche alle Bewertungen"
+    },
+    "list": {
+      "textManufacturerOverview": "Bewertungen",
+      "textTotalManufacturer": "Keine Bewertungen | Eine Bewertung | {count} Bewertungen",
+      "buttonAddManufacturer": "Bewertungen anlegen",
+      "columnName": "Bewertung",
+      "columnLink": "Webseite",
+      "columnDescription": "Beschreibung",
+      "columnActions": "Aktionen",
+      "contextMenuEdit": "Bearbeiten",
+      "contextMenuDelete": "Löschen",
+      "contextMenuDuplicate": "Duplizieren",
+      "modalTitleDelete": "Bewertung löschen",
+      "textDeleteConfirm": "Bist Du sicher, dass Du die Bewertung \"{name}\" löschen möchtest?",
+      "buttonCancel": "Abbrechen",
+      "buttonDelete": "Löschen",
+      "titleSidebarItemRefresh": "Aktualisieren"
+    },
+    "detail": {
+      "textHeadline": "Neue Bewertung",
+      "textMediaSelection": "Medienauswahl",
+      "buttonCancel": "Abbrechen",
+      "buttonSave": "Speichern",
+      "cardTitleManufacturerInfo": "Bewertungsinformationen",
+      "labelName": "Name",
+      "labelDescription": "Beschreibung",
+      "labelLink": "Webseite",
+      "placeholderName": "Gib einen Bewertungsnamen ein...",
+      "placeholderDescription": "Gib eine Bewertungsbeschreibung ein...",
+      "placeholderLink": "Gib die Bewerbungswebseite ein...",
+      "titleSaveSuccess": "Erfolg",
+      "messageSaveSuccess": "Die Bewerbung \"{name}\" wurde erfolgreich gespeichert.",
+      "labelLogo": "Logo",
+      "labelUseAsLogo": "Als Logo nutzen"
+    }
+  }
+}
