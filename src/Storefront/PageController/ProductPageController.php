@@ -50,7 +50,6 @@ class ProductPageController extends StorefrontController
     {
 
 
-
         /**
          * ProductPageController.php on line 55:
         RequestDataBag {#201 ▼
@@ -77,7 +76,7 @@ class ProductPageController extends StorefrontController
             $this->productRatingService->saveRating($productId,$data,$context);
 
         } catch (ConstraintViolationException $formViolations) {
-            return $this->forward('Shopware\Storefront\PageController\ProductPageController::index', ['productId'=>$productId,'formViolations' => $formViolations]);
+            return $this->forward('Shopware\Storefront\PageController\ProductPageController::index', ['productId'=>$productId,'formViolations' => $formViolations], ['productId' => $productId]);
         }
 
        // $this->accountService->login($data->get('email'), $context);
