@@ -277,7 +277,9 @@
         "priceDataInfoFrom": "From",
         "dataColumnQuantity": "Quantity",
         "dataColumnPrice": "Unit price",
-        "dataColumnReferencePrice": "Reference price"
+        "dataColumnReferencePrice": "Reference price",
+        "tabsRating": "Ratings",
+        "ratingTitle": "Ratings"
     },
     "footer": {
         "serviceHotlineHeadline": "Service Hotline",

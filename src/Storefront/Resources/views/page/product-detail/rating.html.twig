@@ -1,0 +1,40 @@
+{% extends '@Storefront/base/_utilities/offcanvas.html.twig' %}
+
+{% block base_utilities_offcanvas_content %}
+    {% block page_product_detail_rating_container %}
+        <div class="product-detail-rating tab-pane-container">
+            {% block page_product_detail_rating_title %}
+                <h3 class="product-detail-rating-title">
+                    {{ "detail.ratingTitle"|trans }} "{{ page.product.name|e }}"
+                </h3>
+            {% endblock %}
+
+            {% block page_product_detail_rating_content %}
+                {% block page_product_detail_rating_content_form %}
+
+                    {% sw_include '@Storefront/page/product-detail/rating_formular.html.twig' %}
+
+                {% endblock %}
+                {% block page_product_detail_rating_content_list %}
+                    <div class="product-detail-rating-text" itemprop="description">
+                       <h2>Hello World</h2>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        {% for rating in page.product.ratings %}
+                            <strong>{{ rating.title|e }} - {{ rating.createdAt|date }}</strong>
+                            <p>
+                            {{ rating.content|e }}
+                            </p>
+                            {{ rating.points|e }}
+                            {{ rating.comment|e }}
+
+                            {{ rating.language|e }}
+                        {% endfor %}
+                    </div>
+                {% endblock %}
+            {% endblock %}
+        </div>
+    {% endblock %}
+{% endblock %}

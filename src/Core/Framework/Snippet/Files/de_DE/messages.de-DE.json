@@ -278,7 +278,9 @@
         "priceDataInfoFrom": "ab",
         "dataColumnQuantity": "Menge",
         "dataColumnPrice": "Stückpreis",
-        "dataColumnReferencePrice": "Grundpreis"
+        "dataColumnReferencePrice": "Grundpreis",
+        "tabsRating": "Bewertungen",
+        "ratingTitle": "Bewertungen"
     },
     "footer": {
         "serviceHotlineHeadline": "Service Hotline",

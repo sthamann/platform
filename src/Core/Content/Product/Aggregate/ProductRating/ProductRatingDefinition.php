@@ -12,6 +12,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Field\FkField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\CascadeDelete;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\PrimaryKey;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\Required;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\SearchRanking;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\FloatField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\IdField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\IntField;
@@ -77,17 +78,10 @@ class ProductRatingDefinition extends EntityDefinition
             new FkField('customer_id', 'customerId', CustomerDefinition::class),
             new FkField('sales_channel_id', 'salesChannelId', SalesChannelDefinition::class),
             new FkField('language_id', 'languageId', LanguageDefinition::class),
-            new StringField('external_user', 'externalUser'),
-            new StringField('external_email', 'externalEmail'),
-            new StringField('title', 'title'),
-            new StringField('content', 'content'),
-            new IntField('positive', 'positive'),
-            new IntField('negative', 'negative'),
-            new FloatField('points', 'points'),
-            new BoolField('status', 'status'),
-            new StringField('comment', 'comment'),
-            new DateField('comment_created_at', 'comment_created_at'),
-            new LongTextWithHtmlField('content', 'content'),
+            (new StringField('external_user', 'externalUser'))->addFlags(new SearchRanking(SearchRanking::MIDDLE_SEARCH_RANKING)),
+            (new StringField('external_email', 'externalEmail'))->addFlags(new SearchRanking(SearchRanking::MIDDLE_SEARCH_RANKING)),
+            (new StringField('title', 'title'))->addFlags(new SearchRanking(SearchRanking::LOW_SEARCH_RAKING)),
+            (new LongTextWithHtmlField('content', 'content'))->addFlags(new SearchRanking(SearchRanking::LOW_SEARCH_RAKING)),
             new IntField('positive', 'positive'),
             new IntField('negative', 'negative'),
             new FloatField('points', 'points'),
@@ -97,7 +91,7 @@ class ProductRatingDefinition extends EntityDefinition
             new UpdatedAtField(),
             new CreatedAtField(),
             (new ManyToOneAssociationField('product', 'product_id', ProductDefinition::class, 'id', false))->addFlags(new CascadeDelete()),
-            (new ManyToOneAssociationField('customer', 'customer_id', CustomerDefinition::class, 'id', false))->addFlags(new CascadeDelete()),
+            (new ManyToOneAssociationField('customer', 'customer_id', CustomerDefinition::class, 'id', false))->addFlags(new CascadeDelete(), new SearchRanking(SearchRanking::MIDDLE_SEARCH_RANKING)),
             (new ManyToOneAssociationField('sales_channel', 'sales_channel_id', SalesChannelDefinition::class, 'id', false))->addFlags(new CascadeDelete()),
             (new ManyToOneAssociationField('language', 'language_id', LanguageDefinition::class, 'id', false))->addFlags(new CascadeDelete()),
             (new ReferenceVersionField(ProductDefinition::class))->addFlags(new Required()),
