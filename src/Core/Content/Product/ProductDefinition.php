@@ -194,7 +194,7 @@ class ProductDefinition extends EntityDefinition
             (new ManyToManyAssociationField('options', PropertyGroupOptionDefinition::class, ProductOptionDefinition::class, 'product_id', 'property_group_option_id'))->addFlags(new CascadeDelete()),
 
             (new OneToManyAssociationField('visibilities', ProductVisibilityDefinition::class, 'product_id'))->addFlags(new CascadeDelete()),
-            (new OneToManyAssociationField('ratings', ProductRatingDefinition::class, 'product_id'))->addFlags(new CascadeDelete()),
+            (new OneToManyAssociationField('ratings', ProductRatingDefinition::class, 'product_id')),
 
         ]);
     }

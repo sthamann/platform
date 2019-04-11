@@ -5,8 +5,8 @@ namespace Shopware\Core\Content\Product\Aggregate\ProductRating;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 
 /**
- * @method void                           add(ProductRatingEntity $entity)
- * @method void                           set(string $key, ProductRatingEntity $entity)
+ * @method void                add(ProductRatingEntity $entity)
+ * @method void                set(string $key, ProductRatingEntity $entity)
  * @method ProductRatingEntity[]    getIterator()
  * @method ProductRatingEntity[]    getElements()
  * @method ProductRatingEntity|null get(string $key)
@@ -15,7 +15,6 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
  */
 class ProductRatingCollection extends EntityCollection
 {
-
     protected function getExpectedClass(): string
     {
         return ProductRatingEntity::class;
