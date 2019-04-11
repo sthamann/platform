@@ -9,7 +9,7 @@ use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\System\SalesChannel\SalesChannelEntity;
 use Shopware\Core\Framework\Language\LanguageEntity;
 
-class productRatingEntity extends Entity
+class ProductRatingEntity extends Entity
 {
     use EntityIdTrait;
     
