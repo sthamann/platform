@@ -2,8 +2,12 @@
 
 namespace Shopware\Core\Content\Product\Aggregate\ProductRating;
 
+use Shopware\Core\Checkout\Customer\CustomerEntity;
+use Shopware\Core\Content\Product\ProductEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityIdTrait;
+use Shopware\Core\Framework\Language\LanguageEntity;
+use Shopware\Core\System\SalesChannel\SalesChannelEntity;
 
 class ProductRatingEntity extends Entity
 {
@@ -66,144 +70,213 @@ class ProductRatingEntity extends Entity
      * @var \DateTimeInterface|null
      */
     protected $createdAt;
+    /**
+     * @var SalesChannelEntity|null
+     */
+    private $sales_channel;
+    private $language;
+    private $customer;
+    /**
+     * @var ProductEntity|null
+     */
+    private $product;
+    /**
+     * @var string|null
+     */
+    private $content;
+    /**
+     * @var string|null
+     */
+    private $title;
 
-    public function getProductId()
+    //properties#
+    public function getId(): string
+    {
+        return $this->id;
+    }
+
+    public function setId(string $id): void
+    {
+        $this->id = $id;
+    }
+
+    public function getProductId(): ?string
     {
         return $this->productId;
     }
 
-    public function setProductId($productId): void
+    public function setProductId(?string $productId): void
     {
         $this->productId = $productId;
     }
 
-    public function getCustomerId()
+    public function getCustomerId(): ?string
     {
         return $this->customerId;
     }
 
-    public function setCustomerId($customerId): void
+    public function setCustomerId(?string $customerId): void
     {
         $this->customerId = $customerId;
     }
 
-    public function getSalesChannelId()
+    public function getSalesChannelId(): ?string
     {
         return $this->salesChannelId;
     }
 
-    public function setSalesChannelId($salesChannelId): void
+    public function setSalesChannelId(?string $salesChannelId): void
     {
         $this->salesChannelId = $salesChannelId;
     }
 
-    public function getLanguageId()
+    public function getLanguageId(): ?string
     {
         return $this->languageId;
     }
 
-    public function setLanguageId($languageId): void
+    public function setLanguageId(?string $languageId): void
     {
         $this->languageId = $languageId;
     }
 
-    public function getExternalUser()
+    public function getExternalUser(): ?string
     {
         return $this->externalUser;
     }
 
-    public function setExternalUser($externalUser): void
+    public function setExternalUser(?string $externalUser): void
     {
         $this->externalUser = $externalUser;
     }
 
-    public function getExternalEmail()
+    public function getExternalEmail(): ?string
     {
         return $this->externalEmail;
     }
 
-    public function setExternalEmail($externalEmail): void
+    public function setExternalEmail(?string $externalEmail): void
     {
         $this->externalEmail = $externalEmail;
     }
 
-    public function getPositive()
+    public function getTitle(): ?string
+    {
+        return $this->title;
+    }
+
+    public function setTitle(?string $title): void
+    {
+        $this->title = $title;
+    }
+
+    public function getContent(): ?string
+    {
+        return $this->content;
+    }
+
+    public function setContent(?string $content): void
+    {
+        $this->content = $content;
+    }
+
+    public function getPositive(): ?int
     {
         return $this->positive;
     }
 
-    public function setPositive($positive): void
+    public function setPositive(?int $positive): void
     {
         $this->positive = $positive;
     }
 
-    public function getNegative()
+    public function getNegative(): ?int
     {
         return $this->negative;
     }
 
-    public function setNegative($negative): void
+    public function setNegative(?int $negative): void
     {
         $this->negative = $negative;
     }
 
-    public function getPoints()
+    public function getPoints(): ?float
     {
         return $this->points;
     }
 
-    public function setPoints($points): void
+    public function setPoints(?float $points): void
     {
         $this->points = $points;
     }
 
-    public function getStatus()
+    public function getStatus(): ?bool
     {
         return $this->status;
     }
 
-    public function setStatus($status): void
+    public function setStatus(?bool $status): void
     {
         $this->status = $status;
     }
 
-    public function getComment()
+    public function getComment(): ?string
     {
         return $this->comment;
     }
 
-    public function setComment($comment): void
+    public function setComment(?string $comment): void
     {
         $this->comment = $comment;
     }
 
-    public function getCommentCreatedAt()
+    public function getCommentCreatedAt(): ?\DateTime
     {
         return $this->commentCreatedAt;
     }
 
-    public function setCommentCreatedAt($commentCreatedAt): void
+    public function setCommentCreatedAt(?\DateTime $commentCreatedAt): void
     {
         $this->commentCreatedAt = $commentCreatedAt;
     }
 
-    public function getUpdatedAt(): ?\DateTimeInterface
+    public function getProduct(): ?ProductEntity
     {
-        return $this->updatedAt;
+        return $this->product;
     }
 
-    public function setUpdatedAt(?\DateTimeInterface $updatedAt): void
+    public function setProduct(?ProductEntity $product): void
     {
-        $this->updatedAt = $updatedAt;
+        $this->product = $product;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getCustomer(): ?CustomerEntity
     {
-        return $this->createdAt;
+        return $this->customer;
     }
 
-    public function setCreatedAt(?\DateTimeInterface $createdAt): void
+    public function setCustomer(?CustomerEntity $customer): void
     {
-        $this->createdAt = $createdAt;
+        $this->customer = $customer;
+    }
+
+    public function getSales_channel(): ?SalesChannelEntity
+    {
+        return $this->sales_channel;
+    }
+
+    public function setSales_channel(?SalesChannelEntity $sales_channel): void
+    {
+        $this->sales_channel = $sales_channel;
+    }
+
+    public function getLanguage(): ?LanguageEntity
+    {
+        return $this->language;
+    }
+
+    public function setLanguage(?LanguageEntity $language): void
+    {
+        $this->language = $language;
     }
 }

@@ -4,8 +4,15 @@ Todos
 --
 
 * Product Version ID < Bewertungen hängen rein logisch nicht an einer bestimmten Produkt Version
-* API Calls geben keine Bewertungen zurück
-* Bewertungen am Produkt (Automatisch?, Durchschnitt berechnen)
+* API Calls geben keine Bewertungen zurück cache/clear
+* Migration anlegen
+* Bewertungen am Produkt (Automatisch?, Durchschnitt berechnen) 
+    * Computed Fields
+    * Feld an Entität die nicht aus der Datenbank kommen
+    * FloatField
+    * Flag Computed
+    * Subscriper product_rating.loaded
+    * MediaFolderLoadedSubscriber
 * Admin Module
     * Listing 
     * Action Bar (Öffnen, Freigabe, Löschen)
