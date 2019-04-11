@@ -43,6 +43,9 @@
                                        placeholder="Name"
                                        name="name"
                                        required="required">
+                                {% for error in formViolations.getViolations('/name') %}
+                                    <h1>{{ error.message }}</h1>
+                                {% endfor %}
                             {% endblock %}
                         </div>
                     {% endblock %}
