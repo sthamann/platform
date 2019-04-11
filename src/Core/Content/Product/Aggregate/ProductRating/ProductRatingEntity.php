@@ -12,6 +12,11 @@ use Shopware\Core\Framework\Language\LanguageEntity;
 class ProductRatingEntity extends Entity
 {
     use EntityIdTrait;
+
+    /**
+     * @var array|null
+     */
+    protected $attributes;
     
     #properties#
         public function getId(): string
@@ -26,6 +31,16 @@ class ProductRatingEntity extends Entity
     public function getProductId(): ?string
     {
         return $this->productId;
+    }
+
+    public function getAttributes(): ?array
+    {
+        return $this->attributes;
+    }
+
+    public function setAttributes(?array $attributes): void
+    {
+        $this->attributes = $attributes;
     }
 
     public function setProductId(?string $productId): void
