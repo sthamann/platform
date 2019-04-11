@@ -36,6 +36,7 @@ class Migration1554900301AddRatingTable extends MigrationStep
                 `status` TINYINT(1) NULL DEFAULT \'0\',
                 `comment` VARCHAR(255) NULL,
                 `comment_created_at` DATETIME(3) NULL,
+                `attributes` JSON NULL,
                 `updated_at` DATETIME(3) NOT NULL,
                 `created_at` DATETIME(3) NOT NULL,
                 `product_version_id` BINARY(16) NOT NULL,

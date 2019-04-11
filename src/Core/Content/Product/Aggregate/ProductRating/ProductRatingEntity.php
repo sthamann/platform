@@ -70,6 +70,11 @@ class ProductRatingEntity extends Entity
      * @var \DateTimeInterface|null
      */
     protected $createdAt;
+
+    /**
+     * @var array|null
+     */
+    protected $attributes;
     /**
      * @var SalesChannelEntity|null
      */
@@ -103,6 +108,16 @@ class ProductRatingEntity extends Entity
     public function getProductId(): ?string
     {
         return $this->productId;
+    }
+
+    public function getAttributes(): ?array
+    {
+        return $this->attributes;
+    }
+
+    public function setAttributes(?array $attributes): void
+    {
+        $this->attributes = $attributes;
     }
 
     public function setProductId(?string $productId): void
