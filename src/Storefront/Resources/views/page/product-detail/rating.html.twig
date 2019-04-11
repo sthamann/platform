@@ -1,39 +1,63 @@
-{% extends '@Storefront/base/_utilities/offcanvas.html.twig' %}
 
-{% block base_utilities_offcanvas_content %}
-    {% block page_product_detail_rating_container %}
-        <div class="product-detail-rating tab-pane-container">
-            {% block page_product_detail_rating_title %}
-                <h3 class="product-detail-rating-title">
-                    {{ "detail.ratingTitle"|trans }} "{{ page.product.name|e }}"
-                </h3>
-            {% endblock %}
+{% block page_product_detail_rating_container %}
+    <div class="product-detail-rating tab-pane-container">
+        {% block page_product_detail_rating_title %}
+            <h3 class="product-detail-rating-title">
+                2.222 ratings for {{ page.product.name|e }}
+            </h3>
+        {% endblock %}
 
-            {% block page_product_detail_rating_content %}
-                {% block page_product_detail_rating_content_form %}
-                    {% sw_include '@Storefront/page/product-detail/rating_formular.html.twig' %}
-
-                {% endblock %}
-                {% block page_product_detail_rating_content_list %}
-                    <div class="product-detail-rating-text" itemprop="description">
-                       <h2>Hello World</h2>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        {% for rating in page.product.ratings %}
-                            <strong>{{ rating.title|e }} - {{ rating.createdAt|date }}</strong>
-                            <p>
-                            {{ rating.content|e }}
-                            </p>
-                            {{ rating.points|e }}
-                            {{ rating.comment|e }}
-
-                            {{ rating.language|e }}
-                        {% endfor %}
+        {% block page_product_detail_rating_content %}
+            <div class="row">
+                <div class="col-3">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star-half-alt"></i>
+                    4.5 out of 5 Stars
+                   <hr>
+                    <div class="collapse show">
+                        <h4>Leave a review</h4>
+                        <p>Share your thoughts with other customers</p>
+                        <button class="btn btn-primary" type="button" data-toggle="collapse" data-target=".multi-collapse" aria-expanded="false" aria-controls="rating-form rating-list">
+                            Write a review
+                        </button>
+                        <hr>
                     </div>
-                {% endblock %}
-            {% endblock %}
-        </div>
-    {% endblock %}
+                </div>
+                <div class="col">
+                    {% block page_product_detail_rating_content_form %}
+                        {% sw_include '@Storefront/page/product-detail/rating-form.html.twig' %}
+                    {% endblock %}
+
+                    {% block page_product_detail_rating_content_list %}
+                        <div id="rating-list" class="collapse multi-collapse show" itemprop="description">
+                            <h4><i class="fas fa-user-circle"></i> Josua S.</h4>
+                            <p> <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                                <i class="far fa-star"></i> <strong>What an awesome product</strong></p>
+                            <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
+
+                            {% for rating in page.product.ratings %}
+                                <strong>{{ rating.title|e }} - {{ rating.createdAt|date }}</strong>
+                                <p>
+                                    {{ rating.content|e }}
+                                </p>
+                                {{ rating.points|e }}
+                                {{ rating.comment|e }}
+
+                                {{ rating.language|e }}
+                            {% endfor %}
+                        </div>
+                    {% endblock %}
+
+                </div>
+            </div>
+
+        {% endblock %}
+
+    </div>
 {% endblock %}
