@@ -22,7 +22,7 @@ class ProductRatingService
     /**
      * @var EntityRepositoryInterface
      */
-    private $customerRepository;
+    private $ratingRepository;
 
     /**
      * @var EventDispatcherInterface
@@ -50,14 +50,14 @@ class ProductRatingService
     private $accountValidationService;
 
     public function __construct(
-        EntityRepositoryInterface $customerRepository,
+        EntityRepositoryInterface $ratingRepository,
         EventDispatcherInterface $eventDispatcher,
         NumberRangeValueGeneratorInterface $numberRangeValueGenerator,
         DataValidator $validator,
         ValidationServiceInterface $accountValidationService,
         ValidationServiceInterface $addressValidationService
     ) {
-        $this->customerRepository = $customerRepository;
+        $this->ratingRepository = $ratingRepository;
         $this->eventDispatcher = $eventDispatcher;
         $this->numberRangeValueGenerator = $numberRangeValueGenerator;
         $this->validator = $validator;
@@ -65,11 +65,46 @@ class ProductRatingService
         $this->addressValidationService = $addressValidationService;
     }
 
-    public function saveRating(DataBag $data,  SalesChannelContext $context): string
+    public function saveRating(string $productId, DataBag $data,  SalesChannelContext $context): void
     {
-        $this->validateRating($data, $isGuest, $context->getContext());
+        $customer = $context->getCustomer();
+        $languageId = $context->getContext()->getLanguageId();
+        $salesChannelId = $context->getContext()->getSalesChannelId();
+        if (isset($customer)){
+            $customerId = $context->getCustomer()->getId();
+        }else {
+            $customerId = null;
+        }
+
+        /**
+         * "name" => "Stefan Hamann"
+        "email" => "sth@shopware.com"
+        "title" => "Voll behindert"
+        "content" => "Absolut nicht zu empfehlen"
+        "points" => "3"
+         */
+
+        //dd($data);
+        //$this->validateRating($data, $isGuest, $context->getContext());
+
+        $rating = array(
+            'productId' => $productId,
+            'customerId'=> $customerId,
+            'salesChannelId' => $salesChannelId,
+            'languageId' => $languageId,
+            'externalUser' => $data->get("name"),
+            'externalEmail' => $data->get("email"),
+            'title' => $data->get("title"),
+            'content' => $data->get("content"),
+            'points' => $data->get("points")
+        );
+
+        $this->ratingRepository->create([$rating], $context->getContext());
+
+
 /*
         $customer = $this->mapCustomerData($data, $isGuest, $context);
+
 
         $billingAddress = $this->mapBillingAddress($data->get('billingAddress'), $context->getContext());
         $billingAddress['id'] = Uuid::randomHex();
@@ -88,13 +123,9 @@ class ProductRatingService
             $customer['defaultShippingAddressId'] = $shippingAddress['id'];
             $customer['addresses'][] = $shippingAddress;
         }*/
-
-        $this->customerRepository->create([$customer], $context->getContext());
-
-        return $customer['id'];
     }
 
-    private function validateRegistrationData(DataBag $data, bool $isGuest, Context $context): void
+    private function validateRating(DataBag $data, Context $context): void
     {
         /** @var DataBag $addressData */
         $addressData = $data->get('billingAddress');
@@ -118,23 +149,7 @@ class ProductRatingService
         throw new ConstraintViolationException($violations, $data->all());
     }
 
-    private function getBirthday(DataBag $data): ?\DateTimeInterface
-    {
-        $birthdayDay = $data->get('birthdayDay');
-        $birthdayMonth = $data->get('birthdayMonth');
-        $birthdayYear = $data->get('birthdayYear');
 
-        if (!$birthdayDay || !$birthdayMonth || !$birthdayYear) {
-            return null;
-        }
-
-        return new \DateTime(sprintf(
-            '%s-%s-%s',
-            $birthdayYear,
-            $birthdayMonth,
-            $birthdayDay
-        ));
-    }
 
     private function mapBillingAddress(DataBag $billing, Context $context): array
     {

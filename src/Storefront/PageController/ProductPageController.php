@@ -49,9 +49,7 @@ class ProductPageController extends StorefrontController
     public function saveRating(string $productId, RequestDataBag $data, SalesChannelContext $context): Response
     {
 
-        $customer = $context->getCustomer();
-        $languageId = $context->getContext()->getLanguageId();
-        $salesChannelId = $context->getContext()->getSalesChannelId();
+
 
         /**
          * ProductPageController.php on line 55:
@@ -74,12 +72,13 @@ class ProductPageController extends StorefrontController
         }
 
 
-        /*
+
         try {
-            $this->productRatingService->register($data, false, $context);
+            $this->productRatingService->saveRating($productId,$data,$context);
+
         } catch (ConstraintViolationException $formViolations) {
-            return $this->forward('Shopware\Storefront\PageController\AccountPageController::register', ['formViolations' => $formViolations]);
-        }*/
+            return $this->forward('Shopware\Storefront\PageController\ProductPageController::index', ['productId'=>$productId,'formViolations' => $formViolations]);
+        }
 
        // $this->accountService->login($data->get('email'), $context);
 
