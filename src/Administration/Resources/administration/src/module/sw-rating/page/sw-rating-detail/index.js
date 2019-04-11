@@ -1,4 +1,4 @@
-import { Component, Mixin, State } from 'src/core/shopware';
+import { Component, Mixin } from 'src/core/shopware';
 import { warn } from 'src/core/service/utils/debug.utils';
 
 import template from './sw-rating-detail.html.twig';
@@ -7,27 +7,20 @@ import './sw-rating-detail.scss';
 Component.register('sw-rating-detail', {
     template,
 
+    inject: ['repositoryFactory', 'context'],
+
     mixins: [
         Mixin.getByName('placeholder'),
-        Mixin.getByName('notification'),
-        Mixin.getByName('discard-detail-page-changes')('rating')
+        Mixin.getByName('notification')
     ],
 
     data() {
         return {
+            isLoading: null,
             ratingId: null,
-            rating: { isLoading: true },
-            mediaItem: null,
-            attributeSets: []
+            rating: {},
+            repository: null
         };
-    },
-
-    computed: {
-        ratingStore() {
-            return State.getStore('product_rating');
-        }
-
-
     },
 
     created() {
@@ -42,29 +35,23 @@ Component.register('sw-rating-detail', {
 
     methods: {
         createdComponent() {
+            this.repository = this.repositoryFactory.create('product_rating');
+
             if (this.$route.params.id) {
                 this.ratingId = this.$route.params.id;
-                if (this.rating && this.rating.isLocal) {
-                    return;
-                }
 
                 this.loadEntityData();
             }
         },
         loadEntityData() {
-            this.ratingStore.getByIdAsync(this.ratingId).then((rating) => {
+            this.isLoading = true;
+            this.repository.get(this.ratingId, this.context).then((rating) => {
+                console.log('rating : ', rating);
                 this.rating = rating;
+                this.isLoading = false;
             });
         },
-        abortOnLanguageChange() {
-            return this.rating.hasChanges();
-        },
-        saveOnLanguageChange() {
-            return this.onSave();
-        },
-        onChangeLanguage() {
-            this.loadEntityData();
-        },
+
         onSave() {
             const ratingName = this.rating.name || this.rating.translated.name;
             const titleSaveSuccess = this.$tc('sw-rating.detail.titleSaveSuccess');
@@ -73,7 +60,7 @@ Component.register('sw-rating-detail', {
             const messageSaveError = this.$tc(
                 'global.notification.notificationSaveErrorMessage', 0, { entityName: ratingName }
             );
-            this.rating.save().then(() => {
+            this.repository.save(this.rating).then(() => {
                 this.createNotificationSuccess({
                     title: titleSaveSuccess,
                     message: messageSaveSuccess
