@@ -37,7 +37,7 @@ class Migration1554900301AddRatingTable extends MigrationStep
                 `comment` VARCHAR(255) NULL,
                 `comment_created_at` DATETIME(3) NULL,
                 `attributes` JSON NULL,
-                `updated_at` DATETIME(3) NOT NULL,
+                `updated_at` DATETIME(3) NULL,
                 `created_at` DATETIME(3) NOT NULL,
                 `product_version_id` BINARY(16) NOT NULL,
                 PRIMARY KEY (`id`),

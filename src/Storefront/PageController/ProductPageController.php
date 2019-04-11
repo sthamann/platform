@@ -4,6 +4,7 @@ namespace Shopware\Storefront\PageController;
 
 use Shopware\Core\Content\Product\SalesChannel\ProductRatingService;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
+use Shopware\Core\Framework\Validation\Exception\ConstraintViolationException;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Framework\Controller\StorefrontController;
 use Shopware\Storefront\Framework\Page\PageLoaderInterface;
@@ -74,10 +75,6 @@ class ProductPageController extends StorefrontController
      */
     public function saveRating(string $productId, RequestDataBag $data, SalesChannelContext $context): Response
     {
-        $customer = $context->getCustomer();
-        $languageId = $context->getContext()->getLanguageId();
-        $salesChannelId = $context->getSalesChannel()->getId();
-
         /*
          * ProductPageController.php on line 55:
         RequestDataBag {#201 ▼
@@ -98,12 +95,11 @@ class ProductPageController extends StorefrontController
             echo 'Eingeloggt';
         }
 
-        /*
         try {
-            $this->productRatingService->register($data, false, $context);
+            $this->productRatingService->saveRating($productId, $data, $context);
         } catch (ConstraintViolationException $formViolations) {
-            return $this->forward('Shopware\Storefront\PageController\AccountPageController::register', ['formViolations' => $formViolations]);
-        }*/
+            return $this->forward('Shopware\Storefront\PageController\ProductPageController::index', ['productId' => $productId, 'formViolations' => $formViolations]);
+        }
 
         // $this->accountService->login($data->get('email'), $context);
 

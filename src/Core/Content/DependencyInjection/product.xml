@@ -178,7 +178,7 @@
         </service>
 
         <service id="Shopware\Core\Content\Product\Storefront\ProductRatingService">
-            <argument id="Shopware\Core\Content\Media\DataAbstractionLayer\MediaRepositoryDecorator" type="service"/>
+            <argument id="product_rating.repository" type="service"/>
             <argument id="event_dispatcher" type="service"/>
             <argument id="Shopware\Core\System\NumberRange\ValueGenerator\NumberRangeValueGeneratorInterface" type="service"/>
             <argument id="Shopware\Core\Framework\Validation\DataValidator" type="service"/>
