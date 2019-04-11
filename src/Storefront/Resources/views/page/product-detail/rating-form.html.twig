@@ -1,0 +1,139 @@
+{% block page_product_detail_rating_form_container %}
+    <div class="collapse multi-collapse" id="rating-form">
+        {% block page_product_detail_rating_description %}
+            <p>
+                Here we go
+            </p>
+        {% endblock %}
+        {% block page_product_detail_rating_alert %}
+            {% if ratingActionError %}
+                <div class="alert alert-danger">
+                    {{ "account.loginBadCredentials"|trans }}
+                </div>
+            {% endif %}
+        {% endblock %}
+
+        {% block page_product_detail_rating_form %}
+            <form class=""
+                  action="{{ path('frontend.detail.rating.save', { productId: page.product.id }) }}"
+                  method="post">
+                {% block page_product_detail_rating_form_details %}
+                    <div class="form-row">
+                        {% block page_product_detail_rating_form_name %}
+                            <div class="form-group col-md-6">
+                                <label for="name">Name</label>
+                                <input type="text"
+                                       class="form-control {% if formViolations.getViolations('/name') %}is-invalid{% endif %}"
+                                       id="name"
+                                       placeholder="Name"
+                                       name="name"
+<<<<<<< Updated upstream
+                                       required="required">
+                                {% for error in formViolations.getViolations('/name') %}
+                                    <h1>{{ error.message }}</h1>
+                                {% endfor %}
+                            {% endblock %}
+                        </div>
+                    {% endblock %}
+=======
+                                       required="required"
+                                       value="Josua S."
+                                       disabled>
+                                {% if formViolations.getViolations('/name') %}
+                                    <div class="invalid-feedback">
+                                        {% for error in formViolations.getViolations('/name') %}
+                                            {{ error.message }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+>>>>>>> Stashed changes
+
+                            </div>
+                        {% endblock %}
+
+                        {% block page_product_detail_rating_form_points %}
+                            <div class="form-group col-md-6">
+                                <label for="points">Rating</label>
+                                <select class="form-control {% if formViolations.getViolations('/points') %}is-invalid{% endif %}"
+                                        type="text"
+                                        id="points"
+                                        placeholder="Punkte"
+                                        name="points"
+                                        required="required">
+                                    <option selected value="-1">Bitte auswählen</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                </select>
+                                {% if formViolations.getViolations('/points') %}
+                                    <div class="invalid-feedback">
+                                        {% for error in formViolations.getViolations('/points') %}
+                                            {{ error.message }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        {% endblock %}
+
+                    </div>
+                {% endblock %}
+
+                {% block page_product_detail_rating_form_summary %}
+                    <div class="form-group">
+                        <label for="title">Summary</label>
+                        <input type="text"
+                               class="form-control{% if formViolations.getViolations('/title') %}is-invalid{% endif %}"
+                               id="title"
+                               placeholder="Summary"
+                               name="title"
+                               required="required">
+                        {% if formViolations.getViolations('/title') %}
+                            <div class="invalid-feedback">
+                                {% for error in formViolations.getViolations('/title') %}
+                                    {{ error.message }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endblock %}
+
+                {% block page_product_detail_rating_form_content %}
+                    <div class="form-group">
+                        <label for="inputAddress">Your Review</label>
+                        <textarea
+                                class="form-control {% if formViolations.getViolations('/content') %}is-invalid{% endif %}"
+                                id="rating"
+                                placeholder="Your Review"
+                                name="content"
+                                required="required"
+                                rows="5">
+                        </textarea>
+                        {% if formViolations.getViolations('/content') %}
+                            <div class="invalid-feedback">
+                                {% for error in formViolations.getViolations('/content') %}
+                                    {{ error.message }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endblock %}
+
+                {% block page_product_detail_rating_form_buttons %}
+                    <div class="form-group">
+                        <input type="hidden" id="email" name="email" value="mail@domain.tld">
+                        <button type="submit" class="btn btn-primary">
+                            Submit
+                        </button>
+                        <button type="submit" class="btn btn-light" data-toggle="collapse" data-target=".multi-collapse" aria-expanded="false" aria-controls="rating-form rating-list">
+                            Cancel
+                        </button>
+                    </div>
+                {% endblock %}
+
+            </form>
+        {% endblock %}
+
+    </div>
+{% endblock %}
