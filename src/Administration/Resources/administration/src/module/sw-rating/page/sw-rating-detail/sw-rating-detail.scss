@@ -4,4 +4,31 @@
     .sw-rating-detail__container {
         margin-bottom: 16px;
     }
+
+    .sw-description-list {
+        display: grid;
+        margin-bottom: 22px;
+
+        dt:last-of-type {
+            border-bottom: 1px solid #D8DDE6;
+        }
+        dd:last-of-type {
+            border-bottom: 1px solid #D8DDE6;
+        }
+    }
+
+    label {
+        display: block;
+        line-height: 16px;
+        font-size: 14px;
+        margin-bottom: 8px;
+        color: #54698D;
+        font-weight: 600;
+        user-select: none;
+    }
+
+    .sw-rating-detail__content {
+        padding: 15px;
+        border: 1px solid #D8DDE6;
+    }
 }

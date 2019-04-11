@@ -28,19 +28,10 @@
             </template>
         {% endblock %}
 
-        {% block sw_rating_list_actions %}
-            <template slot="smart-bar-actions">
-                {% block sw_rating_list_smart_bar_actions %}
-                    <sw-button :routerLink="{ name: 'sw.rating.create' }" variant="primary">
-                        {{ $tc('sw-rating.list.buttonAddRating') }}
-                    </sw-button>
-                {% endblock %}
-            </template>
-        {% endblock %}
-
         <template slot="content">
             <sw-entity-listing
                     v-if="items"
+                    ref="listing"
                     :items="items"
                     :repository="repository"
                     :columns="columns"
@@ -52,6 +43,29 @@
                     <template v-else>
                         <sw-icon name="default-basic-x-line" color="red"></sw-icon>
                     </template>
+                </template>
+                <template slot="column-createdAt" slot-scope="{ item }">
+                    {{ item.createdAt | date }}
+                </template>
+                <template slot="column-user" slot-scope="{ item }">
+                    <template v-if="item.customerId">
+                            {{ item.customer.firstName }} {{ item.customer.lastName }}
+                    </template>
+                    <template v-else>
+                        {{ item.externalUser }}
+                    </template>
+                </template>
+                <template slot="column-product" slot-scope="{ item }">
+                    <template v-if="item.productId">
+                        {{ item.product.name }}
+                    </template>
+                </template>
+                <template slot="column-points" slot-scope="{ item }">
+                        {{ item.points }}
+                        <sw-icon class="sw-rating-list__icon-points"
+                                 name="default-basic-shape-star"
+                                 size="14">
+                        </sw-icon>
                 </template>
             </sw-entity-listing>
         </template>

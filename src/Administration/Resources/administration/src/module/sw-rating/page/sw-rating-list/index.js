@@ -1,6 +1,7 @@
 import { Component } from 'src/core/shopware';
 import Criteria from 'src/core/data-new/criteria.data';
 import template from './sw-rating-list.html.twig';
+import './sw-rating-listing.scss';
 
 Component.register('sw-rating-list', {
     template,
@@ -20,23 +21,34 @@ Component.register('sw-rating-list', {
     computed: {
         columns() {
             return [{
-                property: 'title',
-                dataIndex: 'title',
-                label: 'Title',
+                property: 'product',
+                dataIndex: 'product',
+                label: 'Product',
                 routerLink: 'sw.rating.detail',
                 allowResize: true,
                 primary: true
             },
             {
-                property: 'externalUser',
-                dataIndex: 'externalUser',
-                label: 'External User',
+                property: 'points',
+                dataIndex: 'points',
+                label: 'Bewertung',
+                align: 'center'
+            },
+            {
+                property: 'user',
+                dataIndex: 'user',
+                label: 'User',
                 allowResize: true
+            },
+            {
+                property: 'createdAt',
+                dataIndex: 'createdAt',
+                label: 'Created at'
             },
             {
                 property: 'status',
                 dataIndex: 'status',
-                label: 'Freigegeben',
+                label: 'Status',
                 align: 'center'
             }];
         }
@@ -52,6 +64,9 @@ Component.register('sw-rating-list', {
 
             this.criteria = new Criteria();
 
+            this.criteria.addAssociation('customer');
+            this.criteria.addAssociation('product');
+
             if (this.term) {
                 this.criteria.setTerm(this.term);
             }
@@ -66,8 +81,10 @@ Component.register('sw-rating-list', {
                 });
         },
         onSearch(term) {
+            console.log('search for : ', term);
             this.criteria.setTerm(term);
             this.$route.query.term = term;
+            this.$refs.listing.doSearch();
         }
     }
 });
