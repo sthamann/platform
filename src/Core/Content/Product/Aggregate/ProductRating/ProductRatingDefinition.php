@@ -52,36 +52,6 @@ class ProductRatingDefinition extends EntityDefinition
      */
     protected static function defineFields(): FieldCollection
     {
-
-        /**
-         *  id	binary(16)
-        product_id	binary(16)
-        customer_id	binary(16) NULL
-        sales_channel_id	binary(16)
-        language_id	binary(16)
-        external_user	varchar(255)
-        external_email	varchar(255)
-        title	varchar(255)
-        content	text
-        positive	int(11)
-        negative	int(11)
-        points	double
-        status	tinyint(4)
-        comment	text
-        comment_created_at	datetime
-        created_at	datetime
-        updated_at	datetime
-
-         */
-
-        // Nullable
-        // Textfield
-        // ManyToOne Cascade Actions
-        // Produkte laden Bewertungen Ja / Nein
-        // DateTime Field ?
-        // API Routen
-
-
         return new FieldCollection([
             (new IdField('id', 'id'))->addFlags(new PrimaryKey(), new Required()),
             new FkField('product_id', 'productId', ProductDefinition::class),
@@ -107,13 +77,5 @@ class ProductRatingDefinition extends EntityDefinition
             (new ManyToOneAssociationField('language','language_id',LanguageDefinition::class,'id',false))->addFlags(new CascadeDelete()),
             (new ReferenceVersionField(ProductDefinition::class))->addFlags(new Required()),
         ]);
-
-       /* return new FieldCollection([
-            (new FkField('product_id', 'productId', ProductDefinition::class))->addFlags(new PrimaryKey(), new Required()),
-            (new ReferenceVersionField(ProductDefinition::class))->addFlags(new Required()),
-            (new FkField('property_group_option_id', 'optionId', PropertyGroupOptionDefinition::class))->addFlags(new PrimaryKey(), new Required()),
-            new ManyToOneAssociationField('product', 'product_id', ProductDefinition::class, 'id', false),
-            new ManyToOneAssociationField('option', 'property_group_option_id', PropertyGroupOptionDefinition::class, 'id', false),
-        ]);*/
     }
 }

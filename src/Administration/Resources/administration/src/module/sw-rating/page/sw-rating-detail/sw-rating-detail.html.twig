@@ -18,7 +18,7 @@
 
                 {% block sw_rating_detail_actions_save %}
                     <sw-button class="sw-rating-detail__save-action" variant="primary" :disabled="isLoading"
-                            @click.prevent="onSave">
+                            @click="onSave">
                         {{ $tc('sw-rating.detail.buttonSave') }}
                     </sw-button>
                 {% endblock %}
@@ -30,17 +30,83 @@
             <sw-card-view slot="content">
 
             {% block sw_rating_detail_base_basic_info_card %}
-                <sw-card :title="$tc('sw-rating.detail.cardTitleRatingInfo')" :isLoading="isLoading">
-                        <div class="sw-rating-detail__base-info">
-                            Title:
-                        </div>
+                <sw-card
+                        v-if="rating"
+                        :title="$tc('sw-rating.detail.cardTitleRatingInfo')"
+                        :isLoading="isLoading">
+                    <sw-description-list grid="1fr 2fr 1fr 2fr">
+                        <dt>Title</dt>
+                        <dd>{{ rating.title }}</dd>
+
+                        <dt>Points</dt>
+                        <dd>{{ rating.points }}</dd>
+
+                        <dt>Created at</dt>
+                        <dd>{{ rating.createdAt | date }}</dd>
+
+                        <template v-if="product">
+                            <dt>Produkt</dt>
+                            <dd>
+                                <router-link :to="{ name: 'sw.product.detail', params: { id: product.id } }">
+                                    {{ product.name }}
+                                </router-link>
+                            </dd>
+                        </template>
+
+                        <template v-if="rating.sales_channel">
+                            <dt>Sales Channel</dt>
+                            <dd>{{ rating.sales_channel.name }}</dd>
+                        </template>
+
+                        <dt>User</dt>
+                        <template v-if="rating.customer">
+                            <dd>
+                                <router-link :to="{ name: 'sw.customer.detail', params: { id: rating.customer.id } }">
+                                    {{ rating.customer.firstName }}
+                                </router-link>
+                            </dd>
+                        </template>
+                        <template v-else>
+                            <dd>{{ rating.externalUser }}</dd>
+                        </template>
+
+                        <template v-if="rating.externalEmail">
+                            <dt>E-Mail</dt>
+                            <dd>{{ rating.externalEmail }}</dd>
+                        </template>
+
+                        <template v-if="rating.language">
+                            <dt>Language</dt>
+                            <dd>{{ rating.language.name }}</dd>
+                        </template>
+
+                        <dt>Positive</dt>
+                        <dd>{{ rating.positive }}</dd>
+
+                        <dt>Negative</dt>
+                        <dd>{{ rating.negative }}</dd>
+
+                        <dt>Status</dt>
+                        <template v-if="rating.status">
+                            <dd><sw-icon name="default-basic-checkmark-line" color="green"></sw-icon></dd>
+                        </template>
+                        <template v-else>
+                            <dd><sw-icon name="default-basic-x-line" color="red"></sw-icon></dd>
+                        </template>
+                    </sw-description-list>
+
+                    <label for="content">Content</label>
+                    <div class="sw-rating-detail__content" id="content">{{ rating.content }}</div>
                 </sw-card>
             {% endblock %}
 
             <sw-card title="Leave a comment if you want" :isLoading="isLoading">
+                <sw-switch-field
+                    label="Status"
+                    v-model="rating.status">
+                </sw-switch-field>
                 <sw-text-editor
-                        :label="$tc('sw-rating.detail.comment')"
-                        name="comment"
+                        :label="'Comment'"
                         v-model="rating.comment">
                 </sw-text-editor>
             </sw-card>
