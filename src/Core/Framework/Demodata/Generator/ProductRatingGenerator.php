@@ -51,7 +51,7 @@ class ProductRatingGenerator implements DemodataGeneratorInterface
                 'title' => $$context->getFaker()->sentence,
                 'content' => $context->getFaker()->text,
                 'points' => $points[array_rand($points)],
-                'status' => rand(0, 1),
+                'status' => (bool) rand(0, 1),
             ];
         }
 
