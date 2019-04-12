@@ -1,5 +1,7 @@
 
 {% block page_product_detail_rating_container %}
+    <pre> {{ dump(context) }} </pre>
+    <pre>{{ dump(page) }}</pre>
     <div class="product-detail-rating tab-pane-container">
         {% block page_product_detail_rating_title %}
             <h3 class="product-detail-rating-title">
@@ -10,6 +12,7 @@
         {% block page_product_detail_rating_content %}
             <div class="row">
                 <div class="col-3">
+<<<<<<< Updated upstream
                     {% block page_product_detail_rating_overview %}
                     <div itemprop="aggregateRating" itemscope itemtype="https://schema.org/AggregateRating">
                         <meta itemprop="ratingValue" content="4.5">
@@ -81,6 +84,13 @@
                         </table>
                     </div>
                     {% endblock %}
+=======
+                    {% sw_include '@Storefront/component/rating/rating-stars.html.twig' with {
+                        points: 4.71
+                    } %}
+
+                    4.71 out of 5 Stars
+>>>>>>> Stashed changes
                     <hr>
                     {% block page_product_detail_rating_form_teaser %}
                     <div class="collapse show">
@@ -101,6 +111,7 @@
                     {% block page_product_detail_rating_content_list %}
                         <div id="rating-list" class="collapse multi-collapse show" itemprop="rating-list">
                             {% for rating in page.product.ratings %}
+<<<<<<< Updated upstream
                                 <div itemprop="review" itemscope itemtype="http://schema.org/Review">
                                     <meta itemprop="datePublished" content="{{ rating.createdAt|date }}">
                                     <h4 class="product-detail-rating-author"><i class="fas fa-user-circle"></i> Josua S. on {{ rating.createdAt|date }} {% if rating.language|e %}({{ rating.language|e }}){% endif %} <span class="badge badge-primary">Verified</span></h4>
@@ -124,6 +135,20 @@
                                         </blockquote>
                                     {% endif %}
                                 </div>
+=======
+                                <h4><i class="fas fa-user-circle"></i> Swaggy S. on {{ rating.createdAt|date }} {% if rating.language|e %}({{ rating.language|e }}){% endif %} <span class="badge badge-primary">Verified</span></h4>
+                                <p><strong>{% sw_include '@Storefront/component/rating/rating-stars.html.twig' with {
+                                            points: rating.points
+                                        } %}
+                                        {{ rating.title|e }}</strong></p>
+                                <p>{{ rating.content|e }}</p>
+                                {% if rating.comment|e %}
+                                    <blockquote class="blockquote">
+                                        <footer class="blockquote-footer">Our Feedback: {{ rating.comment|e }}</footer>
+                                    </blockquote>
+                                {% endif %}
+                                <hr/>
+>>>>>>> Stashed changes
                             {% endfor %}
                         </div>
                     {% endblock %}
