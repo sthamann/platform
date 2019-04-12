@@ -1,9 +1,7 @@
 {% block page_product_detail_rating_form_container %}
     <div class="collapse multi-collapse" id="rating-form">
         {% block page_product_detail_rating_description %}
-            <p>
-                Here we go
-            </p>
+
         {% endblock %}
         {% block page_product_detail_rating_alert %}
             {% if ratingActionError %}
@@ -28,8 +26,7 @@
                                        placeholder="Name"
                                        name="name"
                                        required="required"
-                                       value="Josua S."
-                                       disabled>
+                                       value="Josua S.">
                                 {% if formViolations.getViolations('/name') %}
                                     <div class="invalid-feedback">
                                         {% for error in formViolations.getViolations('/name') %}
@@ -50,11 +47,11 @@
                                         name="points"
                                         required="required">
                                     <option selected value="-1">Bitte auswählen</option>
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
-                                    <option value="3">3</option>
-                                    <option value="4">4</option>
-                                    <option value="5">5</option>
+                                    <option {%  if data.get('points') == 1 %}selected{% endif %} value="1">1</option>
+                                    <option {%  if data.get('points') == 2 %}selected{% endif %} value="2">2</option>
+                                    <option {%  if data.get('points') == 3 %}selected{% endif %} value="3">3</option>
+                                    <option {%  if data.get('points') == 4 %}selected{% endif %} value="4">4</option>
+                                    <option {%  if data.get('points') == 5 %}selected{% endif %} value="5">5</option>
                                 </select>
                                 {% if formViolations.getViolations('/points') %}
                                     <div class="invalid-feedback">
@@ -73,7 +70,7 @@
                     <div class="form-group">
                         <label for="title">Summary</label>
                         <input type="text"
-                               class="form-control{% if formViolations.getViolations('/title') %}is-invalid{% endif %}"
+                               class="form-control {% if formViolations.getViolations('/title') %}is-invalid{% endif %}"
                                id="title"
                                placeholder="Summary"
                                name="title"
@@ -89,12 +86,12 @@
                 {% endblock %}
 
                 {% block page_product_detail_rating_form_content %}
+                    <input type="hidden" id="email" name="email" value="mail@domain.tld">
                     <div class="form-group">
-                        <label for="inputAddress">Your Review</label>
+                        <label for="content">Your Review</label>
                         <textarea
                                 class="form-control {% if formViolations.getViolations('/content') %}is-invalid{% endif %}"
-                                id="rating"
-                                placeholder="Your Review"
+                                id="content"
                                 name="content"
                                 required="required"
                                 rows="5">
@@ -109,16 +106,16 @@
                     </div>
                 {% endblock %}
 
-                {% block page_product_detail_rating_form_buttons %}
-                    <div class="form-group">
-                        <input type="hidden" id="email" name="email" value="mail@domain.tld">
-                        <button type="submit" class="btn btn-primary">
-                            Submit
-                        </button>
-                        <button type="submit" class="btn btn-light" data-toggle="collapse" data-target=".multi-collapse" aria-expanded="false" aria-controls="rating-form rating-list">
-                            Cancel
-                        </button>
-                    </div>
+                {% block page_product_detail_rating_form_submit %}
+                    <button type="submit" class="btn btn-primary">
+                        Submit
+                    </button>
+                {% endblock %}
+
+                {% block page_product_detail_rating_form_cancel %}
+                    <a href="#" class="btn btn-link" data-toggle="collapse" data-target=".multi-collapse" aria-expanded="false" aria-controls="rating-form rating-list">
+                        Cancel
+                    </a>
                 {% endblock %}
 
             </form>
