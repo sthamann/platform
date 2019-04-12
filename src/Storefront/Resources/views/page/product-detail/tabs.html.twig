@@ -6,7 +6,7 @@
 					<ul class="nav nav-tabs card-header-tabs" id="product-detail-tabs" role="tablist">
 						{% block page_product_detail_tabs_navigation_description %}
 							<li class="nav-item">
-								<a class="nav-link active"
+								<a class="nav-link {% if ratingSuccess is same as(1) %}{% elseif ratingSuccess is same as(-1)  %}{% else %}active{% endif %}"
 								   id="description-tab"
 								   data-toggle="tab"
 								   data-offcanvas-tab="true"
@@ -21,7 +21,7 @@
 						{% endblock %}
                         {% block page_product_detail_tabs_navigation_rating %}
                             <li class="nav-item">
-                                <a class="nav-link"
+                                <a class="nav-link {% if ratingSuccess is same as(1) %}active{% elseif ratingSuccess is same as(-1)  %}active{% else %}{% endif %}"
                                    id="rating-tab"
                                    data-toggle="tab"
                                    data-offcanvas-tab="true"
@@ -44,7 +44,7 @@
 				{% block page_product_detail_tabs_content_container %}
 					<div class="tab-content">
 						{% block page_product_detail_tabs_content_description %}
-							<div class="tab-pane fade show active"
+							<div class="tab-pane fade show {% if ratingSuccess is same as(1) %}{% elseif ratingSuccess is same as(-1)  %}{% else %}active{% endif %}"
 							     id="description-tab-pane"
 							     role="tabpanel"
 							     aria-labelledby="description-tab">
@@ -52,7 +52,7 @@
 							</div>
 						{% endblock %}
                         {% block page_product_detail_tabs_content_rating %}
-                            <div class="tab-pane fade show"
+                            <div class="tab-pane fade show {% if ratingSuccess is same as(1) %}active{% elseif ratingSuccess is same as(-1)  %}active{% else %}{% endif %}"
                                  id="rating-tab-pane"
                                  role="tabpanel"
                                  aria-labelledby="rating-tab">
