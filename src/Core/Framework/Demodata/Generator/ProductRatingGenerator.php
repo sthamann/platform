@@ -5,13 +5,12 @@ namespace Shopware\Core\Framework\Demodata\Generator;
 use Shopware\Core\Checkout\Customer\CustomerDefinition;
 use Shopware\Core\Content\Product\Aggregate\ProductRating\ProductRatingDefinition;
 use Shopware\Core\Content\Product\ProductDefinition;
+use Shopware\Core\Defaults;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteContext;
 use Shopware\Core\Framework\Demodata\DemodataContext;
 use Shopware\Core\Framework\Demodata\DemodataGeneratorInterface;
-use Shopware\Core\Framework\Language\LanguageDefinition;
 use Shopware\Core\Framework\Uuid\Uuid;
-use Shopware\Core\System\SalesChannel\SalesChannelDefinition;
 
 class ProductRatingGenerator implements DemodataGeneratorInterface
 {
@@ -36,23 +35,20 @@ class ProductRatingGenerator implements DemodataGeneratorInterface
 
         $payload = [];
         for ($i = 0; $i < $numberOfItems; ++$i) {
-
             $customers = $context->getIds(CustomerDefinition::class);
             $products = $context->getIds(ProductDefinition::class);
-            $saleschannel = $context->getIds(SalesChannelDefinition::class);
-            $languages = $context->getIds(LanguageDefinition::class);
-            $points = array(1,2,3,4,5);
+            $points = [1, 2, 3, 4, 5];
 
             $payload[] = [
                 'id' => Uuid::randomHex(),
                 'productId' => $products[array_rand($products)],
-                'customerId'=> $customers[array_rand($customers)],
-                'salesChannelId' => $saleschannel[array_rand($saleschannel)],
-                'languageId' => $languages[array_rand($languages)],
-                'title' => $$context->getFaker()->sentence,
+                'customerId' => $customers[array_rand($customers)],
+                'salesChannelId' => Defaults::SALES_CHANNEL,
+                'languageId' => Defaults::LANGUAGE_SYSTEM,
+                'title' => $context->getFaker()->sentence,
                 'content' => $context->getFaker()->text,
                 'points' => $points[array_rand($points)],
-                'status' => rand(0,1)
+                'status' => (bool) rand(0, 1),
             ];
         }
 
