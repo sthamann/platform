@@ -10,13 +10,79 @@
         {% block page_product_detail_rating_content %}
             <div class="row">
                 <div class="col-3">
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star-half-alt"></i>
-                    4.5 out of 5 Stars 
+                    {% block page_product_detail_rating_overview %}
+                    <div itemprop="aggregateRating" itemscope itemtype="https://schema.org/AggregateRating">
+                        <meta itemprop="ratingValue" content="4.5">
+                        <meta itemprop="bestRating" content="5">
+                        <meta itemprop="ratingCount" content="20">
+                        <table class"table table-striped">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                    </td>
+                                    <td class="product-detail-rating-overview-five-count">
+                                        4
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                    </td>
+                                    <td class="product-detail-rating-overview-four-count">
+                                        2
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                    </td>
+                                    <td class="product-detail-rating-overview-three-count">
+                                        1
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                    </td>
+                                    <td class="product-detail-rating-overview-two-count">
+                                        1
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <i class="fas fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                    </td>
+                                    <td class="product-detail-rating-overview-one-count">
+                                        0
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    {% endblock %}
                     <hr>
+                    {% block page_product_detail_rating_form_teaser %}
                     <div class="collapse show">
                         <h4>Leave a review</h4>
                         <p>Share your thoughts with other customers</p>
@@ -25,6 +91,7 @@
                         </button>
                         <hr>
                     </div>
+                    {% endblock %}
                 </div>
                 <div class="col">
                     {% block page_product_detail_rating_content_form %}
@@ -34,18 +101,29 @@
                     {% block page_product_detail_rating_content_list %}
                         <div id="rating-list" class="collapse multi-collapse show" itemprop="rating-list">
                             {% for rating in page.product.ratings %}
-                                <h4><i class="fas fa-user-circle"></i> Josua S. on {{ rating.createdAt|date }} {% if rating.language|e %}({{ rating.language|e }}){% endif %} <span class="badge badge-primary">Verified</span></h4>
-                                <p> <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="far fa-star"></i> <strong>{{ rating.title|e }}</strong></p>
-                                <p>{{ rating.content|e }}</p>
-                                {% if rating.comment|e %}
-                                    <blockquote class="blockquote">
-                                        <footer class="blockquote-footer">Our Feedback: {{ rating.comment|e }}</footer>
-                                    </blockquote>
-                                {% endif %}
+                                <div itemprop="review" itemscope itemtype="http://schema.org/Review">
+                                    <meta itemprop="datePublished" content="{{ rating.createdAt|date }}">
+                                    <h4 class="product-detail-rating-author"><i class="fas fa-user-circle"></i> Josua S. on {{ rating.createdAt|date }} {% if rating.language|e %}({{ rating.language|e }}){% endif %} <span class="badge badge-primary">Verified</span></h4>
+                                    <p>
+                                        <div itemprop="reviewRating" itemscope itemtype="http://schema.org/Rating">
+                                            <meta itemprop="worstRating" content="1">
+                                            <meta itemprop="ratingValue" content="{{ rating.points|e }}">
+                                            <meta itemprop="bestRating" content="5" >
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="far fa-star"></i> 
+                                        </div>
+                                        <strong itemprop="name">{{ rating.title|e }}</strong>
+                                    </p>
+                                    <p itemprop="description">{{ rating.content|e }}</p>
+                                    {% if rating.comment|e %}
+                                        <blockquote class="blockquote">
+                                            <footer class="blockquote-footer">Our Feedback: {{ rating.comment|e }}</footer>
+                                        </blockquote>
+                                    {% endif %}
+                                </div>
                             {% endfor %}
                         </div>
                     {% endblock %}
