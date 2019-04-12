@@ -1,4 +1,11 @@
 {% block page_product_detail_rating_form_container %}
+    {% if ratingSuccess is same as(1) %}
+        Abgeschickt & Erfolgreich
+    {% elseif ratingSuccess is same as(-1)  %}
+        Abgeschickt & Fehler
+    {% else %}
+        Nicht abgeschickt
+    {% endif %}
     <div class="collapse multi-collapse" id="rating-form">
         {% block page_product_detail_rating_description %}
 

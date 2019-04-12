@@ -12,6 +12,7 @@ use Shopware\Storefront\Framework\Controller\StorefrontController;
 use Shopware\Storefront\Framework\Page\PageLoaderInterface;
 use Shopware\Storefront\Page\Product\ProductPageLoader;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -36,11 +37,13 @@ class ProductPageController extends StorefrontController
     /**
      * @Route("/detail/{productId}", name="frontend.detail.page", options={"seo"="true"}, methods={"GET"})
      */
-    public function index(SalesChannelContext $context, InternalRequest $request): Response
+    public function index(SalesChannelContext $context, InternalRequest $request, Request $symfonyRequest): Response
     {
         $page = $this->detailPageLoader->load($request, $context);
 
-        return $this->renderStorefront('@Storefront/page/product-detail/index.html.twig', ['page' => $page]);
+        $ratingSuccess = $symfonyRequest->get("success");
+
+        return $this->renderStorefront('@Storefront/page/product-detail/index.html.twig', ['page' => $page,'ratingSuccess'=>$ratingSuccess]);
     }
 
     /**
@@ -48,39 +51,19 @@ class ProductPageController extends StorefrontController
      */
     public function saveRating(string $productId, RequestDataBag $data, SalesChannelContext $context): Response
     {
-
-
-        /**
-         * ProductPageController.php on line 55:
-        RequestDataBag {#201 ▼
-        #parameters: array:7 [▼
-        "productId" => "0928425ff4714ae9aff1e54250e79b0e"
-        "productVersion" => "0fa91ce3e96a4bc2be4bd9ce752c3425"
-        "name" => "Stefan Hamann"
-        "email" => "sth@shopware.com"
-        "title" => "Voll behindert"
-        "content" => "Absolut nicht zu empfehlen"
-        "points" => "3"
-        ]
-        }
-         */
-
         if ($context->getCustomer()) {
             //return $this->redirectToRoute('frontend.account.home.page');
             echo "Eingeloggt";
         }
 
-
-
         try {
             $this->productRatingService->saveRating($productId,$data,$context);
 
         } catch (ConstraintViolationException $formViolations) {
-            return $this->forward('Shopware\Storefront\PageController\ProductPageController::index', ['productId'=>$productId,'formViolations' => $formViolations], ['productId' => $productId]);
+
+            return $this->forward('Shopware\Storefront\PageController\ProductPageController::index', ['productId'=>$productId,'success'=>-1,'formViolations' => $formViolations], ['productId' => $productId]);
         }
 
-       // $this->accountService->login($data->get('email'), $context);
-
-        return new RedirectResponse($this->generateUrl('frontend.detail.page',['productId'=>$productId]));
+        return new RedirectResponse($this->generateUrl('frontend.detail.page',['productId'=>$productId,'success'=>1]));
     }
 }
