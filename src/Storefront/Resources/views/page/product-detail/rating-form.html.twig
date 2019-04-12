@@ -1,21 +1,20 @@
 {% block page_product_detail_rating_form_container %}
-    {% if ratingSuccess is same as(1) %}
-        Abgeschickt & Erfolgreich
-    {% elseif ratingSuccess is same as(-1)  %}
-        Abgeschickt & Fehler
-    {% else %}
-        Nicht abgeschickt
-    {% endif %}
-    <div class="collapse multi-collapse" id="rating-form">
-        {% block page_product_detail_rating_description %}
 
-        {% endblock %}
+    <div class="collapse multi-collapse {% if ratingSuccess is same as(1) %}show{% elseif ratingSuccess is same as(-1)  %}show{% else %}{% endif %}" id="rating-form">
         {% block page_product_detail_rating_alert %}
-            {% if ratingActionError %}
-                <div class="alert alert-danger">
-                    {{ "account.loginBadCredentials"|trans }}
-                </div>
-            {% endif %}
+			{% if ratingSuccess is same as(1) %}
+				{% sw_include '@Storefront/base/_utilities/alert.html.twig' with {
+					type: "success",
+					content: "Thanks for your review! "
+				} %}
+
+			{% elseif ratingSuccess is same as(-1)  %}
+				{% sw_include '@Storefront/base/_utilities/alert.html.twig' with {
+					type: "danger",
+					content: "An error occured. Please check the form"
+				} %}
+			{% endif %}
+
         {% endblock %}
 
         {% block page_product_detail_rating_form %}
@@ -96,13 +95,12 @@
                     <input type="hidden" id="email" name="email" value="mail@domain.tld">
                     <div class="form-group">
                         <label for="content">Your Review</label>
-                        <textarea
-                                class="form-control {% if formViolations.getViolations('/content') %}is-invalid{% endif %}"
-                                id="content"
-                                name="content"
-                                required="required"
-                                rows="5">
-                        </textarea>
+                        <textarea class="form-control {% if formViolations.getViolations('/content') %}is-invalid{% endif %}"
+								  id="content"
+								  name="content"
+								  required="required"
+								  rows="5"
+						></textarea>
                         {% if formViolations.getViolations('/content') %}
                             <div class="invalid-feedback">
                                 {% for error in formViolations.getViolations('/content') %}
