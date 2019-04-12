@@ -29,90 +29,128 @@
         {% block sw_rating_detail_content %}
             <sw-card-view slot="content">
 
-            {% block sw_rating_detail_base_basic_info_card %}
-                <sw-card
-                        v-if="rating"
-                        :title="$tc('sw-rating.detail.cardTitleRatingInfo')"
-                        :isLoading="isLoading">
-                    <sw-description-list grid="1fr 2fr 1fr 2fr">
-                        <dt>Title</dt>
-                        <dd>{{ rating.title }}</dd>
+                {% block sw_rating_detail_basic_info_card %}
+                    <sw-card
+                            v-if="rating"
+                            :title="$tc('sw-rating.detail.cardTitleRatingInfo')"
+                            :isLoading="isLoading">
+                        {% block sw_rating_detail_basic_info_card_description_list %}
+                            <sw-description-list grid="1fr 2fr 1fr 2fr">
+                                {% block sw_rating_detail_description_list_title %}
+                                    <dt>{{ $tc('sw-rating.detail.labelTitle') }}</dt>
+                                    <dd>{{ rating.title }}</dd>
+                                {% endblock %}
 
-                        <dt>Points</dt>
-                        <dd>{{ rating.points }}</dd>
+                                {% block sw_rating_detail_description_list_points %}
+                                    <dt>{{ $tc('sw-rating.detail.labelPoints') }}</dt>
+                                    <dd>{{ rating.points }}</dd>
+                                {% endblock %}
 
-                        <dt>Created at</dt>
-                        <dd>{{ rating.createdAt | date }}</dd>
+                                {% block sw_rating_detail_description_list_created_at %}
+                                    <dt>{{ $tc('sw-rating.detail.labelCreatedAt') }}</dt>
+                                    <dd>{{ rating.createdAt | date }}</dd>
+                                {% endblock %}
 
-                        <template v-if="product">
-                            <dt>Produkt</dt>
-                            <dd>
-                                <router-link :to="{ name: 'sw.product.detail', params: { id: product.id } }">
-                                    {{ product.name }}
-                                </router-link>
-                            </dd>
-                        </template>
+                                {% block sw_rating_detail_description_list_product %}
+                                    <template v-if="product">
+                                        <dt>{{ $tc('sw-rating.detail.labelProduct') }}</dt>
+                                        <dd>
+                                            <router-link :to="{ name: 'sw.product.detail', params: { id: product.id } }">
+                                                {{ product.name }}
+                                            </router-link>
+                                        </dd>
+                                    </template>
+                                {% endblock %}
 
-                        <template v-if="rating.sales_channel">
-                            <dt>Sales Channel</dt>
-                            <dd>{{ rating.sales_channel.name }}</dd>
-                        </template>
+                                {% block sw_rating_detail_description_list_sales_channel %}
+                                    <template v-if="rating.sales_channel">
+                                        <dt>{{ $tc('sw-rating.detail.labelSalesChannel') }}</dt>
+                                        <dd>{{ rating.sales_channel.name }}</dd>
+                                    </template>
+                                {% endblock %}
 
-                        <dt>User</dt>
-                        <template v-if="rating.customer">
-                            <dd>
-                                <router-link :to="{ name: 'sw.customer.detail', params: { id: rating.customer.id } }">
-                                    {{ rating.customer.firstName }}
-                                </router-link>
-                            </dd>
-                        </template>
-                        <template v-else>
-                            <dd>{{ rating.externalUser }}</dd>
-                        </template>
+                                {% block sw_rating_detail_description_list_user %}
+                                    <dt>{{ $tc('sw-rating.detail.labelUser') }}</dt>
+                                    <template v-if="rating.customer">
+                                        <dd>
+                                            <router-link :to="{ name: 'sw.customer.detail', params: { id: rating.customer.id } }">
+                                                {{ rating.customer.firstName }}
+                                            </router-link>
+                                        </dd>
+                                    </template>
+                                    <template v-else>
+                                        <dd>{{ rating.externalUser }}</dd>
+                                    </template>
+                                {% endblock %}
 
-                        <template v-if="rating.externalEmail">
-                            <dt>E-Mail</dt>
-                            <dd>{{ rating.externalEmail }}</dd>
-                        </template>
+                                {% block sw_rating_detail_description_list_email %}
+                                    <template v-if="rating.externalEmail">
+                                        <dt>{{ $tc('sw-rating.detail.labelEmail') }}</dt>
+                                        <dd>{{ rating.externalEmail }}</dd>
+                                    </template>
+                                {% endblock %}
 
-                        <template v-if="rating.language">
-                            <dt>Language</dt>
-                            <dd>{{ rating.language.name }}</dd>
-                        </template>
+                                {% block sw_rating_detail_description_list_language %}
+                                    <template v-if="rating.language">
+                                        <dt>{{ $tc('sw-rating.detail.labelLanguage') }}</dt>
+                                        <dd>{{ rating.language.name }}</dd>
+                                    </template>
+                                {% endblock %}
 
-                        <dt>Positive</dt>
-                        <dd>{{ rating.positive }}</dd>
+                                {% block sw_rating_detail_description_list_positive %}
+                                    <dt>{{ $tc('sw-rating.detail.labelPositive') }}</dt>
+                                    <dd>{{ rating.positive || '0' }}</dd>
+                                {% endblock %}
 
-                        <dt>Negative</dt>
-                        <dd>{{ rating.negative }}</dd>
+                                {% block sw_rating_detail_description_list_negative %}
+                                    <dt>{{ $tc('sw-rating.detail.labelNegative') }}</dt>
+                                    <dd>{{ rating.negative || '0' }}</dd>
+                                {% endblock %}
 
-                        <dt>Status</dt>
-                        <template v-if="rating.status">
-                            <dd><sw-icon name="default-basic-checkmark-line" color="green"></sw-icon></dd>
-                        </template>
-                        <template v-else>
-                            <dd><sw-icon name="default-basic-x-line" color="red"></sw-icon></dd>
-                        </template>
-                    </sw-description-list>
+                                {% block sw_rating_detail_description_list_status %}
+                                    <dt>{{ $tc('sw-rating.detail.labelStatus') }}</dt>
+                                    <template v-if="rating.status">
+                                        <dd><sw-icon name="default-basic-checkmark-line" color="green"></sw-icon></dd>
+                                    </template>
+                                    <template v-else>
+                                        <dd><sw-icon name="default-basic-x-line" color="red"></sw-icon></dd>
+                                    </template>
+                                {% endblock %}
+                            </sw-description-list>
+                        {% endblock %}
 
-                    <label for="content">Content</label>
-                    <div class="sw-rating-detail__content" id="content">{{ rating.content }}</div>
-                </sw-card>
-            {% endblock %}
+                        {% block sw_rating_detail_basic_info_card_content %}
+                            <label class="sw-rating-detail__label-content"
+                                   for="content">
+                                {{ $tc('sw-rating.detail.labelContent') }}
+                            </label>
+                            <sw-textarea-field
+                                    class="sw-rating-detail__content"
+                                    id="content"
+                                    v-model="rating.content"
+                                    readonly>
+                            </sw-textarea-field>
+                        {% endblock %}
+                    </sw-card>
+                {% endblock %}
 
-            <sw-card title="Leave a comment if you want" :isLoading="isLoading">
-                <sw-switch-field
-                    label="Status"
-                    v-model="rating.status">
-                </sw-switch-field>
-                <sw-text-editor
-                        :label="'Comment'"
-                        v-model="rating.comment">
-                </sw-text-editor>
-            </sw-card>
-
-        </sw-card-view>
-    {% endblock %}
-
+                {% block sw_rating_detail_comment_card %}
+                    <sw-card :title="$tc('sw-rating.detail.titleCardComment')" :isLoading="isLoading">
+                        {% block sw_rating_detail_comment_card_status %}
+                            <sw-switch-field
+                                :label="$tc('sw-rating.detail.labelStatus')"
+                                v-model="rating.status">
+                            </sw-switch-field>
+                        {% endblock %}
+                        {% block sw_rating_detail_comment_card_comment %}
+                            <sw-text-editor
+                                    :label="$tc('sw-rating.detail.labelComment')"
+                                    v-model="rating.comment">
+                            </sw-text-editor>
+                        {% endblock %}
+                    </sw-card>
+                {% endblock %}
+            </sw-card-view>
+        {% endblock %}
     </sw-page>
 {% endblock %}

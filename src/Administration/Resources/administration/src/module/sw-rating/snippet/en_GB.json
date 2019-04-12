@@ -2,42 +2,39 @@
   "sw-rating": {
     "general": {
       "mainMenuItemList": "Rating",
-      "mainMenuItemGeneral": "Rating",
+      "mainMenuItemGeneral": "Ratings",
       "placeholderSearchBar": "Search ratings"
     },
     "list": {
-      "textManufacturerOverview": "Rating",
-      "textTotalManufacturer": "No rating | One rating | {count} ratings",
-      "buttonAddManufacturer": "Add rating",
-      "columnName": "Ratings",
-      "columnLink": "Website",
-      "columnDescription": "Description",
-      "columnActions": "Actions",
-      "contextMenuEdit": "Edit",
-      "contextMenuDelete": "Delete",
-      "contextMenuDuplicate": "Duplicate",
-      "modalTitleDelete": "Delete rating",
-      "textDeleteConfirm": "Are you sure you want to delete the rating \"{name}\"?",
-      "buttonCancel": "Cancel",
-      "buttonDelete": "Delete",
-      "titleSidebarItemRefresh": "Refresh"
+      "textRatingOverview": "Ratings",
+      "columnProduct": "Product",
+      "columnPoints": "Points",
+      "columnUser": "User",
+      "columnStatus": "Status",
+      "columnCreatedAt": "Created at",
+      "columnComment": "Commented"
     },
     "detail": {
-      "textHeadline": "New rating",
-      "textMediaSelection": "Media selection",
+      "textHeadline": "Rating",
       "buttonCancel": "Cancel",
       "buttonSave": "Save",
-      "cardTitleManufacturerInfo": "Rating information",
-      "labelName": "Name",
-      "labelDescription": "Description",
-      "labelLink": "Website",
-      "placeholderName": "Enter rating name.",
-      "placeholderDescription": "Enter rating description.",
-      "placeholderLink": "Enter rating website.",
+      "cardTitleRatingInfo": "Information",
+      "labelTitle": "Title",
+      "labelPoints": "Points",
+      "labelUser": "User",
+      "labelSalesChannel": "Sales channel",
+      "labelCreatedAt": "Created at",
+      "labelProduct": "Product",
+      "labelEmail": "E-Mail",
+      "labelLanguage": "Language",
+      "labelPositive": "Positive votes",
+      "labelNegative": "Negative votes",
+      "labelStatus": "Status",
+      "labelContent": "Conent",
+      "labelComment": "Comment",
+      "titleCardComment": "Comment",
       "titleSaveSuccess": "Success",
-      "messageSaveSuccess": "Rating \"{name}\" has been saved successfully.",
-      "labelLogo": "Logo",
-      "labelUseAsLogo": "Use as Logo"
+      "messageSaveSuccess": "The rating \"{name}\" has been saved successful."
     }
   }
 }

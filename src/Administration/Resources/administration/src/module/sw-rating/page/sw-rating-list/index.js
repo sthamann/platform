@@ -1,7 +1,6 @@
 import { Component } from 'src/core/shopware';
 import Criteria from 'src/core/data-new/criteria.data';
 import template from './sw-rating-list.html.twig';
-import './sw-rating-listing.scss';
 
 Component.register('sw-rating-list', {
     template,
@@ -23,32 +22,36 @@ Component.register('sw-rating-list', {
             return [{
                 property: 'product',
                 dataIndex: 'product',
-                label: 'Product',
+                label: this.$tc('sw-rating.list.columnProduct'),
                 routerLink: 'sw.rating.detail',
-                allowResize: true,
                 primary: true
             },
             {
                 property: 'points',
                 dataIndex: 'points',
-                label: 'Bewertung',
+                label: this.$tc('sw-rating.list.columnPoints'),
                 align: 'center'
             },
             {
                 property: 'user',
-                dataIndex: 'user',
-                label: 'User',
-                allowResize: true
+                dataIndex: 'externalUser',
+                label: this.$tc('sw-rating.list.columnUser')
             },
             {
                 property: 'createdAt',
                 dataIndex: 'createdAt',
-                label: 'Created at'
+                label: this.$tc('sw-rating.list.columnCreatedAt')
             },
             {
                 property: 'status',
                 dataIndex: 'status',
-                label: 'Status',
+                label: this.$tc('sw-rating.list.columnStatus'),
+                align: 'center'
+            },
+            {
+                property: 'comment',
+                dataIndex: 'comment',
+                label: this.$tc('sw-rating.list.columnComment'),
                 align: 'center'
             }];
         }
@@ -64,6 +67,7 @@ Component.register('sw-rating-list', {
 
             this.criteria = new Criteria();
 
+            this.criteria.addSorting(Criteria.sort('createdAt', 'DESC'));
             this.criteria.addAssociation('customer');
             this.criteria.addAssociation('product');
 
@@ -81,7 +85,6 @@ Component.register('sw-rating-list', {
                 });
         },
         onSearch(term) {
-            console.log('search for : ', term);
             this.criteria.setTerm(term);
             this.$route.query.term = term;
             this.$refs.listing.doSearch();
