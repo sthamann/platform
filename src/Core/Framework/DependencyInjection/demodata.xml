@@ -60,6 +60,11 @@
             <argument type="service" id="Shopware\Core\Content\Product\Aggregate\ProductManufacturer\ProductManufacturerDefinition" />
         </service>
 
+        <service id="Shopware\Core\Framework\Demodata\Generator\ProductRatingGenerator">
+            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter" />
+            <tag name="shopware.demodata_generator"/>
+        </service>
+
         <service id="Shopware\Core\Framework\Demodata\Generator\ProductGenerator">
             <tag name="shopware.demodata_generator"/>
             <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter" />
