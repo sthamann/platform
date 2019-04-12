@@ -49,7 +49,9 @@ class ProductPageController extends StorefrontController
     {
         $page = $this->productPageLoader->load($request, $context);
 
-        return $this->renderStorefront('@Storefront/page/product-detail/index.html.twig', ['page' => $page]);
+        $ratingSuccess = $request->get('success');
+
+        return $this->renderStorefront('@Storefront/page/product-detail/index.html.twig', ['page' => $page, 'ratingSuccess' => $ratingSuccess]);
     }
 
     /**
@@ -75,21 +77,6 @@ class ProductPageController extends StorefrontController
      */
     public function saveRating(string $productId, RequestDataBag $data, SalesChannelContext $context): Response
     {
-        /*
-         * ProductPageController.php on line 55:
-        RequestDataBag {#201 ▼
-        #parameters: array:7 [▼
-        "productId" => "0928425ff4714ae9aff1e54250e79b0e"
-        "productVersion" => "0fa91ce3e96a4bc2be4bd9ce752c3425"
-        "name" => "Stefan Hamann"
-        "email" => "sth@shopware.com"
-        "title" => "Voll behindert"
-        "content" => "Absolut nicht zu empfehlen"
-        "points" => "3"
-        ]
-        }
-         */
-
         if ($context->getCustomer()) {
             //return $this->redirectToRoute('frontend.account.home.page');
             echo 'Eingeloggt';
@@ -98,11 +85,9 @@ class ProductPageController extends StorefrontController
         try {
             $this->productRatingService->saveRating($productId, $data, $context);
         } catch (ConstraintViolationException $formViolations) {
-            return $this->forward('Shopware\Storefront\PageController\ProductPageController::index', ['productId' => $productId, 'formViolations' => $formViolations], ['productId' => $productId]);
+            return $this->forward('Shopware\Storefront\PageController\ProductPageController::index', ['productId' => $productId, 'success' => -1, 'formViolations' => $formViolations], ['productId' => $productId]);
         }
 
-        // $this->accountService->login($data->get('email'), $context);
-
-        return new RedirectResponse($this->generateUrl('frontend.detail.page', ['productId' => $productId]));
+        return new RedirectResponse($this->generateUrl('frontend.detail.page', ['productId' => $productId, 'success' => 1]));
     }
 }
