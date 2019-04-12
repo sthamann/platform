@@ -28,6 +28,45 @@ Component.register('sw-product-detail-base', {
             type: Array,
             required: true,
             default: []
+        },
+        ratings: {
+            type: Array,
+            required: true
+        }
+    },
+
+    computed: {
+        columns() {
+            return [
+                {
+                    property: 'title',
+                    dataIndex: 'title',
+                    label: 'title',
+                    routerLink: 'sw.rating.detail'
+                },
+                {
+                    property: 'points',
+                    dataIndex: 'points',
+                    label: this.$tc('sw-rating.list.columnPoints'),
+                    align: 'center'
+                },
+                {
+                    property: 'createdAt',
+                    dataIndex: 'createdAt',
+                    label: this.$tc('sw-rating.list.columnCreatedAt')
+                },
+                {
+                    property: 'status',
+                    dataIndex: 'status',
+                    label: this.$tc('sw-rating.list.columnStatus'),
+                    align: 'center'
+                },
+                {
+                    property: 'comment',
+                    dataIndex: 'comment',
+                    label: this.$tc('sw-rating.list.columnComment'),
+                    align: 'center'
+                }];
         }
     },
 

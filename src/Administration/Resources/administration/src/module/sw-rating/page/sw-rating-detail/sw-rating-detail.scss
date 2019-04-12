@@ -17,7 +17,7 @@
         }
     }
 
-    label {
+    .sw-rating-detail__label-content {
         display: block;
         line-height: 16px;
         font-size: 14px;
@@ -25,10 +25,5 @@
         color: #54698D;
         font-weight: 600;
         user-select: none;
-    }
-
-    .sw-rating-detail__content {
-        padding: 15px;
-        border: 1px solid #D8DDE6;
     }
 }

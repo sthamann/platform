@@ -23,7 +23,8 @@ Component.register('sw-product-detail', {
             customFieldSets: [],
             priceIsCalculating: false,
             isLoading: false,
-            isSaveSuccessful: false
+            isSaveSuccessful: false,
+            ratings: []
         };
     },
 
@@ -60,6 +61,10 @@ Component.register('sw-product-detail', {
 
         customFieldSetStore() {
             return State.getStore('custom_field_set');
+        },
+
+        ratingStore() {
+            return this.product.getAssociation('ratings');
         },
 
         disableSaving() {
@@ -125,6 +130,10 @@ Component.register('sw-product-detail', {
                 }
             }, true).then((response) => {
                 this.customFieldSets = response.items;
+            });
+
+            this.ratingStore.getList({ page: 1, limit: 100 }).then((response) => {
+                this.ratings = response.items;
             });
         },
 

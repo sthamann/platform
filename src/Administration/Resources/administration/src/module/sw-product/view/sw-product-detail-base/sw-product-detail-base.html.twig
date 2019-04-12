@@ -71,5 +71,53 @@
                 </sw-custom-field-set-renderer>
             </sw-card>
         {% endblock %}
+
+        {% block sw_product_detail_base_ratings_card %}
+            <sw-card :title="$tc('sw-product.detailBase.cardTitleRatings')" :isLoading="product.isLoading">
+                <template slot="grid">
+                    <sw-data-grid
+                        :dataSource="ratings"
+                        :showSelection="false"
+                        :showActions="false"
+                        :columns="columns">
+                        {% block sw_product_detail_base_ratings_content_list_status %}
+                            <template slot="column-status" slot-scope="{ item }">
+                                <template v-if="item.status">
+                                    <sw-icon name="default-basic-checkmark-line" size="12" color="green"></sw-icon>
+                                </template>
+                                <template v-else>
+                                    <sw-icon name="default-basic-x-line" size="12" color="red"></sw-icon>
+                                </template>
+                            </template>
+                            {% endblock %}
+                        {% block sw_product_detail_base_ratings_content_list_created_at %}
+                            <template slot="column-createdAt" slot-scope="{ item }">
+                                {{ item.createdAt | date }}
+                            </template>
+                        {% endblock %}
+
+                        {% block sw_product_detail_base_ratings_content_list_points %}
+                            <template slot="column-points" slot-scope="{ item }">
+                                <sw-icon v-for="i in item.points"
+                                         :key="i"
+                                         name="default-basic-shape-star"
+                                         size="14">
+                                </sw-icon>
+                            </template>
+                        {% endblock %}
+                        {% block sw_product_detail_base_ratings_content_list_comment %}
+                            <template slot="column-comment" slot-scope="{ item }">
+                                <template v-if="item.comment && item.comment.length > 0">
+                                    <sw-icon name="default-basic-checkmark-line" size="12" color="green"></sw-icon>
+                                </template>
+                                <template v-else>
+                                    <sw-icon name="default-basic-x-line" size="12" color="red"></sw-icon>
+                                </template>
+                            </template>
+                        {% endblock %}
+                    </sw-data-grid>
+                </template>
+            </sw-card>
+        {% endblock %}
     </div>
 {% endblock %}
