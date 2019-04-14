@@ -13,6 +13,10 @@
 	</p>
 {% endblock %}
 
+{% block component_account_login_form_tag %}
+	{{ parent() }}
+{% endblock %}
+
 {% block component_account_login_submit %}
 	<div class="float-left">
 	{{ parent() }}
