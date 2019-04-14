@@ -1,0 +1,11 @@
+{% block component_review_point %}
+	<span class="component-review-point">
+		{% if type == 'half' %}
+			<i class="fas fa-star-half-alt {{ style }}"></i>
+		{% elseif type == 'blank' %}
+			<i class="far fa-star {{ style }}"></i>
+		{% else %}
+			<i class="fas fa-star {{ style }}"></i>
+		{% endif %}
+	</span>
+{% endblock %}

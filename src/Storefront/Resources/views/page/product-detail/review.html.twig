@@ -1,0 +1,338 @@
+{% block page_product_detail_review_container %}
+	{#TODO: replace placeholders with snippets#}
+    {#TODO: replace demo login flag with context data#}
+    {% set loginStatus =  random(0, 1) %}
+
+    {#TODO: replace items per list config value#}
+    {% set reviewsPerListPage = 10 %}
+
+    {#TODO: replace current list page value#}
+    {% set currentListPage = 1 %}
+
+    {# TODO: replace product rating data #}
+    {% set productRating5Count = random(400, 500) %}
+    {% set productRating4Count = random(100, 200) %}
+    {% set productRating3Count = random(10, 20) %}
+    {% set productRating2Count = 0 %}
+    {% set productRating1Count = random(0, 25) %}
+
+    {% set productRating5Text = 'Excellent' %}
+    {% set productRating4Text = 'Very Good' %}
+    {% set productRating3Text = 'Good' %}
+    {% set productRating2Text = 'Acceptable' %}
+    {% set productRating1Text = 'Unsatisfactory' %}
+
+    {#  Not reviews available demo
+    {% set productRating5Count = 0 %}
+    {% set productRating4Count = 0 %}
+    {% set productRating3Count = 0 %}
+    {% set productRating2Count = 0 %}
+    {% set productRating1Count = 0 %}
+    #}
+
+
+    {# TODO: replace product review count "productReviewCount"#}
+    {% set productReviewCount = 0 + productRating1Count + productRating2Count + productRating3Count + productRating4Count + productRating5Count %}
+
+    {# TODO: replace average product rating "productAvgRating"#}
+    {% if productReviewCount > 0 %}
+        {% set productAvgRating = (productRating5Count * 5 + productRating4Count * 4 + productRating3Count * 3 + productRating2Count * 2 + productRating1Count) / productReviewCount %}
+        {% set productAvgRating = productAvgRating|round(2, 'floor') %}
+    {% endif %}
+
+    {# TODO: replace language flag #}
+    {% set foreignReviewsCount = 150 %}
+
+    {# TODO: replace product rating percent "productRating%Percent"#}
+    {% if productRating5Count > 0 %}
+        {% set productRating5Percent = productRating5Count/productReviewCount*100 %}
+    {% endif %}
+    {% if productRating4Count > 0 %}
+        {% set productRating4Percent = productRating4Count/productReviewCount*100 %}
+    {% endif %}
+    {% if productRating3Count > 0 %}
+        {% set productRating3Percent = productRating3Count/productReviewCount*100 %}
+    {% endif %}
+    {% if productRating2Count > 0 %}
+        {% set productRating2Percent = productRating2Count/productReviewCount*100 %}
+    {% endif %}
+    {% if productRating1Count > 0 %}
+        {% set productRating1Percent = productRating1Count/productReviewCount*100 %}
+    {% endif %}
+
+
+    <div class="product-detail-review tab-pane-container">
+        {% block page_product_detail_review_asid %}
+            <div class="row product-detail-review-content">
+                {% block page_product_detail_review_aside %}
+                    <div class="col-4">
+                        {% block page_product_detail_review_widget %}
+                            {# TODO: fix spacing for sticky infobox and replace top inline style #}
+                            <div class="sticky-top product-detail-review-widget" style="top:20px;">
+                                {% block page_product_detail_review_info %}
+                                    {% if productReviewCount > 0 %}
+                                        <div class="row">
+                                            <div class="col-8 product-detail-review-info">
+                                                {% block page_product_detail_review_title %}
+                                                    <h3 class="product-detail-review-title">
+                                                        <i class="far fa-user"></i>
+                                                        {{ productReviewCount }}
+                                                        {% if productReviewCount > 1 %}
+                                                            Reviews
+                                                        {% else %}
+                                                            Review
+                                                        {% endif %}
+                                                    </h3>
+                                                {% endblock %}
+
+                                                {% block page_product_detail_review_overview %}
+                                                    <div class="product-detail-review-rating" itemprop="aggregateRating" itemscope itemtype="https://schema.org/AggregateRating">
+                                                        <meta itemprop="ratingValue" content="{{ productAvgRating }} ">
+                                                        <meta itemprop="bestRating" content="5">
+                                                        <meta itemprop="ratingCount" content="{{ productReviewCount }} ">
+                                                        <p class="h3">
+                                                            {{ productAvgRating|round(1) }}
+                                                            {% sw_include '@Storefront/component/review/rating.html.twig' with {
+                                                                points: productAvgRating,
+                                                                style: 'text-primary'
+                                                            } %}
+                                                        </p>
+                                                    </div>
+                                                {% endblock %}
+
+                                            </div>
+                                            <div class="col product-detail-review-cover">
+                                                {% block page_product_detail_review_image %}
+                                                    <img src="{{ page.product.cover.media.url }}"
+                                                         class="img-fluid product-detail-review-media"
+                                                         alt="{{ page.product.name }}"
+                                                    />
+                                                {%  endblock %}
+
+                                            </div>
+                                        </div>
+                                        <hr>
+                                        {% block page_product_detail_review_filter %}
+                                            {#TODO: fix vertical styling and replace margin top inline style#}
+                                            {% macro ratingPercentLine(points, count, share, text) %}
+                                                {% block page_product_detail_review_filter_box %}
+                                                    <div class="row product-detail-review-filter">
+                                                        {% block page_product_detail_review_filter_checkbox %}
+                                                            <div class="col-md-7 col-lg-4 product-detail-review-checkbox">
+                                                                <div class="custom-control custom-checkbox">
+                                                                    <input type="checkbox" class="custom-control-input" id="reviewRating{{ points }}" {{ count }} {%  if count < 1 %}disabled{% endif %}>
+                                                                    <label class="custom-control-label text-nowrap" for="reviewRating{{ points }}"><small>{{ text }}</small></label>
+                                                                </div>
+                                                            </div>
+                                                        {% endblock %}
+
+                                                        {% block page_product_detail_review_filter_point %}
+                                                            <div class="col-1 product-detail-review-point">
+                                                                {% sw_include '@Storefront/component/review/point.html.twig' with {
+                                                                    style: 'text-primary'
+                                                                } %}
+                                                            </div>
+                                                        {% endblock %}
+
+                                                        {% block page_product_detail_review_filter_progressbar %}
+                                                            <div class="col d-none d-lg-block product-detail-review-progressbar">
+                                                                <div class="progress" style="height: 14px; margin-top:4px;">
+                                                                    <div class="progress-bar" role="progressbar" style="width: {{ share }}%;" aria-valuenow="{{ share }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                                                </div>
+                                                            </div>
+                                                        {% endblock %}
+
+                                                        {% block page_product_detail_review_filter_share %}
+                                                            <div class="col-sm-3 col-2 product-detail-review-share">
+                                                                    <p><small>{{ share|round }}%</small></p>
+                                                                </div>
+                                                            </div>
+                                                        {% endblock %}
+
+                                                {% endblock %}
+
+                                            {% endmacro %}
+
+                                            {% import _self as line %}
+
+                                            {{ line.ratingPercentLine(
+                                                5,
+                                                productRating5Count,
+                                                productRating5Percent,
+                                                productRating5Text
+                                            )
+                                            }}
+
+                                            {{ line.ratingPercentLine(
+                                                4,
+                                                productRating4Count,
+                                                productRating4Percent,
+                                                productRating4Text
+                                            )
+                                            }}
+                                            {{ line.ratingPercentLine(
+                                                3,
+                                                productRating3Count,
+                                                productRating3Percent,
+                                                productRating3Text
+                                            )
+                                            }}
+                                            {{ line.ratingPercentLine(
+                                                2,
+                                                productRating2Count,
+                                                productRating2Percent,
+                                                productRating2Text
+                                            )
+                                            }}
+                                            {{ line.ratingPercentLine(
+                                                1,
+                                                productRating1Count,
+                                                productRating1Percent,
+                                                productRating1Text
+                                            )
+                                            }}
+                                        {% endblock %}
+
+                                        {% block page_product_detail_review_filter_divider %}
+                                            <hr/>
+                                        {% endblock %}
+
+                                    {% endif %}
+                                {% endblock %}
+
+                                {% block page_product_detail_review_form_teaser %}
+                                    <div class="product-detail-review-teaser">
+                                        <h4>Leave a review</h4>
+                                        <p>Share your thoughts with other customers</p>
+                                        <button class="btn btn-primary" type="button" data-toggle="collapse" data-target=".multi-collapse" aria-expanded="false" aria-controls="review-form review-list">
+                                            Write a review
+                                        </button>
+                                    </div>
+                                {% endblock %}
+
+                            </div>
+                        {% endblock %}
+
+                    </div>
+                {% endblock %}
+
+                {% block page_product_detail_review_main %}
+                    <div class="col product-detail-review-main">
+                        {% block page_product_detail_review_alert %}
+                            {% if ratingSuccess == 1 %}
+                                {% sw_include '@Storefront/base/_utilities/alert.html.twig' with {
+                                    type: "success",
+                                    content: "Thanks for your review! "
+                                } %}
+                            {% elseif ratingSuccess == -1  %}
+                                {% sw_include '@Storefront/base/_utilities/alert.html.twig' with {
+                                    type: "danger",
+                                    content: "An error occured. Please check the form"
+                                } %}
+                            {% endif %}
+                        {% endblock %}
+
+                        {% block page_product_detail_review_form_container %}
+                            <div class="collapse multi-collapse {% if ratingSuccess == -1 %}show{% endif %}" id="review-form">
+                                {% if loginStatus == 1 %}
+									<div class="product-detail-review-form">
+										{% sw_include '@Storefront/page/product-detail/review-form.html.twig' %}
+									</div>
+                                {% else %}
+									<div class="product-detail-review-login">
+										{% sw_include '@Storefront/page//product-detail/review-login.html.twig' %}
+									</div>
+                                {% endif %}
+                            </div>
+                        {% endblock %}
+
+                        {% block page_product_detail_review_list_container %}
+                            <div id="review-list" class="collapse multi-collapse product-detail-review-list {% if ratingSuccess != -1 %}show{% endif %}" itemprop="review-list">
+                            	{% if productReviewCount > 0 %}
+									{% block page_product_detail_review_list %}
+										{% block page_product_detail_review_list_actions %}
+											<div class="row product-detail-review-actions">
+												<div class="col-md-6 product-detail-review-language">
+													{% if foreignReviewsCount > 0 %}
+														<div class="custom-control custom-switch">
+															<input type="checkbox" class="custom-control-input" id="hideForeignReviews" name="hideForeignReviews" {% if productReviewCount - foreignReviewsCount == 0 %}disabled{% elseif foreignReviewsCount > 0%}checked{% endif %}>
+															<label class="custom-control-label" for="hideForeignReviews"><small>Hide reviews written in foreign languages</small></label>
+														</div>
+													{% endif %}
+												</div>
+												<div class="col-md-6 product-detail-review-sortby">
+													<div class="float-right">
+														<form class="form-inline">
+															<label class="my-1 mr-2" for="sortby"><small>Sort by</small></label>
+															<select class="custom-select custom-select-sm" name="sortby" id="sortby">
+																<option selected>Top Reviews</option>
+																<option value="1">Most Recent</option>
+															</select>
+														</form>
+													</div>
+												</div>
+											</div>
+											{# TODO: fix vertical spacing to hr and replace margin top inline style#}
+											<hr style="margin-top:10px; margin-bottom:5px"/>
+											{# TODO: calculate reviews in current language in list #}
+											{% set listReviewsCount = productReviewCount - foreignReviewsCount %}
+
+											<p class="text-right product-detail-review-counter">
+												{% if (listReviewsCount > 1 and listReviewsCount > reviewsPerListPage) %}
+													<small><strong>{{ currentListPage }}</strong> - <strong>{{ reviewsPerListPage }}</strong> of <strong>{{ listReviewsCount }}</strong> reviews</small>
+												{% else %}
+													<small><strong>1</strong> - <strong>{{ listReviewsCount }}</strong> reviews</small>
+												{% endif %}
+											</p>
+										{% endblock %}
+
+										{% block page_product_detail_review_list_content %}
+											{% for review in page.product.ratings %}
+												<div class="product-detail-review-list-content">
+													{% sw_include '@Storefront/page/product-detail/review-item.html.twig' %}
+												</div>
+											{% endfor %}
+										{% endblock %}
+
+										{% block page_product_detail_review_list_paging %}
+											{% set listReviewsCount = productReviewCount - foreignReviewsCount %}
+											{% if listReviewsCount > reviewsPerListPage %}
+												{# TODO: add function to review pagination #}
+												<nav class="product-detail-review-list-pagination" aria-label="Review pagination">
+													<ul class="pagination justify-content-center">
+														<li class="page-item disabled">
+															<a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+														</li>
+														<li class="page-item"><a class="page-link" href="#">1</a></li>
+														<li class="page-item"><a class="page-link" href="#">2</a></li>
+														<li class="page-item"><a class="page-link" href="#">3</a></li>
+														<li class="page-item">
+															<a class="page-link" href="#">Next</a>
+														</li>
+													</ul>
+												</nav>
+											{% endif %}
+										{% endblock %}
+
+									{% endblock %}
+
+								{% else %}
+									{% block page_product_detail_review_list_empty %}
+										{% sw_include '@Storefront/base/_utilities/alert.html.twig' with {
+											type: "info",
+											content: "No Reviews found. Be the first and share your thoughts"
+										} %}
+									{% endblock %}
+
+								{% endif %}
+                        	</div>
+                        {% endblock %}
+
+                    </div>
+                {% endblock %}
+
+            </div>
+        {% endblock %}
+
+    </div>
+{% endblock %}
