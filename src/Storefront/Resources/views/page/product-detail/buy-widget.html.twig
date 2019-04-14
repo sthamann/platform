@@ -64,6 +64,23 @@
                         </div>
                     {% endblock %}
 
+                    {% block page_product_detail_reviews %}
+                        {#TODO: Replace with real product rating data#}
+                        {% set productRatingAvg = 4.58 %}
+                        {% set productRatingCount = 15 %}
+
+                        {% if productRatingCount > 0 %}
+                            <p class="product-detail-reviews">
+                                <strong>{{ productRatingAvg|round(1) }}</strong>
+                                {% sw_include '@Storefront/component/review/rating.html.twig' with {
+                                    points: productRatingAvg,
+                                    style: 'text-primary'
+                                } %}
+                                <a data-toggle="tab" class="product-detail-reviews-link" data-offcanvas-tab="true" href="#review-tab-pane" aria-controls="review-tab-pane">Show reviews</a>
+                            </p>
+                        {% endif %}
+                    {% endblock %}
+
                     {% block page_product_detail_delivery_informations %}
                         <div class="product-detail-delivery-information">
                             {% sw_include '@Storefront/component/delivery-information.html.twig' %}
