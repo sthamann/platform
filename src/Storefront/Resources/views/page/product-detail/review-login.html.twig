@@ -1,15 +1,15 @@
 {% extends '@Storefront/component/account/login.html.twig' %}
-{#TODO: replace placeholders with snippets#}
 
 {% block component_account_login_header %}
 	<h2 class="card-title">
-		Login
+		{{ "detail.reviewLoginHeader"|trans }}
 	</h2>
 {% endblock %}
 
 {% block component_account_login_form_description %}
 	<p class="login-form-description">
-		Reviews can only be made when logged in. Please enter your details to login below. New customer? <a href="#">Click here to sign up.</a>
+		{#TODO: replace placeholder with link to register page #}
+		<a href="#">{{ "detail.reviewLoginDescription"|trans }}</a>
 	</p>
 {% endblock %}
 
@@ -24,8 +24,9 @@
 	<div class="login-cancel">
 		{% block page_product_detail_review_form_cancel %}
 			<a href="#" class="btn btn-link" data-toggle="collapse" data-target=".multi-collapse" aria-expanded="false" aria-controls="review-form review-list">
-				Cancel
+				{{ "detail.reviewLoginCancelButton"|trans }}
 			</a>
 		{% endblock %}
+
 	</div>
 {% endblock %}

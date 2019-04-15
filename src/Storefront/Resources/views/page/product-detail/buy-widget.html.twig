@@ -67,7 +67,7 @@
 									points: productRatingAvg,
 									style: 'text-primary'
 								} %}
-								<a data-toggle="tab" class="product-detail-reviews-link" data-offcanvas-tab="true" href="#review-tab-pane" aria-controls="review-tab-pane">Show reviews</a>
+								<a data-toggle="tab" class="product-detail-reviews-link" data-offcanvas-tab="true" href="#review-tab-pane" aria-controls="review-tab-pane">{{ "detail.reviewLinkText"|trans({'%count%': productRatingCount }) }}</a>
 							</p>
 						{% endif %}
 					{% endblock %}

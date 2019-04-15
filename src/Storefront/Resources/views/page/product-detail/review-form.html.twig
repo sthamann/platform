@@ -9,7 +9,7 @@
                         <input type="text"
                                class="form-control {% if formViolations.getViolations('/title') %}is-invalid{% endif %}"
                                id="title"
-                               placeholder="Enter your title here"
+                               placeholder="{{ "detail.reviewFormTitlePlaceholder"|trans }}"
                                name="title"
                                required="required">
                         {% if formViolations.getViolations('/title') %}
@@ -21,7 +21,7 @@
                         {% endif %}
                     </div>
                 {% endblock %}
-
+                {# TODO: find final solution for rating element #}
                 {% block page_product_detail_review_form_rating %}
                     <div class="form-group col-md-4 product-detail-review-form-rating">
                         <input type="range"
@@ -34,8 +34,9 @@
                                value="5"
                                id="rating">
                         {# Todo: fix styling for form text and replace margin top inline style#}
+                        {# TODO: if still wanted text has to change on selection #}
                         <small class="form-text text-muted text-center product-detail-review-form-text" style="margin-top:0px;">
-                            {{ productRating5Text }}
+                            {{ "detail.reviewFivePointRatingText"|trans }}
                         </small>
                         {% if formViolations.getViolations('/points') %}
                             <div class="invalid-feedback">
@@ -60,7 +61,7 @@
             <input type="hidden" id="name" name="name" value="{{ customerName }}">
 
             <div class="form-group product-detail-review-form-content">
-                <label for="content">Your Review</label>
+                <label for="content">{{ "detail.reviewFormContentLabel"|trans }}</label>
                 <textarea class="form-control {% if formViolations.getViolations('/content') %}is-invalid{% endif %}"
                           id="content"
                           name="content"
@@ -79,13 +80,13 @@
 
         {% block page_product_detail_review_form_submit %}
             <button type="submit" class="btn btn-default">
-                Submit
+                {{ "detail.reviewFormSubmitText"|trans }}
             </button>
         {% endblock %}
 
         {% block page_product_detail_review_form_cancel %}
             <a href="#" class="btn btn-link" data-toggle="collapse" data-target=".multi-collapse" aria-expanded="false" aria-controls="review-form review-list">
-                Cancel
+                {{ "detail.reviewFormCancelText"|trans }}
             </a>
         {% endblock %}
 
