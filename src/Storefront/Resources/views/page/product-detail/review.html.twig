@@ -1,5 +1,4 @@
 {% block page_product_detail_review_container %}
-	{#TODO: replace placeholders with snippets#}
     {#TODO: replace demo login flag with context data#}
 	{% if not context.customer %}
 		{% set loginStatus = 0 %}
@@ -21,11 +20,6 @@
     {% set productRating2Count = page.product.ratingMatrix[2] %}
     {% set productRating1Count = page.product.ratingMatrix[1] %}
 
-    {% set productRating5Text = 'Excellent' %}
-    {% set productRating4Text = 'Very Good' %}
-    {% set productRating3Text = 'Good' %}
-    {% set productRating2Text = 'Acceptable' %}
-    {% set productRating1Text = 'Unsatisfactory' %}
 
     {#  Not reviews available demo
     {% set productRating5Count = 0 %}
@@ -33,7 +27,7 @@
     {% set productRating3Count = 0 %}
     {% set productRating2Count = 0 %}
     {% set productRating1Count = 0 %}
-    #}
+#}
 
 
     {# TODO: replace product review count "productReviewCount"#}
@@ -83,11 +77,7 @@
                                                     <h3 class="product-detail-review-title">
                                                         <i class="far fa-user"></i>
                                                         {{ productReviewCount }}
-                                                        {% if productReviewCount > 1 %}
-                                                            Reviews
-                                                        {% else %}
-                                                            Review
-                                                        {% endif %}
+														{{ "detail.reviewTitle"|trans({'%count%': productReviewCount }) }}
                                                     </h3>
                                                 {% endblock %}
 
@@ -96,7 +86,7 @@
                                                         <meta itemprop="ratingValue" content="{{ productAvgRating }} ">
                                                         <meta itemprop="bestRating" content="5">
                                                         <meta itemprop="ratingCount" content="{{ productReviewCount }} ">
-                                                        <p class="h3">
+                                                        <p class="h4">
                                                             {{ productAvgRating|round(1) }}
                                                             {% sw_include '@Storefront/component/review/rating.html.twig' with {
                                                                 points: productAvgRating,
@@ -165,7 +155,7 @@
                                                 5,
                                                 productRating5Count,
                                                 productRating5Percent,
-                                                productRating5Text
+												"detail.reviewFivePointRatingText"|trans
                                             )
                                             }}
 
@@ -173,28 +163,28 @@
                                                 4,
                                                 productRating4Count,
                                                 productRating4Percent,
-                                                productRating4Text
+												"detail.reviewFourPointRatingText"|trans
                                             )
                                             }}
                                             {{ line.ratingPercentLine(
                                                 3,
                                                 productRating3Count,
                                                 productRating3Percent,
-                                                productRating3Text
+												"detail.reviewThreePointRatingText"|trans
                                             )
                                             }}
                                             {{ line.ratingPercentLine(
                                                 2,
                                                 productRating2Count,
                                                 productRating2Percent,
-                                                productRating2Text
+												"detail.reviewTwoPointRatingText"|trans
                                             )
                                             }}
                                             {{ line.ratingPercentLine(
                                                 1,
                                                 productRating1Count,
                                                 productRating1Percent,
-                                                productRating1Text
+                                                "detail.reviewOnePointRatingText"|trans
                                             )
                                             }}
                                         {% endblock %}
@@ -208,10 +198,10 @@
 
                                 {% block page_product_detail_review_form_teaser %}
                                     <div class="product-detail-review-teaser">
-                                        <h4>Leave a review</h4>
-                                        <p>Share your thoughts with other customers</p>
+                                        <h4>{{ "detail.reviewTeaserTitle"|trans }}</h4>
+                                        <p>{{ "detail.reviewTeaserText"|trans }}</p>
                                         <button class="btn btn-primary" type="button" data-toggle="collapse" data-target=".multi-collapse" aria-expanded="false" aria-controls="review-form review-list">
-                                            Write a review
+											{{ "detail.reviewTeaserButton"|trans }}
                                         </button>
                                     </div>
                                 {% endblock %}
@@ -228,12 +218,12 @@
                             {% if ratingSuccess == 1 %}
                                 {% sw_include '@Storefront/base/_utilities/alert.html.twig' with {
                                     type: "success",
-                                    content: "Thanks for your review! "
+                                    content: "detail.reviewFormSuccessAlert"|trans
                                 } %}
                             {% elseif ratingSuccess == -1  %}
                                 {% sw_include '@Storefront/base/_utilities/alert.html.twig' with {
                                     type: "danger",
-                                    content: "An error occured. Please check the form"
+                                    content: "detail.reviewFormErrorAlert"|trans
                                 } %}
                             {% endif %}
                         {% endblock %}
@@ -261,18 +251,22 @@
 												<div class="col-md-6 product-detail-review-language">
 													{% if foreignReviewsCount > 0 %}
 														<div class="custom-control custom-switch">
-															<input type="checkbox" class="custom-control-input" id="hideForeignReviews" name="hideForeignReviews" {% if productReviewCount - foreignReviewsCount == 0 %}disabled{% elseif foreignReviewsCount > 0%}checked{% endif %}>
-															<label class="custom-control-label" for="hideForeignReviews"><small>Hide reviews written in foreign languages</small></label>
+															<input type="checkbox"
+																   class="custom-control-input"
+																   id="hideForeignReviews"
+																   name="hideForeignReviews"
+																   {% if productReviewCount - foreignReviewsCount == 0 %}disabled{% elseif foreignReviewsCount > 0%}checked{% endif %}>
+															<label class="custom-control-label" for="hideForeignReviews"><small>{{ "detail.reviewLanguageFilterLabel"|trans }}</small></label>
 														</div>
 													{% endif %}
 												</div>
 												<div class="col-md-6 product-detail-review-sortby">
 													<div class="float-right">
 														<form class="form-inline">
-															<label class="my-1 mr-2" for="sortby"><small>Sort by</small></label>
+															<label class="my-1 mr-2" for="sortby"><small>{{ "detail.reviewSortLabel"|trans }}</small></label>
 															<select class="custom-select custom-select-sm" name="sortby" id="sortby">
-																<option selected>Top Reviews</option>
-																<option value="1">Most Recent</option>
+																<option selected>{{ "detail.reviewSortTopLabel"|trans }}</option>
+																<option value="1">{{ "detail.reviewSortNewLabel"|trans }}</option>
 															</select>
 														</form>
 													</div>
@@ -285,12 +279,9 @@
 
 											<p class="text-right product-detail-review-counter">
 												{% if (listReviewsCount > 1 and listReviewsCount > reviewsPerListPage) %}
-													<small><strong>{{ currentListPage }}</strong> - <strong>{{ reviewsPerListPage }}</strong> of <strong>{{ listReviewsCount }}</strong> reviews</small>
+													<small><strong>{{ currentListPage }}</strong> - <strong>{{ reviewsPerListPage }}</strong> {{ "detail.reviewCountBefore"|trans }} <strong>{{ listReviewsCount }}</strong> {{ "detail.reviewCountAfter"|trans({'%count%': listReviewsCount }) }}</small>
 												{% else %}
-													{#
-													!!! Achtung: Wirft Fehler !!!
 													<small><strong>{{ listReviewsCount }}</strong> {{ "detail.reviewCountAfter"|trans({'%count%': listReviewsCount }) }}</small>
-													#}
 												{% endif %}
 											</p>
 										{% endblock %}
@@ -306,7 +297,7 @@
 										{% block page_product_detail_review_list_paging %}
 											{% set listReviewsCount = productReviewCount - foreignReviewsCount %}
 											{% if listReviewsCount > reviewsPerListPage %}
-												{# TODO: add function to review pagination #}
+												{# TODO: add paging - maybe through a paging component ;) #}
 												<nav class="product-detail-review-list-pagination" aria-label="Review pagination">
 													<ul class="pagination justify-content-center">
 														<li class="page-item disabled">
@@ -329,7 +320,7 @@
 									{% block page_product_detail_review_list_empty %}
 										{% sw_include '@Storefront/base/_utilities/alert.html.twig' with {
 											type: "info",
-											content: "No Reviews found. Be the first and share your thoughts"
+											content: "detail.reviewListEmpty"|trans
 										} %}
 									{% endblock %}
 

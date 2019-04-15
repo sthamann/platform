@@ -69,17 +69,17 @@
 						{% set productRatingAvg = page.product.ratingAverage %}
 						{% set productRatingCount = page.product.reviews|length %}
 
-                        {% if productRatingCount > 0 %}
-                            <p class="product-detail-reviews">
-                                <strong>{{ productRatingAvg|round(1) }}</strong>
-                                {% sw_include '@Storefront/component/review/rating.html.twig' with {
-                                    points: productRatingAvg,
-                                    style: 'text-primary'
-                                } %}
-                                <a data-toggle="tab" class="product-detail-reviews-link" data-offcanvas-tab="true" href="#review-tab-pane" aria-controls="review-tab-pane">Show reviews</a>
-                            </p>
-                        {% endif %}
-                    {% endblock %}
+						{% if productRatingCount > 0 %}
+							<p class="product-detail-reviews">
+								<strong>{{ productRatingAvg|round(1) }}</strong>
+								{% sw_include '@Storefront/component/review/rating.html.twig' with {
+									points: productRatingAvg,
+									style: 'text-primary'
+								} %}
+								<a data-toggle="tab" class="product-detail-reviews-link" data-offcanvas-tab="true" href="#review-tab-pane" aria-controls="review-tab-pane">{{ "detail.reviewLinkText"|trans({'%count%': productRatingCount }) }}</a>
+							</p>
+						{% endif %}
+					{% endblock %}
 
                     {% block page_product_detail_delivery_informations %}
                         <div class="product-detail-delivery-information">
