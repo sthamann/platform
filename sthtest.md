@@ -2,43 +2,26 @@ Dev Workshop Project Product Ratings
 
 Todos
 --
-
-* Product Version ID < Bewertungen hängen rein logisch nicht an einer bestimmten Produkt Version
-* API Calls geben keine Bewertungen zurück cache/clear
-* Migration anlegen
-* Bewertungen am Produkt (Automatisch?, Durchschnitt berechnen) 
-    * Computed Fields
-    * Feld an Entität die nicht aus der Datenbank kommen
-    * FloatField
-    * Flag Computed
-    * Subscriper product_rating.loaded
-    * MediaFolderLoadedSubscriber
-* Admin Module
-    * Listing 
-    * Action Bar (Öffnen, Freigabe, Löschen)
-    * Search ?
-    * Filter (Nur offene, nur schlechte)
-    * Erstellen von Bewertungen zum Testen (CREATE)
-    * Auswahl Produkt, Sales Channel, Language (Search)
 * Konfiguration
     * eMail Templates
     * Action-URL Frontend ?
+    * Event beim Speichern / Freigabe einer Bewertung ?
 * Storefront
     * Storefront API Controller
         * Service aufrufen / Business Logik
-    * Storefront Controller 
-        * Argument SalesChannelContext action als Argument
-        * CustomerID / languageID ist im Context
-        * Service aufrufen
-    * Service Objekt
-        * Validator (Kunden Registrierung)
     * Ausgabe Bewertungen am Produkt
-    * Ausgabe Durchschnittsbewertung / Sternesystem im Listing
-    * Eingabe am Produkt 
-        * Context (Sales Channel + Language)
-        * Eingeloggter User
-        * Falls eingeloggt Spalten eMail + Name ausblenden
-    * Double-Opt-In Mail
+    * Echten Username anzeigen
+    * Nur anzeigen wenn eingeloggt
+    * Übersetzungen
+    * Konfiguration Bewertungen Ja / Nein je Sales Channel ?
+    * Konfiguration Bewertungen alle oder nur Sprache passend
+    * Verified Flag beim Speichern prüfen
+    * Ausgabe Kommentar
+    
+ V2 Todos
+ - Rating Filter in Storefront
+ - Nach Sterne
+ - Nach Verified
     
      
 

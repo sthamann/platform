@@ -152,5 +152,9 @@
             <argument type="service" id="Shopware\Core\Framework\Validation\DataValidator"/>
         </service>
 
+        <service id="Shopware\Core\Content\Product\Subscriber\ProductLoadedSubscriber">
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
     </services>
 </container>                
