@@ -1,0 +1,84 @@
+{% block page_product_detail_review_item %}
+	{# TODO: replace verification badge #}
+	{% set reviewVerifcation = random([1, 0]) %}
+
+	{# TODO: replace like count #}
+	{% set reviewLikeCount = random(0, 30) %}
+
+	<div class="product-detail-review-item" itemprop="review" itemscope itemtype="http://schema.org/Review">
+		<meta itemprop="datePublished" content="{{ review.createdAt|date }}">
+		<meta itemprop="name" content="{{ review.title|e }}">
+		{% block page_product_detail_review_item_info %}
+			<div class="row product-detail-review-item-info">
+				<div class="col-md-auto product-detail-review-item-points">
+					{% sw_include '@Storefront/component/review/rating.html.twig' with {
+						points: review.points
+					} %}
+				</div>
+				<div class="col-md-auto product-detail-review-item-date">
+					<p><span class="text-muted"><small>{{ review.createdAt|date }}</small></span></p>
+				</div>
+				<div class="col text-right product-detail-review-item-verify">
+					{% if reviewVerifcation == 1 %}
+						<a data-toggle="tooltip" title="{{ "detail.reviewVerifiedItemTooltip"|trans }}" ><i class="fas fa-check-circle text-primary"></i></a>
+					{% endif %}
+				</div>
+			</div>
+		{% endblock %}
+
+		{% block page_product_detail_review_item_title %}
+			<h4 class="product-detail-review-item-title">
+				{{ review.title|e }}
+			</h4>
+		{% endblock %}
+
+		{% block page_product_detail_review_item_content %}
+		<p class="product-detail-review-item-content" itemprop="description">
+			{{ review.content|e }}
+		</p>
+		{% endblock %}
+
+		{% block page_product_detail_review_item_comment %}
+			{% if review.comment|e %}
+				<div class="product-detail-review-item-comment">
+					<blockquote class="blockquote">
+						<footer class="blockquote-footer">{{ "detail.reviewCommentLabel"|trans }}{{ review.comment|e }}</footer>
+					</blockquote>
+				</div>
+			{% endif %}
+		{% endblock %}
+
+		{% block page_product_detail_review_item_likebox %}
+			{% if reviewLikeCount > 0 %}
+				<p class="text-right product-detail-review-item-likebox">
+					{% if loginStatus == 1 %}
+						{# TODO: replace with info from customer data #}
+						{% set customerLikeStatus = random(0,1) %}
+						{% if customerLikeStatus == 1 %}
+							<span>
+								<i class="fas fa-heart"></i>&nbsp;
+								{# TODO: add like functionality via ajax for logged in customers#}
+								<a href="#" data-toggle="tooltip" title="{{ "detail.reviewItemLikeTooltipLike"|trans }}" >{{ "detail.reviewItemLikeLinkText"|trans }}</a>&nbsp;
+								({{ reviewLikeCount }})
+							</span>
+						{% else %}
+							<span>
+								<i class="far fa-heart"></i>&nbsp;
+								<a href="#" data-toggle="tooltip" title="{{ "detail.reviewItemLikeTooltipUnlike"|trans }}" >{{ "detail.reviewItemLikeLinkText"|trans }}</a>&nbsp;
+								({{ reviewLikeCount }})
+							</span>
+						{% endif %}
+					{% else %}
+						<span data-toggle="tooltip" title="{{ "detail.reviewItemLikeTooltip"|trans }}" >
+							<i class="far fa-heart"></i>&nbsp;
+							{{ "detail.reviewItemLikeLinkText"|trans }}&nbsp;
+							({{ reviewLikeCount }})
+						</span>
+					{% endif %}
+				</p>
+			{% endif %}
+		{% endblock %}
+
+	</div>
+	<hr/>
+{% endblock %}
