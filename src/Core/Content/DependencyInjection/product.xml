@@ -188,12 +188,6 @@
             <argument type="service" id="event_dispatcher"/>
         </service>
 
-        <service id="Shopware\Core\Content\Product\Storefront\ProductRatingService">
-            <argument id="product_rating.repository" type="service"/>
-            <argument id="event_dispatcher" type="service"/>
-            <argument type="service" id="Shopware\Core\Framework\Validation\DataValidator"/>
-        </service>
-
         <service id="Shopware\Core\Content\Product\SalesChannel\ProductReviewService">
             <argument id="product_review.repository" type="service"/>
             <argument id="event_dispatcher" type="service"/>
