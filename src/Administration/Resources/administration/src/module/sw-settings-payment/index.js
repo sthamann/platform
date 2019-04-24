@@ -1,6 +1,7 @@
 import { Module } from 'src/core/shopware';
 import { NEXT687 } from 'src/flag/feature_next687';
 
+import './component/sw-plugin-box';
 import './extension/sw-settings-index';
 import './page/sw-settings-payment-list';
 import './page/sw-settings-payment-detail';
@@ -12,7 +13,7 @@ import enGB from './snippet/en_GB.json';
 Module.register('sw-settings-payment', {
     type: 'core',
     flag: NEXT687,
-    name: 'Payment settings',
+    name: 'sw-settings-payment.general.mainMenuItemGeneral',
     description: 'Payment section in the settings module',
     color: '#9AA8B5',
     icon: 'default-action-settings',

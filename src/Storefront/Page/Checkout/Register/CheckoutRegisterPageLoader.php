@@ -2,12 +2,13 @@
 
 namespace Shopware\Storefront\Page\Checkout\Register;
 
-use Shopware\Core\Checkout\Customer\Storefront\AccountService;
-use Shopware\Core\Checkout\Customer\Storefront\AddressService;
-use Shopware\Core\Framework\Routing\InternalRequest;
+use Shopware\Core\Checkout\Cart\SalesChannel\CartService;
+use Shopware\Core\Checkout\Customer\SalesChannel\AccountService;
+use Shopware\Core\Checkout\Customer\SalesChannel\AddressService;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Framework\Page\PageLoaderInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\HttpFoundation\Request;
 
 class CheckoutRegisterPageLoader implements PageLoaderInterface
 {
@@ -28,20 +29,26 @@ class CheckoutRegisterPageLoader implements PageLoaderInterface
      * @var AddressService
      */
     private $addressService;
+    /**
+     * @var CartService
+     */
+    private $cartService;
 
     public function __construct(
         PageLoaderInterface $pageWithHeaderLoader,
         AccountService $accountService,
         AddressService $addressService,
-        EventDispatcherInterface $eventDispatcher
+        EventDispatcherInterface $eventDispatcher,
+        CartService $cartService
     ) {
         $this->pageWithHeaderLoader = $pageWithHeaderLoader;
         $this->accountService = $accountService;
         $this->eventDispatcher = $eventDispatcher;
         $this->addressService = $addressService;
+        $this->cartService = $cartService;
     }
 
-    public function load(InternalRequest $request, SalesChannelContext $context): CheckoutRegisterPage
+    public function load(Request $request, SalesChannelContext $context): CheckoutRegisterPage
     {
         $page = $this->pageWithHeaderLoader->load($request, $context);
 
@@ -51,9 +58,13 @@ class CheckoutRegisterPageLoader implements PageLoaderInterface
             $this->addressService->getCountryList($context)
         );
 
+        $page->setCart(
+            $this->cartService->getCart($context->getToken(), $context)
+        );
+
         $page->setSalutations($this->accountService->getSalutationList($context));
 
-        $addressId = $request->optionalGet('addressId');
+        $addressId = $request->attributes->get('addressId');
         if ($addressId) {
             $address = $this->addressService->getById((string) $addressId, $context);
             $page->setAddress($address);

@@ -1,9 +1,9 @@
-import cmsService from 'src/module/sw-cms/service/cms.service';
+import { Application } from 'src/core/shopware';
 import './component';
 import './config';
 import './preview';
 
-cmsService.registerCmsElement({
+Application.getContainer('service').cmsService.registerCmsElement({
     name: 'image',
     label: 'Image',
     component: 'sw-cms-el-image',
@@ -13,6 +13,10 @@ cmsService.registerCmsElement({
         media: {
             source: 'static',
             value: null
+        },
+        displayMode: {
+            source: 'static',
+            value: 'standard'
         }
     }
 });

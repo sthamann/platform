@@ -4,9 +4,14 @@ import template from './sw-settings-seo.html.twig';
 Component.register('sw-settings-seo', {
     template,
 
+    metaInfo() {
+        return {
+            title: this.$createTitle()
+        };
+    },
+
     methods: {
         onClickSave() {
-            this.$emit('saved');
         }
     }
 });

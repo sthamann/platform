@@ -28,6 +28,7 @@ use Shopware\Core\Checkout\Cart\Transaction\Struct\TransactionCollection;
 use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressEntity;
 use Shopware\Core\Checkout\Order\OrderDefinition;
 use Shopware\Core\Checkout\Order\OrderEntity;
+use Shopware\Core\Checkout\Shipping\Aggregate\ShippingMethodPrice\ShippingMethodPriceCollection;
 use Shopware\Core\Checkout\Shipping\ShippingMethodEntity;
 use Shopware\Core\Checkout\Test\Cart\Common\TrueRule;
 use Shopware\Core\Checkout\Test\Payment\Handler\SyncTestPaymentHandler;
@@ -98,7 +99,6 @@ class RecalculationServiceTest extends TestCase
 
         $deliveryCriteria = new Criteria();
         $deliveryCriteria->addAssociation('positions');
-        $deliveryCriteria->addAssociation('shippingMethod', (new Criteria())->addAssociation('priceRules'));
 
         $criteria = (new Criteria([$orderId]))
             ->addAssociation('lineItems')
@@ -136,6 +136,8 @@ class RecalculationServiceTest extends TestCase
             foreach ($delivery->getPositions() as $position) {
                 $position->getLineItem()->setDeliveryInformation(null);
             }
+
+            $delivery->getShippingMethod()->setPrices(new ShippingMethodPriceCollection());
         }
 
         /** @var LineItem $lineItem */
@@ -174,7 +176,7 @@ class RecalculationServiceTest extends TestCase
         $client->request(
             'GET',
             sprintf(
-                '/api/v%s/_proxy/storefront-api/%s/v%s/checkout/cart',
+                '/api/v%s/_proxy/sales-channel-api/%s/v%s/checkout/cart',
                 PlatformRequest::API_VERSION,
                 Defaults::SALES_CHANNEL,
                 PlatformRequest::API_VERSION
@@ -200,7 +202,7 @@ class RecalculationServiceTest extends TestCase
         $client->request(
             'PATCH',
             sprintf(
-                '/api/v%s/_proxy/storefront-api/%s/v%s/checkout/cart/line-item/%s',
+                '/api/v%s/_proxy/sales-channel-api/%s/v%s/checkout/cart/line-item/%s',
                 PlatformRequest::API_VERSION,
                 Defaults::SALES_CHANNEL,
                 PlatformRequest::API_VERSION,
@@ -356,7 +358,6 @@ class RecalculationServiceTest extends TestCase
 
     public function testChangeShippingCosts(): void
     {
-        static::markTestSkipped('NEXT-2360');
         // create order
         $cart = $this->generateDemoCart();
         $orderId = $this->persistCart($cart);
@@ -366,7 +367,6 @@ class RecalculationServiceTest extends TestCase
         $versionContext = $this->context->createWithVersionId($versionId);
 
         $critera = new Criteria();
-        $critera->addAssociation('shippingMethod', (new Criteria())->addAssociation('prices'));
         $critera->addFilter(new EqualsFilter('order_delivery.orderId', $orderId));
         $orderDeliveryRepository = $this->getContainer()->get('order_delivery.repository');
         $deliveries = $orderDeliveryRepository->search($critera, $versionContext);
@@ -414,7 +414,6 @@ class RecalculationServiceTest extends TestCase
 
     public function testForeachLoopInCalculateDeliveryFunction(): void
     {
-        static::markTestSkipped('NEXT-2360');
         $priceRuleId = Uuid::randomHex();
         $shippingMethodId = Uuid::randomHex();
         $shippingMethod = $this->addSecondPriceRuleToShippingMethod($priceRuleId, $shippingMethodId);
@@ -481,7 +480,6 @@ class RecalculationServiceTest extends TestCase
 
     public function testIfCorrectConditionIsUsedCalculationByLineItemCount(): void
     {
-        static::markTestSkipped('NEXT-2360');
         $priceRuleId = Uuid::randomHex();
         $shippingMethodId = Uuid::randomHex();
         $shippingMethod = $this->addSecondShippingMethodPriceRule($priceRuleId, $shippingMethodId);
@@ -534,7 +532,6 @@ class RecalculationServiceTest extends TestCase
 
     public function testIfCorrectConditionIsUsedPriceCalculation(): void
     {
-        static::markTestSkipped('NEXT-2360');
         $priceRuleId = Uuid::randomHex();
         $shippingMethodId = Uuid::randomHex();
         $shippingMethod = $this->createTwoConditionsWithDifferentQuantities($priceRuleId, $shippingMethodId, DeliveryCalculator::CALCULATION_BY_PRICE);
@@ -552,7 +549,6 @@ class RecalculationServiceTest extends TestCase
         $versionContext = $this->context->createWithVersionId($versionId);
 
         $critera = new Criteria();
-        $critera->addAssociation('shippingMethod', (new Criteria())->addAssociation('prices'));
         $critera->addFilter(new EqualsFilter('order_delivery.orderId', $orderId));
         $orderDeliveryRepository = $this->getContainer()->get('order_delivery.repository');
         $deliveries = $orderDeliveryRepository->search($critera, $versionContext);
@@ -574,7 +570,6 @@ class RecalculationServiceTest extends TestCase
         $versionContext = $this->context->createWithVersionId($versionId);
 
         $critera = new Criteria();
-        $critera->addAssociation('shippingMethod', (new Criteria())->addAssociation('prices'));
         $critera->addFilter(new EqualsFilter('order_delivery.orderId', $orderId));
         $orderDeliveryRepository = $this->getContainer()->get('order_delivery.repository');
         $deliveries = $orderDeliveryRepository->search($critera, $versionContext);
@@ -588,7 +583,6 @@ class RecalculationServiceTest extends TestCase
 
     public function testIfCorrectConditionIsUsedWeightCalculation(): void
     {
-        static::markTestSkipped('NEXT-2360');
         $priceRuleId = Uuid::randomHex();
         $shippingMethodId = Uuid::randomHex();
         $shippingMethod = $this->createTwoConditionsWithDifferentQuantities($priceRuleId, $shippingMethodId, DeliveryCalculator::CALCULATION_BY_WEIGHT);
@@ -606,7 +600,6 @@ class RecalculationServiceTest extends TestCase
         $versionContext = $this->context->createWithVersionId($versionId);
 
         $critera = new Criteria();
-        $critera->addAssociation('shippingMethod', (new Criteria())->addAssociation('shipping_method.prices'));
         $critera->addFilter(new EqualsFilter('order_delivery.orderId', $orderId));
         $orderDeliveryRepository = $this->getContainer()->get('order_delivery.repository');
         $deliveries = $orderDeliveryRepository->search($critera, $versionContext);
@@ -635,7 +628,6 @@ class RecalculationServiceTest extends TestCase
         $versionContext = $this->context->createWithVersionId($versionId);
 
         $critera = new Criteria();
-        $critera->addAssociation('shippingMethod', (new Criteria())->addAssociation('prices'));
         $critera->addFilter(new EqualsFilter('order_delivery.orderId', $orderId));
         $orderDeliveryRepository = $this->getContainer()->get('order_delivery.repository');
         $deliveries = $orderDeliveryRepository->search($critera, $versionContext);
@@ -749,8 +741,10 @@ class RecalculationServiceTest extends TestCase
     private function createProduct(string $name, float $price, float $taxRate): string
     {
         $productId = Uuid::randomHex();
+        $productNumber = Uuid::randomHex();
         $data = [
             'id' => $productId,
+            'productNumber' => $productNumber,
             'stock' => 1,
             'name' => $name,
             'price' => ['gross' => $price + ($price * $taxRate / 100), 'net' => $price, 'linked' => false],
@@ -1051,16 +1045,37 @@ class RecalculationServiceTest extends TestCase
                     'calculation' => 1,
                     'quantityStart' => 1,
                 ],
-            ],
-            'availabilityRules' => [
                 [
-                    'id' => $priceRuleId,
-                    'name' => 'true',
-                    'priority' => 0,
-                    'conditions' => [
-                        [
-                            'type' => 'true',
+                    'price' => 8.00,
+                    'currencyId' => Defaults::CURRENCY,
+                    'rule' => [
+                        'id' => $priceRuleId,
+                        'name' => 'true',
+                        'priority' => 0,
+                        'conditions' => [
+                            [
+                                'type' => 'true',
+                            ],
                         ],
+                    ],
+                    'calculationRule' => [
+                        'name' => 'check',
+                        'priority' => 10,
+                        'conditions' => [
+                            [
+                                'type' => 'true',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            'availabilityRule' => [
+                'id' => $priceRuleId,
+                'name' => 'true',
+                'priority' => 0,
+                'conditions' => [
+                    [
+                        'type' => 'true',
                     ],
                 ],
             ],
@@ -1115,15 +1130,13 @@ class RecalculationServiceTest extends TestCase
                     'quantityStart' => 1,
                 ],
             ],
-            'availabilityRules' => [
-                [
-                    'id' => $priceRuleId,
-                    'name' => 'true',
-                    'priority' => 0,
-                    'conditions' => [
-                        [
-                            'type' => 'true',
-                        ],
+            'availabilityRule' => [
+                'id' => $priceRuleId,
+                'name' => 'true',
+                'priority' => 0,
+                'conditions' => [
+                    [
+                        'type' => 'true',
                     ],
                 ],
             ],
@@ -1183,15 +1196,13 @@ class RecalculationServiceTest extends TestCase
                     'quantityEnd' => 20,
                 ],
             ],
-            'availabilityRules' => [
-                [
-                    'id' => $priceRuleId,
-                    'name' => 'true',
-                    'priority' => 0,
-                    'conditions' => [
-                        [
-                            'type' => 'true',
-                        ],
+            'availabilityRule' => [
+                'id' => $priceRuleId,
+                'name' => 'true',
+                'priority' => 0,
+                'conditions' => [
+                    [
+                        'type' => 'true',
                     ],
                 ],
             ],
@@ -1200,7 +1211,7 @@ class RecalculationServiceTest extends TestCase
         $repository->upsert([$data], $this->context);
 
         $criteria = new Criteria([$shippingMethodId]);
-        $criteria->addAssociation('priceRules');
+        $criteria->addAssociation('prices');
 
         return $repository->search($criteria, $this->context)->get($shippingMethodId);
     }
@@ -1251,15 +1262,13 @@ class RecalculationServiceTest extends TestCase
                     'quantityStart' => 71,
                 ],
             ],
-            'availabilityRules' => [
-                [
-                    'id' => $priceRuleId,
-                    'name' => 'true',
-                    'priority' => 0,
-                    'conditions' => [
-                        [
-                            'type' => 'true',
-                        ],
+            'availabilityRule' => [
+                'id' => $priceRuleId,
+                'name' => 'true',
+                'priority' => 0,
+                'conditions' => [
+                    [
+                        'type' => 'true',
                     ],
                 ],
             ],
@@ -1288,15 +1297,13 @@ class RecalculationServiceTest extends TestCase
             'name' => 'Payment',
             'active' => true,
             'position' => 0,
-            'availabilityRules' => [
-                [
-                    'id' => $ruleId,
-                    'name' => 'true',
-                    'priority' => 0,
-                    'conditions' => [
-                        [
-                            'type' => 'true',
-                        ],
+            'availabilityRule' => [
+                'id' => $ruleId,
+                'name' => 'true',
+                'priority' => 0,
+                'conditions' => [
+                    [
+                        'type' => 'true',
                     ],
                 ],
             ],

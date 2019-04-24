@@ -14,7 +14,9 @@ module.exports = {
         const page = mediaPage(browser);
 
         browser
-            .clickContextMenuItem(page.elements.showMediaAction, page.elements.contextMenuButton, `${page.elements.gridItem}--0`)
+            .clickContextMenuItem(page.elements.contextMenuButton, {
+                menuActionSelector: page.elements.showMediaAction
+            })
             .expect.element('.smart-bar__header').to.have.text.that.equals(global.MediaFixtureService.mediaFolderFixture.name);
     },
     'upload image to folder': (browser) => {
@@ -40,6 +42,6 @@ module.exports = {
             })
             .click('.smart-bar__actions a[href="#/sw/product/create"]')
             .click('.sw-sidebar-navigation-item')
-            .expect.element(page.elements.folderNameLabel).to.have.text.that.equals(global.MediaFixtureService.mediaFolderFixture.name);
+            .expect.element('.sw-sidebar-media-item__content').to.have.text.that.contains(global.MediaFixtureService.mediaFolderFixture.name);
     }
 };

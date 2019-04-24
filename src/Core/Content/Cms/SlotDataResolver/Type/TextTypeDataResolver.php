@@ -3,11 +3,11 @@
 namespace Shopware\Core\Content\Cms\SlotDataResolver\Type;
 
 use Shopware\Core\Content\Cms\Aggregate\CmsSlot\CmsSlotEntity;
+use Shopware\Core\Content\Cms\SalesChannel\Struct\TextStruct;
 use Shopware\Core\Content\Cms\SlotDataResolver\CriteriaCollection;
 use Shopware\Core\Content\Cms\SlotDataResolver\ResolverContext\EntityResolverContext;
 use Shopware\Core\Content\Cms\SlotDataResolver\ResolverContext\ResolverContext;
 use Shopware\Core\Content\Cms\SlotDataResolver\SlotDataResolveResult;
-use Shopware\Core\Content\Cms\Storefront\Struct\TextStruct;
 
 class TextTypeDataResolver extends TypeDataResolver
 {
@@ -34,11 +34,11 @@ class TextTypeDataResolver extends TypeDataResolver
         if ($config->isMapped() && $resolverContext instanceof EntityResolverContext) {
             $content = $this->resolveEntityValue($resolverContext->getEntity(), $config->getValue());
 
-            $text->setContent($content);
+            $text->setContent((string) $content);
         }
 
         if ($config->isStatic()) {
-            $text->setContent($config->getValue());
+            $text->setContent((string) $config->getValue());
         }
     }
 }

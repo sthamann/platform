@@ -2,7 +2,7 @@
 require('./../../common/helper/cliOutputHelper');
 require('./../../common/flags.js');
 require('../../common/service/administration/fixture.service');
-require('../../common/service/storefront/fixture.service');
+require('../../common/service/saleschannel/fixture.service');
 
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
@@ -29,7 +29,7 @@ module.exports = {
                 localStorage.setItem('bearerAuth', JSON.stringify(loginResult));
 
                 // Disable the auto closing of notifications globally.
-                Shopware.State.getStore('notification')._defaults.autoClose = false;
+                Shopware.State.getStore('notification').state.defaults.autoClose = false;
 
                 // Return bearer token
                 return localStorage.getItem('bearerAuth');
@@ -48,7 +48,7 @@ module.exports = {
             const endTime = new Date() - startTime;
             global.logger.success(`Logged in successfully! (${endTime / 1000}s)`);
             global.logger.lineBreak();
-
+        }).then(() => {
             beforeScenarioActions.hideToolbarIfVisible(browser);
             done();
         });
@@ -89,6 +89,7 @@ module.exports = {
  *
  */
 function renderWatcherUsage() {
+    global.logger.success(`Launching on DB ${process.env.DB_NAME}`);
     if (process.env.APP_WATCH === 'true') {
         global.logger.lineBreak();
         global.logger.title('Usage of administration:watch');

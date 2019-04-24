@@ -3,8 +3,8 @@
         <sw-container columns="3fr 1fr" gap="0px 30px">
             {% block sw_promotion_basic_form_title_field %}
                 <sw-field type="text"
-                          :label="$tc('sw-promotion.basicForm.labelTitle')"
-                          :placeholder="placeholder(promotion, 'name', $tc('sw-promotion.basicForm.placeholderName'))"
+                          :label="$tc('sw-promotion.detail.main.general.labelTitle')"
+                          :placeholder="placeholder(promotion, 'name', $tc('sw-promotion.detail.main.general.placeholderName'))"
                           v-model="promotion.name"
                           validation="required">
                 </sw-field>
@@ -12,23 +12,37 @@
 
             {% block sw_promotion_basic_form_active_field %}
                 <sw-field type="boolean"
-                          :label="$tc('sw-promotion.basicForm.labelActive')"
+                          :label="$tc('sw-promotion.detail.main.general.labelActive')"
                           v-model="promotion.active">
                 </sw-field>
+            {% endblock %}
+        </sw-container>
+
+        <sw-container columns="1fr" gap="0px 30px">
+            {% block sw_promotion_basic_form_sales_channels %}
+                <sw-promotion-sales-channel-select
+                    multi
+                    class="sw-promotion-basic__select-sales-channels"
+                    :label="$tc('sw-promotion.detail.main.general.labelSalesChannels')"
+                    :placeholder="$tc('sw-promotion.detail.main.general.placeholderSalesChannels')"
+                    :associationStore="salesChannelAssociationStore"
+                    :store="salesChannelStore"
+                    v-model="promotion.salesChannels">
+                </sw-promotion-sales-channel-select>
             {% endblock %}
         </sw-container>
 
         <sw-container columns="1fr 1fr" gap="0px 30px">
             {% block sw_promotion_basic_form_valid_from_field %}
                 <sw-field type="date"
-                          :label="$tc('sw-promotion.basicForm.labelValidFrom')"
+                          :label="$tc('sw-promotion.detail.main.general.labelValidFrom')"
                           v-model="promotion.validFrom">
                 </sw-field>
             {% endblock %}
 
             {% block sw_promotion_basic_form_valid_until_field %}
                 <sw-field type="date"
-                          :label="$tc('sw-promotion.basicForm.labelValidUntil')"
+                          :label="$tc('sw-promotion.detail.main.general.labelValidUntil')"
                           v-model="promotion.validUntil">
                 </sw-field>
             {% endblock %}
@@ -37,17 +51,18 @@
         <sw-container columns="1fr 1fr" gap="0px 30px">
             {% block sw_promotion_basic_form_redeemable_field %}
                 <sw-field type="number"
-                          :label="$tc('sw-promotion.basicForm.labelRedeemable')"
+                          :label="$tc('sw-promotion.detail.main.general.labelRedeemable')"
                           v-model="promotion.redeemable">
                 </sw-field>
             {% endblock %}
 
             {% block sw_promotion_basic_form_priority_field %}
                 <sw-field type="number"
-                          :label="$tc('sw-promotion.basicForm.labelPriority')"
+                          :label="$tc('sw-promotion.detail.main.general.labelPriority')"
                           v-model="promotion.priority">
                 </sw-field>
             {% endblock %}
         </sw-container>
     </div>
 {% endblock %}
+

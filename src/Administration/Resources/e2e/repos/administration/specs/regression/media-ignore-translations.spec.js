@@ -2,6 +2,7 @@ const mediaPage = require('administration/page-objects/module/sw-media.page-obje
 
 module.exports = {
     '@tags': ['media', 'media-ignore-translations', 'translation', 'language-switch'],
+    '@disabled': true,
     before: (browser, done) => {
         global.MediaFixtureService.setFolderFixture().then(() => {
             done();
@@ -11,8 +12,7 @@ module.exports = {
         const page = mediaPage(browser);
         page.openMediaIndex();
 
-        browser
-            .waitForElementVisible(`${page.elements.gridItem}--0 .sw-media-base-item__preview-container`);
+        browser.waitForElementVisible(`${page.elements.gridItem}--0 .sw-media-base-item__preview-container`);
     },
     'upload an image': (browser) => {
         const page = mediaPage(browser);

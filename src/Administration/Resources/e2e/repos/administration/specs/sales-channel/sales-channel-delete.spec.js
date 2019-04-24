@@ -8,12 +8,15 @@ const fixture = {
 module.exports = {
     '@tags': ['sales-channel-delete', 'sales-channel', 'delete'],
     before: (browser, done) => {
-        global.SalesChannelFixtureService.setSalesChannelFixture(fixture).then(() => {
+        global.AdminSalesChannelFixtureService.setSalesChannelFixture(fixture).then(() => {
             done();
         });
     },
     'delete sales channel': (browser) => {
-        browser.refresh();
+        browser
+            .refresh()
+            .waitForElementVisible('.sw-admin-menu__sales-channel-item--0');
+
         const page = salesChannelPage(browser);
         page.openSalesChannel(fixture.name);
         page.deleteSingleSalesChannel(fixture.name);

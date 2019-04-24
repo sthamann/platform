@@ -2,6 +2,8 @@
 
 namespace Shopware\Core\Content\Media;
 
+use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemCollection;
+use Shopware\Core\Checkout\Payment\PaymentMethodCollection;
 use Shopware\Core\Checkout\Shipping\ShippingMethodCollection;
 use Shopware\Core\Content\Category\CategoryCollection;
 use Shopware\Core\Content\MailTemplate\Aggregate\MailTemplateMedia\MailTemplateMediaCollection;
@@ -10,12 +12,13 @@ use Shopware\Core\Content\Media\Aggregate\MediaThumbnail\MediaThumbnailCollectio
 use Shopware\Core\Content\Media\Aggregate\MediaTranslation\MediaTranslationCollection;
 use Shopware\Core\Content\Media\MediaType\MediaType;
 use Shopware\Core\Content\Media\Metadata\Metadata;
+use Shopware\Core\Content\Product\Aggregate\ProductConfiguratorSetting\ProductConfiguratorSettingCollection;
 use Shopware\Core\Content\Product\Aggregate\ProductManufacturer\ProductManufacturerCollection;
 use Shopware\Core\Content\Product\Aggregate\ProductMedia\ProductMediaCollection;
 use Shopware\Core\Content\Property\Aggregate\PropertyGroupOption\PropertyGroupOptionCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityIdTrait;
-use Shopware\Core\Framework\Tag\TagCollection;
+use Shopware\Core\System\Tag\TagCollection;
 use Shopware\Core\System\User\UserEntity;
 
 class MediaEntity extends Entity
@@ -176,6 +179,21 @@ class MediaEntity extends Entity
      * @var ShippingMethodCollection|null
      */
     protected $shippingMethods;
+
+    /**
+     * @var PaymentMethodCollection|null
+     */
+    protected $paymentMethods;
+
+    /**
+     * @var ProductConfiguratorSettingCollection|null
+     */
+    protected $productConfiguratorSettings;
+
+    /**
+     * @var OrderLineItemCollection|null
+     */
+    protected $orderLineItems;
 
     public function get(string $property)
     {
@@ -491,11 +509,41 @@ class MediaEntity extends Entity
         $this->shippingMethods = $shippingMethods;
     }
 
+    public function getPaymentMethods(): ?PaymentMethodCollection
+    {
+        return $this->paymentMethods;
+    }
+
+    public function setPaymentMethods(PaymentMethodCollection $paymentMethods): void
+    {
+        $this->paymentMethods = $paymentMethods;
+    }
+
     public function jsonSerialize(): array
     {
         $data = parent::jsonSerialize();
         unset($data['metaDataRaw'], $data['mediaTypeRaw']);
 
         return $data;
+    }
+
+    public function getProductConfiguratorSettings(): ?ProductConfiguratorSettingCollection
+    {
+        return $this->productConfiguratorSettings;
+    }
+
+    public function setProductConfiguratorSettings(ProductConfiguratorSettingCollection $productConfiguratorSettings): void
+    {
+        $this->productConfiguratorSettings = $productConfiguratorSettings;
+    }
+
+    public function getOrderLineItems(): ?OrderLineItemCollection
+    {
+        return $this->orderLineItems;
+    }
+
+    public function setOrderLineItems(OrderLineItemCollection $orderLineItems): void
+    {
+        $this->orderLineItems = $orderLineItems;
     }
 }

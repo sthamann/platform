@@ -18,7 +18,7 @@ class ProductPageObject extends GeneralPageObject {
         this.browser
             .fillField('input[name=sw-field--product-name]', productName)
             .fillField('input[name=sw-field--product-stock]', '1')
-            .fillField('.ql-editor', 'My very first description', false, 'editor')
+            .fillField('.sw-text-editor__content-editor', 'My very first description', false, 'editor')
             .fillSwSelectComponent(
                 '.sw-select-product__select_manufacturer',
                 {
@@ -53,7 +53,10 @@ class ProductPageObject extends GeneralPageObject {
 
     deleteProduct(productName) {
         this.browser
-            .clickContextMenuItem(`${this.elements.contextMenu}-item--danger`, this.elements.contextMenuButton, `${this.elements.gridRow}--0`)
+            .clickContextMenuItem(this.elements.contextMenuButton, {
+                menuActionSelector: `${this.elements.contextMenu}-item--danger`,
+                scope: `${this.elements.gridRow}--0`
+            })
             .expect.element(`${this.elements.modal} .sw-product-list__confirm-delete-text`).text.that.equals(`Are you sure you really want to delete the product "${productName}"?`);
 
         this.browser

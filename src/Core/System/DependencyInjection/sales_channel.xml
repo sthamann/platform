@@ -30,7 +30,7 @@
         </service>
 
         <service id="Shopware\Core\System\SalesChannel\Aggregate\SalesChannelPaymentMethod\SalesChannelPaymentMethodDefinition">
-            <tag name="shopware.entity.definition" entity="sales_channel_payment_method"/>
+            <tag name="shopware.sales_entity.definition" entity="sales_channel_payment_method"/>
         </service>
 
         <service id="Shopware\Core\System\SalesChannel\Aggregate\SalesChannelShippingMethod\SalesChannelShippingMethodDefinition">
@@ -69,19 +69,19 @@
             <argument type="service" id="Shopware\Core\System\SalesChannel\Context\SalesChannelContextFactory"/>
             <argument type="service" id="Shopware\Core\Checkout\Cart\CartRuleLoader"/>
             <argument type="service" id="Shopware\Core\System\SalesChannel\Context\SalesChannelContextPersister"/>
-            <argument type="service" id="Shopware\Core\Checkout\Cart\Storefront\CartService"/>
-            <tag name="shopware.traceable"/>
+            <argument type="service" id="Shopware\Core\Checkout\Cart\SalesChannel\CartService"/>
         </service>
 
-        <service id="Shopware\Core\System\SalesChannel\Storefront\StorefrontSalesChannelContextController" public="true">
-            <argument type="service" id="payment_method.repository"/>
-            <argument type="service" id="shipping_method.repository"/>
-            <argument type="service" id="customer_address.repository"/>
-            <argument type="service" id="Shopware\Core\System\SalesChannel\Context\SalesChannelContextPersister"/>
-            <argument type="service" id="serializer"/>
+        <service id="Shopware\Core\System\SalesChannel\SalesChannel\SalesChannelContextController" public="true">
+            <argument type="service" id="Shopware\Core\System\SalesChannel\SalesChannel\SalesChannelContextSwitcher"/>
             <call method="setContainer">
                 <argument type="service" id="service_container"/>
             </call>
+        </service>
+
+        <service id="Shopware\Core\System\SalesChannel\SalesChannel\SalesChannelContextSwitcher">
+            <argument type="service" id="Shopware\Core\Framework\Validation\DataValidator"/>
+            <argument type="service" id="Shopware\Core\System\SalesChannel\Context\SalesChannelContextPersister"/>
         </service>
 
         <service id="Shopware\Core\System\SalesChannel\Command\SalesChannelCreateCommand">
@@ -92,18 +92,6 @@
             <argument type="service" id="snippet_set.repository"/>
 
             <tag name="console.command"/>
-        </service>
-
-        <service id="Shopware\Core\System\SalesChannel\Storefront\StorefrontSalesChannelController" public="true">
-            <argument type="service" id="currency.repository"/>
-            <argument type="service" id="language.repository"/>
-            <argument type="service" id="country.repository"/>
-            <argument type="service" id="country_state.repository"/>
-            <argument type="service" id="payment_method.repository"/>
-            <argument type="service" id="shipping_method.repository"/>
-            <call method="setContainer">
-                <argument type="service" id="service_container"/>
-            </call>
         </service>
 
     </services>

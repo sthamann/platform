@@ -1,8 +1,9 @@
-import { Mixin } from 'src/core/shopware';
-import cmsService from 'src/module/sw-cms/service/cms.service';
-import cmsPageState from 'src/module/sw-cms/state/cms-page.state';
+import { Mixin, State } from 'src/core/shopware';
+import { cloneDeep } from 'src/core/service/utils/object.utils';
 
 Mixin.register('cms-element', {
+    inject: ['cmsService'],
+
     model: {
         prop: 'element',
         event: 'element-update'
@@ -12,26 +13,39 @@ Mixin.register('cms-element', {
         element: {
             type: Object,
             required: true
+        },
+
+        defaultConfig: {
+            type: Object,
+            required: false,
+            default: null
         }
     },
 
     computed: {
         cmsPageState() {
-            return cmsPageState;
+            return State.getStore('cmsPageState');
         },
 
         cmsElements() {
-            return cmsService.getCmsElementRegistry();
+            return this.cmsService.getCmsElementRegistry();
         }
     },
 
     methods: {
         initElementConfig(elementName) {
-            const elementConfig = this.cmsElements[elementName];
+            let defaultConfig = this.defaultConfig;
 
-            if (!this.element.config || this.element.config === null || !Object.keys(this.element.config).length) {
-                this.element.config = elementConfig.defaultConfig || {};
+            if (!defaultConfig || defaultConfig === null) {
+                const elementConfig = this.cmsElements[elementName];
+                defaultConfig = elementConfig.defaultConfig;
             }
+
+            this.element.config = Object.assign(cloneDeep(defaultConfig), this.element.config || {});
+        },
+
+        getDemoValue(mappingPath) {
+            return this.cmsService.getPropertyByMappingPath(this.cmsPageState.currentDemoEntity, mappingPath);
         }
     }
 });

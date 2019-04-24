@@ -167,6 +167,24 @@ return [
                         'related' => '/api/media/3e352be2d85846dd97529c0f6b544870/shipping-methods',
                     ],
                 ],
+                'paymentMethods' => [
+                    'data' => [],
+                    'links' => [
+                        'related' => '/api/media/3e352be2d85846dd97529c0f6b544870/payment-methods',
+                    ],
+                ],
+                'productConfiguratorSettings' => [
+                    'data' => [],
+                    'links' => [
+                        'related' => '/api/media/3e352be2d85846dd97529c0f6b544870/product-configurator-settings',
+                    ],
+                ],
+                'orderLineItems' => [
+                    'data' => [],
+                    'links' => [
+                        'related' => '/api/media/3e352be2d85846dd97529c0f6b544870/order-line-items',
+                    ],
+                ],
             ],
             'meta' => null,
         ],

@@ -3,25 +3,31 @@
 namespace Shopware\Storefront\Page\Product;
 
 use Shopware\Core\Content\Cms\CmsPageEntity;
+use Shopware\Core\Content\Cms\SalesChannel\SalesChannelCmsPageRepository;
 use Shopware\Core\Content\Cms\SlotDataResolver\ResolverContext\EntityResolverContext;
 use Shopware\Core\Content\Cms\SlotDataResolver\SlotDataResolver;
-use Shopware\Core\Content\Cms\Storefront\StorefrontCmsPageRepository;
 use Shopware\Core\Content\Product\Exception\ProductNotFoundException;
 use Shopware\Core\Content\Product\ProductDefinition;
-use Shopware\Core\Content\Product\Storefront\StorefrontProductEntity;
-use Shopware\Core\Content\Product\Storefront\StorefrontProductRepository;
+use Shopware\Core\Content\Product\SalesChannel\SalesChannelProductEntity;
+use Shopware\Core\Content\Property\Aggregate\PropertyGroupOption\PropertyGroupOptionCollection;
+use Shopware\Core\Content\Property\Aggregate\PropertyGroupOption\PropertyGroupOptionEntity;
+use Shopware\Core\Content\Property\PropertyGroupCollection;
+use Shopware\Core\Content\Property\PropertyGroupDefinition;
+use Shopware\Core\Content\Property\PropertyGroupEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
-use Shopware\Core\Framework\Routing\InternalRequest;
+use Shopware\Core\Framework\Routing\Exception\MissingRequestParameterException;
+use Shopware\Core\System\SalesChannel\Entity\SalesChannelRepository;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Framework\Page\PageLoaderInterface;
 use Shopware\Storefront\Framework\Page\PageWithHeaderLoader;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\HttpFoundation\Request;
 
 class ProductPageLoader implements PageLoaderInterface
 {
     /**
-     * @var StorefrontProductRepository
+     * @var SalesChannelRepository
      */
     private $productRepository;
 
@@ -36,7 +42,7 @@ class ProductPageLoader implements PageLoaderInterface
     private $pageWithHeaderLoader;
 
     /**
-     * @var StorefrontCmsPageRepository
+     * @var SalesChannelCmsPageRepository
      */
     private $cmsPageRepository;
 
@@ -47,9 +53,9 @@ class ProductPageLoader implements PageLoaderInterface
 
     public function __construct(
         PageLoaderInterface $pageWithHeaderLoader,
-        StorefrontProductRepository $productRepository,
+        SalesChannelRepository $productRepository,
         EventDispatcherInterface $eventDispatcher,
-        StorefrontCmsPageRepository $cmsPageRepository,
+        SalesChannelCmsPageRepository $cmsPageRepository,
         SlotDataResolver $slotDataResolver
     ) {
         $this->eventDispatcher = $eventDispatcher;
@@ -59,12 +65,16 @@ class ProductPageLoader implements PageLoaderInterface
         $this->slotDataResolver = $slotDataResolver;
     }
 
-    public function load(InternalRequest $request, SalesChannelContext $context): ProductPage
+    public function load(Request $request, SalesChannelContext $context): ProductPage
     {
         $page = $this->pageWithHeaderLoader->load($request, $context);
         $page = ProductPage::createFrom($page);
 
-        $productId = $request->requireGet('productId');
+        $productId = $request->attributes->get('productId');
+        if (!$productId) {
+            throw new MissingRequestParameterException('productId', '/productId');
+        }
+
         $product = $this->loadProduct($productId, $context);
         $page->setProduct($product);
 
@@ -81,13 +91,16 @@ class ProductPageLoader implements PageLoaderInterface
         return $page;
     }
 
-    private function loadSlotData(CmsPageEntity $page, SalesChannelContext $context, StorefrontProductEntity $product): void
+    private function loadSlotData(CmsPageEntity $page, SalesChannelContext $context, SalesChannelProductEntity $product): void
     {
         if (!$page->getBlocks()) {
             return;
         }
 
-        $resolverContext = new EntityResolverContext($context, ProductDefinition::class, $product);
+        // replace actual request in NEXT-1539
+        $request = new Request();
+
+        $resolverContext = new EntityResolverContext($context, $request, ProductDefinition::class, $product);
         $slots = $this->slotDataResolver->resolve($page->getBlocks()->getSlots(), $resolverContext);
 
         $page->getBlocks()->setSlots($slots);
@@ -107,18 +120,73 @@ class ProductPageLoader implements PageLoaderInterface
         return $page;
     }
 
-    private function loadProduct(string $productId, SalesChannelContext $context): StorefrontProductEntity
+    private function loadProduct(string $productId, SalesChannelContext $context): SalesChannelProductEntity
     {
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('id', $productId));
 
-        /** @var StorefrontProductEntity|null $product */
-        $product = $this->productRepository->read($criteria, $context)->get($productId);
+        $criteria->addAssociation('prices');
+        $criteria->addAssociation('media');
+        $criteria->addAssociation('cover');
+        $criteria->addAssociationPath('properties.group');
+
+        /** @var SalesChannelProductEntity|null $product */
+        $product = $this->productRepository->search($criteria, $context)->get($productId);
 
         if (!$product) {
             throw new ProductNotFoundException($productId);
         }
 
+        $product->setSortedProperties(
+            $this->sortProperties($product)
+        );
+
         return $product;
+    }
+
+    private function sortProperties(SalesChannelProductEntity $product): PropertyGroupCollection
+    {
+        $sorted = [];
+        foreach ($product->getProperties() as $option) {
+            $group = $option->getGroup();
+
+            if (!$group) {
+                continue;
+            }
+
+            if (!$group->getOptions()) {
+                $group->setOptions(new PropertyGroupOptionCollection());
+            }
+
+            $group->getOptions()->add($option);
+
+            $sorted[$group->getId()] = $group;
+        }
+
+        usort(
+            $sorted,
+            function (PropertyGroupEntity $a, PropertyGroupEntity $b) {
+                return strnatcmp($a->getName(), $b->getName());
+            }
+        );
+
+        /** @var PropertyGroupEntity $group */
+        foreach ($sorted as $group) {
+            $group->getOptions()->sort(
+                function (PropertyGroupOptionEntity $a, PropertyGroupOptionEntity $b) use ($group) {
+                    if ($group->getSortingType() === PropertyGroupDefinition::SORTING_TYPE_ALPHANUMERIC) {
+                        return strnatcmp($a->getName(), $b->getName());
+                    }
+
+                    if ($group->getSortingType() === PropertyGroupDefinition::SORTING_TYPE_ALPHANUMERIC) {
+                        return $a->getName() <=> $b->getName();
+                    }
+
+                    return $a->getPosition() <=> $b->getPosition();
+                }
+            );
+        }
+
+        return new PropertyGroupCollection($sorted);
     }
 }

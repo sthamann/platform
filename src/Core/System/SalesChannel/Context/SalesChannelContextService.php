@@ -5,7 +5,7 @@ namespace Shopware\Core\System\SalesChannel\Context;
 use Psr\Cache\CacheItemInterface;
 use Psr\Cache\CacheItemPoolInterface;
 use Shopware\Core\Checkout\Cart\CartRuleLoader;
-use Shopware\Core\Checkout\Cart\Storefront\CartService;
+use Shopware\Core\Checkout\Cart\SalesChannel\CartService;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class SalesChannelContextService implements SalesChannelContextServiceInterface
@@ -36,7 +36,7 @@ class SalesChannelContextService implements SalesChannelContextServiceInterface
     private $cache;
 
     /**
-     * @var SalesChannelContextFactoryInterface
+     * @var SalesChannelContextFactory
      */
     private $factory;
 
@@ -57,7 +57,7 @@ class SalesChannelContextService implements SalesChannelContextServiceInterface
 
     public function __construct(
         CacheItemPoolInterface $cache,
-        SalesChannelContextFactoryInterface $factory,
+        SalesChannelContextFactory $factory,
         CartRuleLoader $ruleLoader,
         SalesChannelContextPersister $contextPersister,
         CartService $cartService

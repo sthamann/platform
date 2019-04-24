@@ -7,6 +7,7 @@ use PHPUnit\Framework\TestCase;
 use Shopware\Core\Content\Category\CategoryEntity;
 use Shopware\Core\Content\Cms\Aggregate\CmsSlot\CmsSlotDefinition;
 use Shopware\Core\Content\Cms\Aggregate\CmsSlot\CmsSlotEntity;
+use Shopware\Core\Content\Cms\SlotDataResolver\FieldConfig;
 use Shopware\Core\Content\Media\MediaDefinition;
 use Shopware\Core\Content\Product\Aggregate\ProductManufacturer\ProductManufacturerDefinition;
 use Shopware\Core\Content\Product\Aggregate\ProductManufacturerTranslation\ProductManufacturerTranslationDefinition;
@@ -411,6 +412,7 @@ class TranslationTest extends TestCase
         $data = [
             [
                 'id' => '79dc5e0b5bd1404a9dec7841f6254c7e',
+                'productNumber' => Uuid::randomHex(),
                 'manufacturer' => [
                     'id' => 'e4e8988334a34bb48d397b41a611084f',
                     'name' => 'Das blaue Haus',
@@ -507,6 +509,7 @@ class TranslationTest extends TestCase
         $data = [
             [
                 'id' => '79dc5e0b5bd1404a9dec7841f6254c7e',
+                'productNumber' => Uuid::randomHex(),
                 'manufacturer' => [
                     'id' => 'e4e8988334a34bb48d397b41a611084f',
                     'name' => 'Das blaue Haus',
@@ -630,7 +633,12 @@ class TranslationTest extends TestCase
                             'id' => Uuid::randomHex(),
                             'type' => 'foo',
                             'slot' => 'bar',
-                            'config' => ['foo' => 'bar'],
+                            'config' => [
+                                'var1' => [
+                                    'source' => FieldConfig::SOURCE_MAPPED,
+                                    'value' => 'foo',
+                                ],
+                            ],
                         ],
                         [
                             'id' => Uuid::randomHex(),
@@ -657,7 +665,7 @@ class TranslationTest extends TestCase
 
         /** @var CmsSlotEntity $slot */
         $slot = $searchResult->getEntities()->get($page['blocks'][0]['slots'][1]['id']);
-        static::assertEquals(['foo' => 'bar'], $slot->getConfig());
+        static::assertEquals(['var1' => ['source' => FieldConfig::SOURCE_MAPPED, 'value' => 'foo']], $slot->getConfig());
 
         /** @var CmsSlotEntity $slot */
         $slot = $searchResult->getEntities()->get($page['blocks'][0]['slots'][2]['id']);
@@ -690,8 +698,8 @@ class TranslationTest extends TestCase
                             'type' => 'foo',
                             'slot' => 'bar',
                             'translations' => [
-                                Defaults::LANGUAGE_SYSTEM => ['config' => ['foo' => 'en']],
-                                Defaults::LANGUAGE_SYSTEM_DE => ['config' => ['foo' => 'de']],
+                                Defaults::LANGUAGE_SYSTEM => ['config' => ['var1' => ['source' => FieldConfig::SOURCE_MAPPED, 'value' => 'en']]],
+                                Defaults::LANGUAGE_SYSTEM_DE => ['config' => ['var1' => ['source' => FieldConfig::SOURCE_MAPPED, 'value' => 'de']]],
                             ],
                         ],
                         [
@@ -721,7 +729,7 @@ class TranslationTest extends TestCase
 
         /** @var CmsSlotEntity $slot */
         $slot = $searchResult->getEntities()->get($page['blocks'][0]['slots'][1]['id']);
-        static::assertEquals(['foo' => 'en'], $slot->getConfig());
+        static::assertEquals(['var1' => ['source' => FieldConfig::SOURCE_MAPPED, 'value' => 'en']], $slot->getConfig());
 
         /** @var CmsSlotEntity $slot */
         $slot = $searchResult->getEntities()->get($page['blocks'][0]['slots'][2]['id']);
@@ -738,41 +746,10 @@ class TranslationTest extends TestCase
 
         /** @var CmsSlotEntity $slot */
         $slot = $searchResult->getEntities()->get($page['blocks'][0]['slots'][1]['id']);
-        static::assertEquals(['foo' => 'de'], $slot->getConfig());
+        static::assertEquals(['var1' => ['source' => FieldConfig::SOURCE_MAPPED, 'value' => 'de']], $slot->getConfig());
 
         /** @var CmsSlotEntity $slot */
         $slot = $searchResult->getEntities()->get($page['blocks'][0]['slots'][2]['id']);
         static::assertNull($slot->getConfig());
-    }
-
-    private function addLanguage($id, $rootLanguageId = null): void
-    {
-        $languages = [];
-        if ($rootLanguageId) {
-            $languages[] = [
-                'id' => $rootLanguageId,
-                'name' => 'root language ' . $rootLanguageId,
-                'localeId' => $this->getLocaleIdOfSystemLanguage(),
-                'translationCode' => [
-                    'code' => 'x-tst_root_' . $rootLanguageId,
-                    'name' => 'root iso name' . $rootLanguageId,
-                    'territory' => 'root territory ' . $rootLanguageId,
-                ],
-            ];
-        }
-
-        $languages[] = [
-            'id' => $id,
-            'parentId' => $rootLanguageId,
-            'name' => 'test language ' . $id,
-            'localeId' => $this->getLocaleIdOfSystemLanguage(),
-            'translationCode' => [
-                'code' => 'x-tst_' . $id,
-                'name' => 'iso name' . $id,
-                'territory' => 'territory ' . $id,
-            ],
-        ];
-
-        $this->languageRepository->create($languages, $this->context);
     }
 }

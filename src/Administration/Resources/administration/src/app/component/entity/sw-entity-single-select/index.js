@@ -19,12 +19,12 @@ export default {
             required: true,
             type: String
         },
-        keyProperty: {
+        valueProperty: {
             type: String,
             required: false,
             default: 'id'
         },
-        valueProperty: {
+        labelProperty: {
             type: String,
             required: false,
             default: 'name'
@@ -35,7 +35,8 @@ export default {
         return {
             silent: false,
             page: 1,
-            limit: 10
+            limit: 10,
+            repository: {}
         };
     },
 
@@ -71,25 +72,29 @@ export default {
                 this.currentOptions.push(item);
             });
 
+            this.initPlaceholder();
+
             this.total = result.total;
             this.page = result.criteria.page;
             this.limit = result.criteria.limit;
         },
 
-        openResultList(event) {
+        openResultList() {
             if (this.isExpanded === false) {
                 this.currentOptions = [];
                 this.page = 1;
 
-                this.$super.openResultList(event);
+                this.$super.openResultList();
 
                 return this.load();
             }
 
-            return this.$super.openResultList(event);
+            return this.$super.openResultList();
         },
 
         load() {
+            this.isLoading = true;
+
             const criteria = new Criteria(this.page, this.limit);
             criteria.setTotalCountMode(0);
             criteria.setTerm(this.searchTerm);
@@ -100,6 +105,7 @@ export default {
                 }
 
                 this.applyResult(result);
+                this.isLoading = false;
             });
         },
 

@@ -15,6 +15,7 @@ use Shopware\Core\Content\Product\ProductCollection;
 use Shopware\Core\Content\Product\ProductEntity;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\Context\AdminApiSource;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -143,6 +144,7 @@ class EntityReaderTest extends TestCase
 
         $product = [
             'id' => $id,
+            'productNumber' => Uuid::randomHex(),
             'stock' => 1,
             'price' => ['gross' => 10, 'net' => 9, 'linked' => false],
             'manufacturer' => ['name' => 'test'],
@@ -189,6 +191,7 @@ class EntityReaderTest extends TestCase
 
         $product = [
             'id' => $id,
+            'productNumber' => Uuid::randomHex(),
             'stock' => 1,
             'price' => ['gross' => 10, 'net' => 9, 'linked' => false],
             'manufacturer' => ['name' => 'test'],
@@ -228,6 +231,7 @@ class EntityReaderTest extends TestCase
         $products = [
             [
                 'id' => $parentId,
+                'productNumber' => Uuid::randomHex(),
                 'stock' => 1,
                 'manufacturer' => ['name' => 'test'],
                 'name' => 'parent',
@@ -236,12 +240,14 @@ class EntityReaderTest extends TestCase
             ],
             [
                 'id' => $redId,
+                'productNumber' => Uuid::randomHex(),
                 'stock' => 1,
                 'parentId' => $parentId,
                 'name' => 'red',
             ],
             [
                 'id' => $greenId,
+                'productNumber' => Uuid::randomHex(),
                 'stock' => 1,
                 'parentId' => $parentId,
                 'name' => 'green',
@@ -335,6 +341,7 @@ class EntityReaderTest extends TestCase
         $products = [
             [
                 'id' => $parentId,
+                'productNumber' => Uuid::randomHex(),
                 'stock' => 1,
                 'price' => ['gross' => 10, 'net' => 9, 'linked' => false],
                 'manufacturer' => ['name' => 'test'],
@@ -358,12 +365,14 @@ class EntityReaderTest extends TestCase
             ],
             [
                 'id' => $redId,
+                'productNumber' => Uuid::randomHex(),
                 'stock' => 1,
                 'parentId' => $parentId,
                 'name' => 'red',
             ],
             [
                 'id' => $greenId,
+                'productNumber' => Uuid::randomHex(),
                 'stock' => 1,
                 'parentId' => $parentId,
                 'name' => 'green',
@@ -422,6 +431,7 @@ class EntityReaderTest extends TestCase
         $products = [
             [
                 'id' => $parentId,
+                'productNumber' => Uuid::randomHex(),
                 'stock' => 1,
                 'price' => ['gross' => 10, 'net' => 9, 'linked' => false],
                 'manufacturer' => ['name' => 'test'],
@@ -445,12 +455,14 @@ class EntityReaderTest extends TestCase
             ],
             [
                 'id' => $redId,
+                'productNumber' => Uuid::randomHex(),
                 'stock' => 1,
                 'parentId' => $parentId,
                 'name' => 'red',
             ],
             [
                 'id' => $greenId,
+                'productNumber' => Uuid::randomHex(),
                 'stock' => 1,
                 'parentId' => $parentId,
                 'name' => 'green',
@@ -514,6 +526,7 @@ class EntityReaderTest extends TestCase
         $products = [
             [
                 'id' => $parentId,
+                'productNumber' => Uuid::randomHex(),
                 'stock' => 1,
                 'price' => ['gross' => 10, 'net' => 9, 'linked' => false],
                 'manufacturer' => ['name' => 'test'],
@@ -526,12 +539,14 @@ class EntityReaderTest extends TestCase
             ],
             [
                 'id' => $redId,
+                'productNumber' => Uuid::randomHex(),
                 'stock' => 1,
                 'parentId' => $parentId,
                 'name' => 'red',
             ],
             [
                 'id' => $greenId,
+                'productNumber' => Uuid::randomHex(),
                 'stock' => 1,
                 'parentId' => $parentId,
                 'name' => 'green',
@@ -636,6 +651,7 @@ class EntityReaderTest extends TestCase
         $products = [
             [
                 'id' => $parentId,
+                'productNumber' => Uuid::randomHex(),
                 'stock' => 1,
                 'price' => ['gross' => 10, 'net' => 9, 'linked' => false],
                 'manufacturer' => ['name' => 'test'],
@@ -648,12 +664,14 @@ class EntityReaderTest extends TestCase
             ],
             [
                 'id' => $redId,
+                'productNumber' => Uuid::randomHex(),
                 'stock' => 1,
                 'parentId' => $parentId,
                 'name' => 'red',
             ],
             [
                 'id' => $greenId,
+                'productNumber' => Uuid::randomHex(),
                 'stock' => 1,
                 'parentId' => $parentId,
                 'name' => 'green',
@@ -1110,6 +1128,7 @@ class EntityReaderTest extends TestCase
 
         $product1 = [
             'id' => $id1,
+            'productNumber' => Uuid::randomHex(),
             'stock' => 1,
             'price' => ['gross' => 10, 'net' => 9, 'linked' => false],
             'active' => true,
@@ -1120,6 +1139,7 @@ class EntityReaderTest extends TestCase
 
         $product2 = [
             'id' => $id2,
+            'productNumber' => Uuid::randomHex(),
             'stock' => 1,
             'price' => ['gross' => 10, 'net' => 9, 'linked' => false],
             'active' => false,
@@ -1130,6 +1150,7 @@ class EntityReaderTest extends TestCase
 
         $product3 = [
             'id' => $id3,
+            'productNumber' => Uuid::randomHex(),
             'stock' => 1,
             'price' => ['gross' => 10, 'net' => 9, 'linked' => false],
             'active' => false,
@@ -1180,6 +1201,7 @@ class EntityReaderTest extends TestCase
             'products' => [
                 [
                     'id' => $productId,
+                    'productNumber' => Uuid::randomHex(),
                     'stock' => 1,
                     'name' => 'test media',
                     'price' => ['gross' => 10, 'net' => 9, 'linked' => false],
@@ -1225,6 +1247,7 @@ class EntityReaderTest extends TestCase
 
         $product1 = [
             'id' => $id1,
+            'productNumber' => Uuid::randomHex(),
             'stock' => 1,
             'price' => ['gross' => 10, 'net' => 9, 'linked' => false],
             'active' => true,
@@ -1235,6 +1258,7 @@ class EntityReaderTest extends TestCase
 
         $product2 = [
             'id' => $id2,
+            'productNumber' => Uuid::randomHex(),
             'stock' => 1,
             'price' => ['gross' => 10, 'net' => 9, 'linked' => false],
             'active' => false,
@@ -1245,6 +1269,7 @@ class EntityReaderTest extends TestCase
 
         $product3 = [
             'id' => $id3,
+            'productNumber' => Uuid::randomHex(),
             'stock' => 1,
             'price' => ['gross' => 10, 'net' => 9, 'linked' => false],
             'active' => false,
@@ -1302,6 +1327,7 @@ class EntityReaderTest extends TestCase
 
         $product1 = [
             'id' => $id1,
+            'productNumber' => Uuid::randomHex(),
             'stock' => 1,
             'price' => ['gross' => 10, 'net' => 9, 'linked' => false],
             'active' => true,
@@ -1312,6 +1338,7 @@ class EntityReaderTest extends TestCase
 
         $product2 = [
             'id' => $id2,
+            'productNumber' => Uuid::randomHex(),
             'stock' => 1,
             'price' => ['gross' => 10, 'net' => 9, 'linked' => false],
             'active' => false,
@@ -1322,6 +1349,7 @@ class EntityReaderTest extends TestCase
 
         $product3 = [
             'id' => $id3,
+            'productNumber' => Uuid::randomHex(),
             'stock' => 1,
             'price' => ['gross' => 10, 'net' => 9, 'linked' => false],
             'active' => false,
@@ -1375,6 +1403,7 @@ class EntityReaderTest extends TestCase
 
         $product1 = [
             'id' => $id1,
+            'productNumber' => Uuid::randomHex(),
             'stock' => 1,
             'price' => ['gross' => 10, 'net' => 9, 'linked' => false],
             'active' => true,
@@ -1385,6 +1414,7 @@ class EntityReaderTest extends TestCase
 
         $product2 = [
             'id' => $id2,
+            'productNumber' => Uuid::randomHex(),
             'stock' => 1,
             'price' => ['gross' => 10, 'net' => 9, 'linked' => false],
             'active' => false,
@@ -1395,6 +1425,7 @@ class EntityReaderTest extends TestCase
 
         $product3 = [
             'id' => $id3,
+            'productNumber' => Uuid::randomHex(),
             'stock' => 1,
             'price' => ['gross' => 10, 'net' => 9, 'linked' => false],
             'active' => false,
@@ -1483,6 +1514,7 @@ class EntityReaderTest extends TestCase
         $products = [
             [
                 'id' => $id1,
+                'productNumber' => Uuid::randomHex(),
                 'stock' => 1,
                 'price' => ['gross' => 10, 'net' => 9, 'linked' => false],
                 'active' => true,
@@ -1503,6 +1535,7 @@ class EntityReaderTest extends TestCase
             ],
             [
                 'id' => $id2,
+                'productNumber' => Uuid::randomHex(),
                 'stock' => 1,
                 'price' => ['gross' => 10, 'net' => 9, 'linked' => false],
                 'active' => false,
@@ -1552,6 +1585,7 @@ class EntityReaderTest extends TestCase
         $products = [
             [
                 'id' => $id1,
+                'productNumber' => Uuid::randomHex(),
                 'stock' => 1,
                 'price' => ['gross' => 10, 'net' => 9, 'linked' => false],
                 'active' => true,
@@ -1561,6 +1595,7 @@ class EntityReaderTest extends TestCase
             ],
             [
                 'id' => $id2,
+                'productNumber' => Uuid::randomHex(),
                 'stock' => 1,
                 'price' => ['gross' => 10, 'net' => 9, 'linked' => false],
                 'active' => false,
@@ -1590,6 +1625,7 @@ class EntityReaderTest extends TestCase
 
         $data = [
             'id' => Uuid::randomHex(),
+            'productNumber' => Uuid::randomHex(),
             'stock' => 1,
             'price' => ['gross' => 10, 'net' => 9, 'linked' => false],
             'active' => true,
@@ -1656,5 +1692,54 @@ class EntityReaderTest extends TestCase
         /** @var CategoryTranslationEntity $transSystem */
         $transSystem = $cat->getTranslations()->filterByLanguageId(Defaults::LANGUAGE_SYSTEM)->first();
         static::assertEquals('system', $transSystem->getName());
+    }
+
+    public function testPricesAreConvertedWithCurrencyFactor(): void
+    {
+        $productId = Uuid::randomHex();
+
+        $product = [
+            [
+                'id' => $productId,
+                'productNumber' => Uuid::randomHex(),
+                'stock' => 1,
+                'price' => ['gross' => 10, 'net' => 7, 'linked' => false],
+                'manufacturer' => ['name' => 'test'],
+                'tax' => ['name' => 'test', 'taxRate' => 10],
+                'name' => 'test',
+            ],
+            [
+                'id' => Uuid::randomHex(),
+                'productNumber' => Uuid::randomHex(),
+                'stock' => 1,
+                'price' => ['gross' => 8, 'net' => 6, 'linked' => false],
+                'manufacturer' => ['name' => 'test'],
+                'tax' => ['name' => 'test', 'taxRate' => 10],
+                'name' => 'test',
+            ],
+        ];
+
+        $context = Context::createDefaultContext();
+
+        $this->productRepository->create($product, $context);
+
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('product.price', 8.0));
+
+        $searchContext = new Context(
+            new AdminApiSource(null, null),
+            $context->getRules(),
+            Uuid::randomHex(),
+            $context->getLanguageIdChain(),
+            $context->getVersionId(),
+            0.8
+        );
+
+        $products = $this->productRepository->search($criteria, $searchContext);
+        static::assertSame(1, $products->getTotal());
+
+        /** @var ProductEntity $product */
+        $product = $products->get($productId);
+        static::assertInstanceOf(ProductEntity::class, $product);
     }
 }

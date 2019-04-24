@@ -2,13 +2,14 @@
 
 namespace Shopware\Storefront\Page\Account\Address;
 
-use Shopware\Core\Checkout\Customer\Storefront\AccountService;
-use Shopware\Core\Checkout\Customer\Storefront\AddressService;
-use Shopware\Core\Framework\Routing\InternalRequest;
+use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEntity;
+use Shopware\Core\Checkout\Customer\SalesChannel\AccountService;
+use Shopware\Core\Checkout\Customer\SalesChannel\AddressService;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Framework\Page\PageLoaderInterface;
 use Shopware\Storefront\Framework\Page\PageWithHeaderLoader;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\HttpFoundation\Request;
 
 class AccountAddressPageLoader implements PageLoaderInterface
 {
@@ -44,7 +45,7 @@ class AccountAddressPageLoader implements PageLoaderInterface
         $this->accountService = $accountService;
     }
 
-    public function load(InternalRequest $request, SalesChannelContext $context): AccountAddressPage
+    public function load(Request $request, SalesChannelContext $context): AccountAddressPage
     {
         $page = $this->pageWithHeaderLoader->load($request, $context);
 
@@ -54,11 +55,12 @@ class AccountAddressPageLoader implements PageLoaderInterface
             $this->addressService->getCountryList($context)
         );
 
+        $page->setCustomer($context->getCustomer());
+
         $page->setSalutations($this->accountService->getSalutationList($context));
 
-        $addressId = $request->optionalGet('addressId');
-        if ($addressId) {
-            $address = $this->addressService->getById((string) $addressId, $context);
+        $address = $this->getAddress($request, $context);
+        if ($address) {
             $page->setAddress($address);
         }
 
@@ -68,5 +70,19 @@ class AccountAddressPageLoader implements PageLoaderInterface
         );
 
         return $page;
+    }
+
+    private function getAddress(Request $request, SalesChannelContext $context): ?CustomerAddressEntity
+    {
+        if ($request->request->has('address')) {
+            return (new CustomerAddressEntity())->assign($request->request->get('address', []));
+        }
+
+        $addressId = $request->attributes->get('addressId');
+        if ($addressId) {
+            return $this->addressService->getById((string) $addressId, $context);
+        }
+
+        return null;
     }
 }

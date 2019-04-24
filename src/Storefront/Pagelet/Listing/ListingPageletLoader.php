@@ -2,23 +2,23 @@
 
 namespace Shopware\Storefront\Pagelet\Listing;
 
-use Shopware\Core\Content\Product\Storefront\StorefrontProductRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\RangeFilter;
-use Shopware\Core\Framework\Routing\InternalRequest;
+use Shopware\Core\System\SalesChannel\Entity\SalesChannelRepository;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Framework\Page\PageLoaderInterface;
 use Shopware\Storefront\Framework\Page\StorefrontSearchResult;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\HttpFoundation\Request;
 
 class ListingPageletLoader implements PageLoaderInterface
 {
     public const PRODUCT_VISIBILITY = 'product-min-visibility';
 
     /**
-     * @var StorefrontProductRepository
+     * @var SalesChannelRepository
      */
     private $productRepository;
 
@@ -28,18 +28,18 @@ class ListingPageletLoader implements PageLoaderInterface
     private $eventDispatcher;
 
     public function __construct(
-        StorefrontProductRepository $productRepository,
+        SalesChannelRepository $productRepository,
         EventDispatcherInterface $eventDispatcher
     ) {
         $this->productRepository = $productRepository;
         $this->eventDispatcher = $eventDispatcher;
     }
 
-    public function load(InternalRequest $request, SalesChannelContext $context): StorefrontSearchResult
+    public function load(Request $request, SalesChannelContext $context): StorefrontSearchResult
     {
         $criteria = new Criteria();
 
-        if ($visibility = $request->getParam(self::PRODUCT_VISIBILITY)) {
+        if ($visibility = $request->get(self::PRODUCT_VISIBILITY)) {
             $criteria->addFilter(
                 new MultiFilter(
                     MultiFilter::CONNECTION_AND,
@@ -49,8 +49,6 @@ class ListingPageletLoader implements PageLoaderInterface
                     ]
                 )
             );
-
-            $criteria->addState(StorefrontProductRepository::VISIBILITY_FILTERED);
         }
 
         $this->eventDispatcher->dispatch(
@@ -58,7 +56,7 @@ class ListingPageletLoader implements PageLoaderInterface
             new ListingPageletCriteriaCreatedEvent($criteria, $context, $request)
         );
 
-        if ($request->getParam('no-aggregations')) {
+        if ($request->get('no-aggregations')) {
             $criteria->resetAggregations();
         }
 

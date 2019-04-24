@@ -6,27 +6,27 @@ use PHPUnit\Framework\TestCase;
 use Shopware\Core\Checkout\Cart\CartRuleLoader;
 use Shopware\Core\Checkout\Cart\Exception\CustomerNotLoggedInException;
 use Shopware\Core\Checkout\Cart\LineItem\LineItem;
-use Shopware\Core\Checkout\Cart\Storefront\CartService;
+use Shopware\Core\Checkout\Cart\SalesChannel\CartService;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Content\Product\Aggregate\ProductVisibility\ProductVisibilityDefinition;
 use Shopware\Core\Content\Product\Cart\ProductCollector;
 use Shopware\Core\Content\Product\ProductEntity;
-use Shopware\Core\Content\Product\Storefront\StorefrontProductRepository;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Api\Util\AccessKeyHelper;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Routing\Exception\MissingRequestParameterException;
-use Shopware\Core\Framework\Routing\InternalRequest;
 use Shopware\Core\Framework\Struct\Struct;
 use Shopware\Core\Framework\Test\TestCaseHelper\ReflectionHelper;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\System\SalesChannel\Context\SalesChannelContextFactory;
 use Shopware\Core\System\SalesChannel\Context\SalesChannelContextService;
+use Shopware\Core\System\SalesChannel\Entity\SalesChannelRepository;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Framework\Page\PageLoaderInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\Event;
+use Symfony\Component\HttpFoundation\Request;
 
 trait StorefrontPageTestBehaviour
 {
@@ -34,7 +34,7 @@ trait StorefrontPageTestBehaviour
         string $expectedClass,
         Event $event,
         SalesChannelContext $salesChannelContext,
-        InternalRequest $request,
+        Request $request,
         Struct $page
     ): void {
         TestCase::assertInstanceOf($expectedClass, $event);
@@ -48,7 +48,7 @@ trait StorefrontPageTestBehaviour
 
     protected function assertFailsWithoutNavigation(): void
     {
-        $request = new InternalRequest();
+        $request = new Request();
         $context = $this->createSalesChannelContext();
 
         $this->expectNavigationMissingException();
@@ -57,7 +57,7 @@ trait StorefrontPageTestBehaviour
 
     protected function assertLoginRequirement(array $queryParams = []): void
     {
-        $request = new InternalRequest($queryParams);
+        $request = new Request($queryParams);
         $context = $this->createSalesChannelContextWithNavigation();
         $this->expectException(CustomerNotLoggedInException::class);
         $this->getPageLoader()->load($request, $context);
@@ -93,11 +93,13 @@ trait StorefrontPageTestBehaviour
     protected function getRandomProduct(SalesChannelContext $context): ProductEntity
     {
         $id = Uuid::randomHex();
+        $productNumber = Uuid::randomHex();
         $productRepository = $this->getContainer()->get('product.repository');
         $productVisibilityRepository = $this->getContainer()->get('product_visibility.repository');
 
         $data = [
             'id' => $id,
+            'productNumber' => $productNumber,
             'stock' => 1,
             'name' => StorefrontPageTestConstants::PRODUCT_NAME,
             'price' => ['gross' => 15, 'net' => 10, 'linked' => false],
@@ -116,8 +118,8 @@ trait StorefrontPageTestBehaviour
             'visibility' => ProductVisibilityDefinition::VISIBILITY_ALL,
         ]], $context->getContext());
 
-        /** @var StorefrontProductRepository $storefrontProductRepository */
-        $storefrontProductRepository = $this->getContainer()->get(StorefrontProductRepository::class);
+        /** @var SalesChannelRepository $storefrontProductRepository */
+        $storefrontProductRepository = $this->getContainer()->get('sales_channel.product.repository');
         $searchResult = $storefrontProductRepository->search(new Criteria([$id]), $context);
 
         return $searchResult->first();

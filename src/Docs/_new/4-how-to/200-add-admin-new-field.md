@@ -1,5 +1,5 @@
 [titleEn]: <>(Add field to module in administration)
-[wikiUrl]: <>(../how-to/add-field-to-module-in-administration?category=platform-en/how-to)
+[metaDescriptionEn]: <>(If you were wondering, how you can add a new field to an existing module in the Administration via plugin, then you've found the right HowTo to cover that subject.)
 
 ## Overview
 
@@ -11,7 +11,7 @@ some other product data not being shown by default.
 ## Setup
 
 This HowTo **does not** explain how you can create a new plugin for the Shopware platform.
-Head over to our [Plugin quick start guide](../2-internals/4-plugins/010-plugin-quick-start.md) to
+Head over to our [Plugin quick start guide](./../2-internals/4-plugins/010-plugin-quick-start.md) to
 learn creating a plugin at first.
 
 ## Injecting into the administration
@@ -71,10 +71,10 @@ This should result in a new field with the label 'Manufacturer ID', which then c
 ## Loading the JS files
 
 As mentioned above, the Shopware platform is looking for a `main.js` file in your plugin.
-It's contents then get minified into a new file named after your plugin and will be moved to the `public` directory
+It's contents get minified into a new file named after your plugin and will be moved to the `public` directory
 of the Shopware platform root directory.
 Given this plugin would be named "AdministrationNewField", the minified javascript code for this example would be
-located under `<plugin root>/src/Resources/public/static/js/AdministrationNewField.js`, once you run the command `psh administration:build` in your shopware root directory.
+located under `<plugin root>/src/Resources/public/static/js/AdministrationNewField.js`, once you run the command `./psh.phar administration:build` in your shopware root directory.
 *Note: Your plugin has to be activated for this to work.*
 Make sure to also include that file when publishing your plugin!
 A copy of this file will then be put into the directory `<shopware root>/public/bundles/administrationnewfield/static/js/AdministrationNewField.js`.
@@ -92,3 +92,8 @@ In order to do this, create a new file called `index.html.twig`, next to your `m
 ```
 
 Your minified javascript file will now be loaded in production environments.
+
+## Source
+
+There's a GitHub repository available, containing this example source.
+Check it out [here](https://github.com/shopware/swag-docs-administration-new-field).

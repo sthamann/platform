@@ -8,6 +8,7 @@ Component.register('sw-product-stream-detail', {
     template,
 
     inject: ['productStreamConditionService'],
+
     mixins: [
         Mixin.getByName('placeholder'),
         Mixin.getByName('notification'),
@@ -63,14 +64,23 @@ Component.register('sw-product-stream-detail', {
                 isPlaceholder(condition) {
                     return (!condition.field || condition.field === 'id')
                         && (!condition.type || condition.type === 'equals')
-                        && !(condition.value || Object.keys(condition.parameters).length);
+                        && !(condition.value || (condition.parameters && Object.keys(condition.parameters).length));
                 }
             },
             showModalPreview: false
         };
     },
 
+    metaInfo() {
+        return {
+            title: this.$createTitle(this.identifier)
+        };
+    },
+
     computed: {
+        identifier() {
+            return this.placeholder(this.productStream, 'name');
+        },
         productStreamStore() {
             return State.getStore('product_stream');
         },

@@ -19,7 +19,7 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Core\System\SalesChannel\SalesChannelEntity;
 use Shopware\Core\System\Tax\TaxCollection;
 
-class SalesChannelContextFactory implements SalesChannelContextFactoryInterface
+class SalesChannelContextFactory
 {
     /**
      * @var EntityRepositoryInterface
@@ -228,10 +228,7 @@ class SalesChannelContextFactory implements SalesChannelContextFactoryInterface
             $id = $options[SalesChannelContextService::SHIPPING_METHOD_ID];
         }
 
-        $criteria = new Criteria([$id]);
-        $criteria->addAssociation('priceRules');
-
-        return $this->shippingMethodRepository->search($criteria, $context)->get($id);
+        return $this->shippingMethodRepository->search(new Criteria([$id]), $context)->get($id);
     }
 
     private function getContext(string $salesChannelId, array $session): Context
@@ -262,7 +259,7 @@ class SalesChannelContextFactory implements SalesChannelContextFactoryInterface
         $languageIds = $data['sales_channel_language_ids'] ? explode(',', $data['sales_channel_language_ids']) : null;
         $languageIds = array_keys(array_flip($languageIds));
 
-        //check which language should be used in the current request (request header set, or context already contains a language - stored in `storefront_api_context`)
+        //check which language should be used in the current request (request header set, or context already contains a language - stored in `sales_channel_api_context`)
         $defaultLanguageId = Uuid::fromBytesToHex($data['sales_channel_default_language_id']);
 
         $languageChain = $this->buildLanguageChain($session, $defaultLanguageId, $languageIds);

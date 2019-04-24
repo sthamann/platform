@@ -6,8 +6,9 @@ module.exports = {
     'navigate to product stream and click on add product stream': (browser) => {
         browser
             .openMainMenuEntry({
-                targetPath: '#/sw/product-stream/index',
-                mainMenuId: 'sw-product'
+                targetPath: '#/sw/product/stream/index',
+                mainMenuId: 'sw-product',
+                subMenuId: 'sw-product-stream'
             })
             .click('.sw-product-stream-list__create-action');
     },
@@ -24,11 +25,9 @@ module.exports = {
 
         browser
             .openMainMenuEntry({
-                mainMenuPath: '#/sw/product/index',
-                menuTitle: 'Product',
-                index: 1,
-                subMenuItemPath: '#/sw/stream/index',
-                subMenuTitle: 'Product streams'
+                targetPath: '#/sw/product/stream/index',
+                mainMenuId: 'sw-product',
+                subMenuId: 'sw-product-stream'
             })
             .refresh()
             .expect.element(page.elements.smartBarHeader).to.have.text.that.contains('Product stream');
@@ -42,7 +41,10 @@ module.exports = {
         browser
             .waitForElementPresent('.sw-sidebar__navigation .sw-sidebar-navigation-item')
             .click('.sw-sidebar__navigation .sw-sidebar-navigation-item')
-            .clickContextMenuItem('.sw_product_stream_list__edit-action', page.elements.contextMenuButton, `${page.elements.gridRow}--0`)
+            .clickContextMenuItem(page.elements.contextMenuButton, {
+                menuActionSelector: '.sw_product_stream_list__edit-action',
+                scope: `${page.elements.gridRow}--0`
+            })
             .waitForElementNotPresent(page.elements.loader)
             .expect.element(page.elements.smartBarHeader).to.have.text.that.contains('Product stream 1st');
     }

@@ -16,7 +16,7 @@ class ManufacturerPageObject extends GeneralPageObject {
         this.browser
             .fillField('input[name=name]', manufacturerName)
             .fillField('input[name=link]', 'https://www.google.com/doodles')
-            .fillField('.ql-editor', 'De-scribe THIS!', false, 'editor')
+            .fillField('.sw-text-editor__content-editor', 'De-scribe THIS!', false, 'editor')
             .click(this.elements.manufacturerSave)
             .checkNotification(`Manufacturer "${manufacturerName}" has been saved successfully.`);
     }
@@ -32,7 +32,11 @@ class ManufacturerPageObject extends GeneralPageObject {
     deleteManufacturer(manufacturerName) {
         this.browser
             .waitForElementNotPresent(this.elements.loader)
-            .clickContextMenuItem('.sw-context-menu-item--danger', this.elements.contextMenuButton, `${this.elements.gridRow}--0`)
+            .clickContextMenuItem(this.elements.contextMenuButton, {
+                menuActionSelector: `${this.elements.contextMenu
+                }-item--danger`,
+                scope: `${this.elements.gridRow}--0`
+            })
             .expect.element(`${this.elements.modal}__body`).text.that.equals(`Are you sure you want to delete the manufacturer "${manufacturerName}"?`);
 
         this.browser

@@ -2,6 +2,7 @@
 
 namespace Shopware\Core\Checkout\Cart\Delivery\Struct;
 
+use Shopware\Core\Checkout\Cart\Error\Error;
 use Shopware\Core\Checkout\Cart\Price\Struct\CalculatedPrice;
 use Shopware\Core\Checkout\Shipping\ShippingMethodEntity;
 use Shopware\Core\Framework\Struct\Struct;
@@ -38,6 +39,11 @@ class Delivery extends Struct
      */
     protected $endDeliveryDate;
 
+    /**
+     * @var Error|null
+     */
+    protected $error;
+
     public function __construct(
         DeliveryPositionCollection $positions,
         DeliveryDate $deliveryDate,
@@ -55,17 +61,9 @@ class Delivery extends Struct
 
         $deliveryTime = $this->shippingMethod->getDeliveryTime();
 
-        $min = 0;
-        $max = 0;
-
-        if ($deliveryTime !== null) {
-            $min = $deliveryTime->getMin();
-            $max = $deliveryTime->getMax();
-        }
-
         $this->endDeliveryDate = new DeliveryDate(
-            $end->getEarliest()->add(new \DateInterval('P' . $min . 'D')),
-            $end->getLatest()->add(new \DateInterval('P' . $max . 'D'))
+            $end->getEarliest()->add(new \DateInterval('P' . $deliveryTime->getMin() . 'D')),
+            $end->getLatest()->add(new \DateInterval('P' . $deliveryTime->getMax() . 'D'))
         );
     }
 
@@ -102,5 +100,15 @@ class Delivery extends Struct
     public function setShippingCosts(CalculatedPrice $shippingCosts): void
     {
         $this->shippingCosts = $shippingCosts;
+    }
+
+    public function setError(?Error $error): void
+    {
+        $this->error = $error;
+    }
+
+    public function getError(): ?Error
+    {
+        return $this->error;
     }
 }

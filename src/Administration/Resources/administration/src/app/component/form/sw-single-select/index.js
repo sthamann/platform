@@ -20,6 +20,11 @@ export default {
         value: {
             required: true
         },
+        searchPlaceholder: {
+            type: String,
+            required: false,
+            default: ''
+        },
         placeholder: {
             type: String,
             required: false,
@@ -34,12 +39,12 @@ export default {
             required: false,
             default: ''
         },
-        valueProperty: {
+        labelProperty: {
             type: String,
             required: false,
             default: 'value'
         },
-        keyProperty: {
+        valueProperty: {
             type: String,
             required: false,
             default: 'key'
@@ -69,7 +74,8 @@ export default {
             isLoading: false,
             hasError: false,
             singleSelection: null,
-            currentOptions: []
+            currentOptions: [],
+            placeholderOption: null
         };
     },
 
@@ -95,15 +101,40 @@ export default {
         this.destroyedComponent();
     },
 
+    watch: {
+        // Update the view if the value changes from outside
+        value() {
+            if (this.singleSelection && this.singleSelection[this.valueProperty] !== this.value) {
+                this.init();
+            } else if (!this.singleSelection && this.value !== null) {
+                this.init();
+            }
+        }
+    },
+
     methods: {
         createdComponent() {
+            if (!this.required) {
+                const labelProperty = this.placeholder || this.$tc('global.sw-single-select.valuePlaceholder');
+                this.placeholderOption = { [this.valueProperty]: null, [this.labelProperty]: labelProperty };
+            }
+
             this.init();
             this.addEventListeners();
         },
 
         init() {
             this.currentOptions = this.options;
+
+            this.initPlaceholder();
+
             this.loadSelected();
+        },
+
+        initPlaceholder() {
+            if (this.placeholderOption) {
+                this.currentOptions.unshift(this.placeholderOption);
+            }
         },
 
         destroyedComponent() {
@@ -123,6 +154,10 @@ export default {
         },
 
         loadSelected() {
+            if (this.value === null || this.value === '') {
+                this.singleSelection = this.placeholderOption;
+                return;
+            }
             this.resolveKey(this.value).then((item) => {
                 this.singleSelection = item;
             });
@@ -130,12 +165,10 @@ export default {
 
         resolveKey(key) {
             const found = this.currentOptions.find((item) => {
-                return (item[this.keyProperty] === key);
+                return (item[this.valueProperty] === key);
             });
 
-            return new Promise((resolve) => {
-                resolve(found);
-            });
+            return Promise.resolve(found);
         },
 
         search() {
@@ -153,24 +186,27 @@ export default {
                 return;
             }
 
-            this.$emit('input', this.singleSelection[this.keyProperty]);
+            this.$emit('input', this.singleSelection[this.valueProperty]);
         },
 
         isSelected(item) {
             if (this.singleSelection === null) {
                 return false;
             }
-            return this.singleSelection[this.keyProperty] === item[this.keyProperty];
+            return this.singleSelection[this.valueProperty] === item[this.valueProperty];
         },
 
         setValue({ item }) {
-            if (item === undefined || !item[this.keyProperty]) {
+            if (item === undefined) {
+                if (this.isExpanded) {
+                    this.closeResultList();
+                }
                 return;
             }
 
             item = JSON.parse(JSON.stringify(item));
-            if (item[this.valueProperty].constructor === String) {
-                item[this.valueProperty] = item[this.valueProperty].replace(/<[^>]+>/g, '');
+            if (item[this.labelProperty].constructor === String) {
+                item[this.labelProperty] = item[this.labelProperty].replace(/<[^>]+>/g, '');
             }
 
             this.singleSelection = item;
@@ -179,12 +215,7 @@ export default {
             this.closeResultList();
         },
 
-        openResultList(event) {
-            if (event.relatedTarget && event.relatedTarget.type === 'submit') {
-                this.$refs.swSelectInput.blur();
-                return;
-            }
-
+        openResultList() {
             if (this.isExpanded === false) {
                 this.scrollToResultsTop();
             }
@@ -205,11 +236,17 @@ export default {
                 return;
             }
 
-            this.$refs.swSelectInput.blur();
+            this.$nextTick(() => {
+                if (!this.$refs.swSelectInput) {
+                    return;
+                }
+
+                this.$refs.swSelectInput.blur();
+            });
         },
 
-        setFocus(event) {
-            this.openResultList(event);
+        setFocus() {
+            this.openResultList();
 
             if (!this.showSearch) {
                 return;
@@ -272,7 +309,9 @@ export default {
         navigateDownResults() {
             this.$emit('sw-single-select-on-arrow-down', this.activeResultPosition);
 
-            if (this.activeResultPosition === this.currentOptions.length - 1 || this.currentOptions.length < 1) {
+            const optionsCount = this.currentOptions.length;
+
+            if (this.activeResultPosition === optionsCount - 1 || optionsCount < 1) {
                 return;
             }
 

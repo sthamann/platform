@@ -3,16 +3,20 @@
 namespace Shopware\Storefront\PageController;
 
 use Shopware\Core\Checkout\Cart\Exception\CartTokenNotFoundException;
+use Shopware\Core\Checkout\Cart\Exception\CustomerNotLoggedInException;
+use Shopware\Core\Checkout\Cart\Exception\LineItemNotFoundException;
 use Shopware\Core\Checkout\Cart\Exception\OrderNotFoundException;
-use Shopware\Core\Checkout\Cart\Storefront\CartService;
-use Shopware\Core\Checkout\Order\Storefront\OrderService;
+use Shopware\Core\Checkout\Cart\SalesChannel\CartService;
+use Shopware\Core\Checkout\Customer\SalesChannel\AddressService;
+use Shopware\Core\Checkout\Order\SalesChannel\OrderService;
 use Shopware\Core\Framework\Routing\Exception\MissingRequestParameterException;
-use Shopware\Core\Framework\Routing\InternalRequest;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\Framework\Validation\Exception\ConstraintViolationException;
+use Shopware\Core\System\SalesChannel\SalesChannel\SalesChannelContextSwitcher;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Framework\Controller\StorefrontController;
 use Shopware\Storefront\Framework\Page\PageLoaderInterface;
+use Shopware\Storefront\Page\Checkout\AddressList\CheckoutAddressListPageLoader;
 use Shopware\Storefront\Page\Checkout\Cart\CheckoutCartPageLoader;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoader;
 use Shopware\Storefront\Page\Checkout\Finish\CheckoutFinishPageLoader;
@@ -51,9 +55,29 @@ class CheckoutPageController extends StorefrontController
     private $registerPageLoader;
 
     /**
+     * @var CheckoutAddressListPageLoader|PageLoaderInterface
+     */
+    private $addressListPageLoader;
+
+    /**
+     * @var PageLoaderInterface
+     */
+    private $addressPageLoader;
+
+    /**
      * @var OrderService
      */
     private $orderService;
+
+    /**
+     * @var AddressService
+     */
+    private $addressService;
+
+    /**
+     * @var SalesChannelContextSwitcher
+     */
+    private $contextSwitcher;
 
     public function __construct(
         CartService $cartService,
@@ -61,14 +85,22 @@ class CheckoutPageController extends StorefrontController
         PageLoaderInterface $confirmPageLoader,
         PageLoaderInterface $finishPageLoader,
         PageLoaderInterface $registerPageLoader,
-        OrderService $orderService
+        PageLoaderInterface $addressListPageLoader,
+        PageLoaderInterface $addressPageLoader,
+        AddressService $addressService,
+        OrderService $orderService,
+        SalesChannelContextSwitcher $contextSwitcher
     ) {
         $this->cartService = $cartService;
         $this->cartPageLoader = $cartPageLoader;
         $this->confirmPageLoader = $confirmPageLoader;
         $this->finishPageLoader = $finishPageLoader;
         $this->registerPageLoader = $registerPageLoader;
+        $this->addressListPageLoader = $addressListPageLoader;
+        $this->addressPageLoader = $addressPageLoader;
         $this->orderService = $orderService;
+        $this->addressService = $addressService;
+        $this->contextSwitcher = $contextSwitcher;
     }
 
     /**
@@ -84,7 +116,7 @@ class CheckoutPageController extends StorefrontController
      *
      * @throws CartTokenNotFoundException
      */
-    public function cart(InternalRequest $request, SalesChannelContext $context): Response
+    public function cart(Request $request, SalesChannelContext $context): Response
     {
         $page = $this->cartPageLoader->load($request, $context);
 
@@ -96,7 +128,7 @@ class CheckoutPageController extends StorefrontController
      *
      * @throws CartTokenNotFoundException
      */
-    public function confirm(InternalRequest $request, SalesChannelContext $context): Response
+    public function confirm(Request $request, SalesChannelContext $context): Response
     {
         if (!$context->getCustomer()) {
             return $this->redirectToRoute('frontend.checkout.register.page');
@@ -118,7 +150,7 @@ class CheckoutPageController extends StorefrontController
      * @throws InvalidParameterException
      * @throws MissingRequestParameterException
      */
-    public function finish(InternalRequest $request, SalesChannelContext $context): Response
+    public function finish(Request $request, SalesChannelContext $context): Response
     {
         if (!$context->getCustomer()) {
             return $this->redirectToRoute('frontend.checkout.register.page');
@@ -153,7 +185,7 @@ class CheckoutPageController extends StorefrontController
     /**
      * @Route("/checkout/register", name="frontend.checkout.register.page", options={"seo"="false"}, methods={"GET"})
      */
-    public function register(Request $request, InternalRequest $internal, SalesChannelContext $context): Response
+    public function register(Request $request, SalesChannelContext $context): Response
     {
         /** @var string $redirect */
         $redirect = $request->get('redirectTo', $this->generateUrl('frontend.checkout.confirm.page'));
@@ -162,8 +194,104 @@ class CheckoutPageController extends StorefrontController
             return $this->redirect($redirect);
         }
 
-        $page = $this->registerPageLoader->load($internal, $context);
+        $page = $this->registerPageLoader->load($request, $context);
 
         return $this->renderStorefront('@Storefront/page/checkout/address/index.html.twig', ['redirectTo' => $redirect, 'page' => $page]);
+    }
+
+    /**
+     * @Route("/checkout/address/create", name="frontend.checkout.address.create.page", options={"seo"="false"}, methods={"GET"})
+     *
+     * @throws CustomerNotLoggedInException
+     */
+    public function createAddress(Request $request, SalesChannelContext $context): Response
+    {
+        $this->denyAccessUnlessLoggedIn();
+
+        $page = $this->addressPageLoader->load($request, $context);
+
+        return $this->renderStorefront('@Storefront/component/address/address-editor.html.twig', ['page' => $page]);
+    }
+
+    /**
+     * @Route("/checkout/address/{addressId}", name="frontend.checkout.address.edit.page", options={"seo"="false"}, methods={"GET"})
+     *
+     * @throws CustomerNotLoggedInException
+     */
+    public function editAddress(Request $request, SalesChannelContext $context): Response
+    {
+        $this->denyAccessUnlessLoggedIn();
+
+        $page = $this->addressPageLoader->load($request, $context);
+
+        return $this->renderStorefront('@Storefront/component/address/address-editor.html.twig', ['page' => $page]);
+    }
+
+    /**
+     * @Route("/checkout/address/{addressId}", name="frontend.checkout.address.edit.save", options={"seo"="false"}, methods={"POST"})
+     * @Route("/checkout/address/create", name="frontend.checkout.address.create", options={"seo"="false"}, methods={"POST"})
+     */
+    public function saveAddress(RequestDataBag $data, SalesChannelContext $context): Response
+    {
+        $this->denyAccessUnlessLoggedIn();
+
+        /** @var RequestDataBag $address */
+        $address = $data->get('address');
+        try {
+            $this->addressService->create($address, $context);
+
+            return new Response();
+        } catch (ConstraintViolationException $formViolations) {
+        }
+
+        $forwardAction = $address->get('id') ? 'editAddress' : 'createAddress';
+
+        return $this->forward(
+            'Shopware\Storefront\PageController\CheckoutPageController::' . $forwardAction,
+            ['formViolations' => $formViolations],
+            ['addressId' => $address->get('id')]
+        );
+    }
+
+    /**
+     * @Route("/checkout/address", name="frontend.checkout.address.page", options={"seo"="false"}, methods={"GET"})
+     */
+    public function address(Request $request, SalesChannelContext $context): Response
+    {
+        $this->denyAccessUnlessLoggedIn();
+
+        $page = $this->addressListPageLoader->load($request, $context);
+
+        return $this->renderStorefront('@Storefront/component/address/address-selection.html.twig', ['page' => $page]);
+    }
+
+    /**
+     * @Route("/checkout/configure", name="frontend.checkout.configure", options={"seo"="false"}, methods={"POST"})
+     */
+    public function configure(Request $request, RequestDataBag $data, SalesChannelContext $context): RedirectResponse
+    {
+        $this->contextSwitcher->update($data, $context);
+
+        $route = $request->get('redirectTo', 'frontend.checkout.cart.page');
+
+        return $this->redirectToRoute($route);
+    }
+
+    /**
+     * @Route("/checkout/line-item/delete/{id}", name="frontend.checkout.line-item.delete", defaults={"XmlHttpRequest": true}, methods={"POST"})
+     */
+    public function removeLineItem(string $id, Request $request, SalesChannelContext $context): Response
+    {
+        $token = $request->request->getAlnum('token', $context->getToken());
+
+        $cart = $this->cartService->getCart($token, $context);
+
+        if (!$cart->has($id)) {
+            throw new LineItemNotFoundException($id);
+        }
+
+        $this->cartService->remove($cart, $id, $context);
+
+        return $this->createActionResponse($request);
     }
 }

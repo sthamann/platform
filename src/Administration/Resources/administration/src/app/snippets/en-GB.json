@@ -299,6 +299,10 @@
     "sw-select": {
       "messageNoResults": "No results found for \"{term}\"."
     },
+    "sw-single-select": {
+      "messageNoResults": "No results found for \"{term}\".",
+      "valuePlaceholder": "Choose one"
+    },
     "sw-label": {
       "buttonDismiss": "Dismiss"
     },
@@ -307,8 +311,8 @@
       "messageNoTypeResults": "No type found.",
       "placeholderSearchField": "Find products, customers, orders...",
       "placeholderTypeSearchField": "Search {entity}",
-      "placeholderShortcutInfo": "(Keyboard shortcut \"s\")",
-      "tooltipAllResults": "Show all results"
+      "placeholderShortcutInfo": "Tip: Use the \"s\" key to open the search faster.",
+      "labelShowResultsInModule": "Show results in module({count})"
     },
     "sw-search-bar-item": {
       "typeLabelCustomer": "Customer",
@@ -459,20 +463,26 @@
       "sunday": "Sunday"
     }
   },
+  "sw-text-editor-toolbar": {
+    "link": {
+      "openInNewTab": "Open link in new window",
+      "placeholder": "Enter URL",
+      "linkTo": "Link to",
+      "insert": "Insert"
+    }
+  },
   "sw-tree": {
-    "general": {
-      "placeholderSearch": "Search",
-      "treeHeadSelected": "{count} selected",
-      "treeHeadline": "Tree structure",
-      "buttonCreate": "Create element",
-      "actions": {
-        "createSub": "New subelement",
-        "createBefore": "New element before",
-        "createAfter": "New element after",
-        "edit": "Edit",
-        "actionsDisabledInLanguage": "Elements can only be created in the default system language",
-        "delete": "Delete"
-      }
+    "placeholderSearch": "Search",
+    "treeHeadSelected": "{count} selected",
+    "treeHeadline": "Tree structure",
+    "buttonCreate": "Create element",
+    "actions": {
+      "createSub": "New subelement",
+      "createBefore": "New element before",
+      "createAfter": "New element after",
+      "edit": "Edit",
+      "actionsDisabledInLanguage": "Elements can only be created in the default system language",
+      "delete": "Delete"
     },
     "modal": {
       "modalTitleDelete": "Delete element",
@@ -508,6 +518,15 @@
     "titleModalButtonCancelUnsavedChanges": "Cancel",
     "titleModalButtonRevertUnsavedChanges": "Discard changes",
     "titleModalButtonSaveChanges": "Save"
+  },
+  "sw-sales-channel-switch": {
+    "messageModalUnsavedChanges": "There are unsaved changes for the current sales channel. Do you want to save them now?",
+    "placeholderSelect": "Search...",
+    "titleModalUnsavedChanges": "Unsaved changes",
+    "titleModalButtonCancelUnsavedChanges": "Cancel",
+    "titleModalButtonRevertUnsavedChanges": "Discard changes",
+    "titleModalButtonSaveChanges": "Save",
+    "labelDefaultOption": "All sales channel"
   },
   "sw-config-form-renderer": {
     "placeholder": "Please fill in {name}...",

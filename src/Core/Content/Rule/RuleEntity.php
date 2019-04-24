@@ -95,11 +95,6 @@ class RuleEntity extends Entity
     /**
      * @var PromotionCollection|null
      */
-    protected $personaPromotions;
-
-    /**
-     * @var PromotionCollection|null
-     */
     protected $scopePromotions;
 
     /**
@@ -111,6 +106,16 @@ class RuleEntity extends Entity
      * @var ShippingMethodPriceCollection|null
      */
     protected $shippingMethodPriceCalculations;
+
+    /**
+     * @var PromotionCollection|null
+     */
+    protected $personaPromotions;
+
+    /**
+     * @var PromotionCollection|null
+     */
+    protected $orderPromotions;
 
     public function getName(): string
     {
@@ -262,16 +267,6 @@ class RuleEntity extends Entity
         $this->shippingMethodPrices = $shippingMethodPrices;
     }
 
-    public function getPersonaPromotions(): ?PromotionCollection
-    {
-        return $this->personaPromotions;
-    }
-
-    public function setPersonaPromotions(PromotionCollection $personaPromotions): void
-    {
-        $this->personaPromotions = $personaPromotions;
-    }
-
     public function getScopePromotions(): ?PromotionCollection
     {
         return $this->scopePromotions;
@@ -300,5 +295,41 @@ class RuleEntity extends Entity
     public function setShippingMethodPriceCalculations(ShippingMethodPriceCollection $shippingMethodPriceCalculations): void
     {
         $this->shippingMethodPriceCalculations = $shippingMethodPriceCalculations;
+    }
+
+    /**
+     * Gets a list of all promotions where this rule
+     * is being used within the Persona Conditions
+     */
+    public function getPersonaPromotions(): ?PromotionCollection
+    {
+        return $this->personaPromotions;
+    }
+
+    /**
+     * Sets a list of all promotions where this rule should be
+     * used as Persona Condition
+     */
+    public function setPersonaPromotions(?PromotionCollection $personaPromotions): void
+    {
+        $this->personaPromotions = $personaPromotions;
+    }
+
+    /**
+     * Gets a list of all promotions where this rule is
+     * being used within the Order Conditions.
+     */
+    public function getOrderPromotions(): ?PromotionCollection
+    {
+        return $this->orderPromotions;
+    }
+
+    /**
+     * Sets a list of all promotions where this rule should be
+     * used as Order Condition.
+     */
+    public function setOrderPromotions(?PromotionCollection $orderPromotions): void
+    {
+        $this->orderPromotions = $orderPromotions;
     }
 }

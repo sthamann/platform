@@ -3,7 +3,6 @@
          :class="selectClasses"
          tabindex="0"
          ref="swSelect"
-         @click="setFocus"
          @focus="setFocus"
          @keyup.esc="closeResultList"
          @keyup.enter.prevent="onKeyUpEnter"
@@ -23,15 +22,15 @@
                     {% block sw_single_select_single_selection_inner %}
                         <slot v-if="singleSelection !== null" name="selected_option" :item="singleSelection">
                             {% block sw_single_select_single_selection_slot_label %}
-                                <slot name="valueProperty" :item="singleSelection">
-                                    {{ getInlineSnippet(singleSelection[valueProperty]) }}
+                                <slot name="labelProperty" :item="singleSelection">
+                                    {{ getInlineSnippet(singleSelection[labelProperty]) }}
                                 </slot>
                             {% endblock %}
                         </slot>
 
                         <span v-else-if="!isExpanded"
-                              class="sw-single-select__placeholder">
-                            {{ getInlineSnippet(placeholder) }}
+                              class="sw-single-select__searchPlaceholder">
+                            {{ getInlineSnippet(searchPlaceholder) }}
                         </span>
                     {% endblock %}
                 </div>
@@ -40,15 +39,6 @@
                     <div class="sw-single-select__indicators">
                         {% block sw_single_select__indicators_loader %}
                             <sw-loader class="sw-single-select__indicator" v-if="isLoading" size="16px"></sw-loader>
-                        {% endblock %}
-
-                        {% block sw_single_select_indicators_dismiss %}
-                            <sw-icon v-if="!required"
-                                     class="sw-single-select__indicator sw-single-select__indicator--button"
-                                     name="small-default-x-line-small"
-                                     @click="unsetValue"
-                                     small>
-                            </sw-icon>
                         {% endblock %}
 
                         {% block sw_single_select_indicators_helptext %}
@@ -77,7 +67,7 @@
                                         <input ref="swSelectInput"
                                                class="sw-single-select__input-single"
                                                type="text"
-                                               :placeholder="getInlineSnippet(placeholder)"
+                                               :placeholder="getInlineSnippet(searchPlaceholder)"
                                                v-model="searchTerm"
                                                @input="search">
                                         <sw-icon name="small-search" small></sw-icon>
@@ -92,21 +82,22 @@
                                            {% endblock %}
 
                                             {% block sw_single_select_result_item_list %}
-                                             <template v-if="currentOptions" v-for="(item, index) in currentOptions">
-                                                 <slot name="result_items" :item="item" :index="index">
-                                                     {% block sw_single_select_result_item_slot %}
-                                                         <sw-single-select-option ref="swSelectOption" :index="index" :item="item">
-                                                            <slot name="valueProperty" :item="item">
-
-                                                                <span v-html="getInlineSnippet(item[valueProperty])">
-                                                                    {{ getInlineSnippet(item[valueProperty]) }}
-                                                                </span>
-
-                                                            </slot>
-                                                         </sw-single-select-option>
-                                                     {% endblock %}
-                                                 </slot>
-                                             </template>
+                                                {% block sw_single_select_result_item_list_option %}
+                                                     <template v-if="currentOptions" v-for="(item, index) in currentOptions">
+                                                         <slot name="result_items" :item="item" :index="index">
+                                                             {% block sw_single_select_result_item_slot %}
+                                                                 <sw-single-select-option
+                                                                         ref="swSelectOption"
+                                                                         :index="index"
+                                                                         :item="item">
+                                                                    <slot name="labelProperty">
+                                                                        <span v-html="getInlineSnippet(item[labelProperty])"></span>
+                                                                    </slot>
+                                                                 </sw-single-select-option>
+                                                             {% endblock %}
+                                                         </slot>
+                                                     </template>
+                                                {% endblock %}
                                             {% endblock %}
 
                                             {% block sw_single_select_result_item_list_after %}
@@ -124,7 +115,7 @@
                                         {% endblock %}
 
                                         {% block sw_single_select_results_empty_text %}
-                                            {{ $tc('global.sw-select.messageNoResults', searchTerm, { term: searchTerm }) }}
+                                            {{ $tc('global.sw-single-select.messageNoResults', searchTerm, { term: searchTerm }) }}
                                         {% endblock %}
                                     </div>
                                 {% endblock %}

@@ -4,16 +4,17 @@ namespace Shopware\Core\Content\Test\Cms\SlotDataResolver\Type;
 
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Content\Cms\Aggregate\CmsSlot\CmsSlotEntity;
+use Shopware\Core\Content\Cms\SalesChannel\Struct\TextStruct;
 use Shopware\Core\Content\Cms\SlotDataResolver\FieldConfig;
 use Shopware\Core\Content\Cms\SlotDataResolver\FieldConfigCollection;
 use Shopware\Core\Content\Cms\SlotDataResolver\ResolverContext\EntityResolverContext;
 use Shopware\Core\Content\Cms\SlotDataResolver\ResolverContext\ResolverContext;
 use Shopware\Core\Content\Cms\SlotDataResolver\SlotDataResolveResult;
 use Shopware\Core\Content\Cms\SlotDataResolver\Type\TextTypeDataResolver;
-use Shopware\Core\Content\Cms\Storefront\Struct\TextStruct;
 use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Content\Product\ProductEntity;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use Symfony\Component\HttpFoundation\Request;
 
 class TextTypeDataResolverTest extends TestCase
 {
@@ -34,7 +35,7 @@ class TextTypeDataResolverTest extends TestCase
 
     public function testCollectWithEmptyConfig(): void
     {
-        $resolverContext = new ResolverContext($this->createMock(SalesChannelContext::class));
+        $resolverContext = new ResolverContext($this->createMock(SalesChannelContext::class), new Request());
 
         $slot = new CmsSlotEntity();
         $slot->setUniqueIdentifier('id');
@@ -49,7 +50,7 @@ class TextTypeDataResolverTest extends TestCase
 
     public function testEnrichWithEmptyConfig(): void
     {
-        $resolverContext = new ResolverContext($this->createMock(SalesChannelContext::class));
+        $resolverContext = new ResolverContext($this->createMock(SalesChannelContext::class), new Request());
         $result = new SlotDataResolveResult();
 
         $slot = new CmsSlotEntity();
@@ -66,7 +67,7 @@ class TextTypeDataResolverTest extends TestCase
 
     public function testWithStaticContent(): void
     {
-        $resolverContext = new ResolverContext($this->createMock(SalesChannelContext::class));
+        $resolverContext = new ResolverContext($this->createMock(SalesChannelContext::class), new Request());
         $result = new SlotDataResolveResult();
 
         $fieldConfig = new FieldConfigCollection();
@@ -89,7 +90,7 @@ class TextTypeDataResolverTest extends TestCase
         $product = new ProductEntity();
         $product->setDescription('foobar loo');
 
-        $resolverContext = new EntityResolverContext($this->createMock(SalesChannelContext::class), ProductDefinition::class, $product);
+        $resolverContext = new EntityResolverContext($this->createMock(SalesChannelContext::class), new Request(), ProductDefinition::class, $product);
         $result = new SlotDataResolveResult();
 
         $fieldConfig = new FieldConfigCollection();

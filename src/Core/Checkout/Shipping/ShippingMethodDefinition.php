@@ -6,6 +6,7 @@ use Shopware\Core\Checkout\Order\Aggregate\OrderDelivery\OrderDeliveryDefinition
 use Shopware\Core\Checkout\Shipping\Aggregate\ShippingMethodPrice\ShippingMethodPriceDefinition;
 use Shopware\Core\Checkout\Shipping\Aggregate\ShippingMethodTag\ShippingMethodTagDefinition;
 use Shopware\Core\Checkout\Shipping\Aggregate\ShippingMethodTranslation\ShippingMethodTranslationDefinition;
+use Shopware\Core\Checkout\Shipping\SalesChannel\SalesChannelShippingMethodDefinition as SalesChannelApiShippingMethodDefinition;
 use Shopware\Core\Content\DeliveryTime\DeliveryTimeDefinition;
 use Shopware\Core\Content\Media\MediaDefinition;
 use Shopware\Core\Content\Rule\RuleDefinition;
@@ -27,15 +28,20 @@ use Shopware\Core\Framework\DataAbstractionLayer\Field\TranslatedField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\TranslationsAssociationField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\UpdatedAtField;
 use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
-use Shopware\Core\Framework\Tag\TagDefinition;
 use Shopware\Core\System\SalesChannel\Aggregate\SalesChannelShippingMethod\SalesChannelShippingMethodDefinition;
 use Shopware\Core\System\SalesChannel\SalesChannelDefinition;
+use Shopware\Core\System\Tag\TagDefinition;
 
 class ShippingMethodDefinition extends EntityDefinition
 {
     public static function getEntityName(): string
     {
         return 'shipping_method';
+    }
+
+    public static function getSalesChannelDecorationDefinition(): string
+    {
+        return SalesChannelApiShippingMethodDefinition::class;
     }
 
     public static function getCollectionClass(): string
@@ -57,7 +63,7 @@ class ShippingMethodDefinition extends EntityDefinition
             new BoolField('active', 'active'),
             new FloatField('shipping_free', 'shippingFree'),
             new TranslatedField('attributes'),
-            new FkField('availability_rule_id', 'availabilityRuleId', RuleDefinition::class),
+            (new FkField('availability_rule_id', 'availabilityRuleId', RuleDefinition::class))->addFlags(new Required()),
             new FkField('media_id', 'mediaId', MediaDefinition::class),
             new CreatedAtField(),
             new UpdatedAtField(),
@@ -69,7 +75,6 @@ class ShippingMethodDefinition extends EntityDefinition
             (new TranslationsAssociationField(ShippingMethodTranslationDefinition::class, 'shipping_method_id'))->addFlags(new Required()),
             new ManyToManyAssociationField('salesChannels', SalesChannelDefinition::class, SalesChannelShippingMethodDefinition::class, 'shipping_method_id', 'sales_channel_id'),
             new ManyToOneAssociationField('availabilityRule', 'availability_rule_id', RuleDefinition::class),
-            // TODO NEXT-2360: Set loadInBasic to false
             (new OneToManyAssociationField('prices', ShippingMethodPriceDefinition::class, 'shipping_method_id', 'id'))->addFlags(new CascadeDelete()),
             new ManyToOneAssociationField('media', 'media_id', MediaDefinition::class),
             new ManyToManyAssociationField('tags', TagDefinition::class, ShippingMethodTagDefinition::class, 'shipping_method_id', 'tag_id'),

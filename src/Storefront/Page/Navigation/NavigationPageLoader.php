@@ -5,20 +5,20 @@ namespace Shopware\Storefront\Page\Navigation;
 use Shopware\Core\Content\Cms\Aggregate\CmsSlot\CmsSlotEntity;
 use Shopware\Core\Content\Cms\CmsPageEntity;
 use Shopware\Core\Content\Cms\Exception\PageNotFoundException;
+use Shopware\Core\Content\Cms\SalesChannel\SalesChannelCmsPageRepository;
 use Shopware\Core\Content\Cms\SlotDataResolver\ResolverContext\ResolverContext;
 use Shopware\Core\Content\Cms\SlotDataResolver\SlotDataResolver;
-use Shopware\Core\Content\Cms\Storefront\StorefrontCmsPageRepository;
 use Shopware\Core\Content\Navigation\NavigationEntity;
-use Shopware\Core\Framework\Routing\InternalRequest;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Framework\Page\PageLoaderInterface;
 use Shopware\Storefront\Framework\Page\PageWithHeaderLoader;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\HttpFoundation\Request;
 
 class NavigationPageLoader implements PageLoaderInterface
 {
     /**
-     * @var StorefrontCmsPageRepository
+     * @var SalesChannelCmsPageRepository
      */
     private $cmsPageRepository;
 
@@ -40,7 +40,7 @@ class NavigationPageLoader implements PageLoaderInterface
     public function __construct(
         PageLoaderInterface $genericLoader,
         EventDispatcherInterface $eventDispatcher,
-        StorefrontCmsPageRepository $storefrontCmsPageRepository,
+        SalesChannelCmsPageRepository $storefrontCmsPageRepository,
         SlotDataResolver $slotDataResolver
     ) {
         $this->genericLoader = $genericLoader;
@@ -49,7 +49,7 @@ class NavigationPageLoader implements PageLoaderInterface
         $this->slotDataResolver = $slotDataResolver;
     }
 
-    public function load(InternalRequest $request, SalesChannelContext $context): NavigationPage
+    public function load(Request $request, SalesChannelContext $context): NavigationPage
     {
         $page = $this->genericLoader->load($request, $context);
         $page = NavigationPage::createFrom($page);
@@ -65,7 +65,7 @@ class NavigationPageLoader implements PageLoaderInterface
         $this->overwriteSlotConfig($cmsPage, $navigation);
 
         // step 4, resolve slot data
-        $this->loadSlotData($cmsPage, $context);
+        $this->loadSlotData($cmsPage, $request, $context);
 
         $page->setCmsPage($cmsPage);
 
@@ -100,13 +100,13 @@ class NavigationPageLoader implements PageLoaderInterface
         }
     }
 
-    private function loadSlotData(CmsPageEntity $page, SalesChannelContext $context): void
+    private function loadSlotData(CmsPageEntity $page, Request $request, SalesChannelContext $context): void
     {
         if (!$page->getBlocks()) {
             return;
         }
 
-        $resolverContext = new ResolverContext($context);
+        $resolverContext = new ResolverContext($context, $request);
         $slots = $this->slotDataResolver->resolve($page->getBlocks()->getSlots(), $resolverContext);
 
         $page->getBlocks()->setSlots($slots);

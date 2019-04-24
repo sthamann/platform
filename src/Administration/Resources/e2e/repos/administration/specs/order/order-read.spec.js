@@ -26,13 +26,18 @@ module.exports = {
                 mainMenuId: 'sw-order'
             })
             .expect.element(page.elements.smartBarAmount).to.have.text.that.equals('(1)');
-        browser.expect.element(`${page.elements.dataGridRow}--0`).to.have.text.that.contains(`${global.OrderFixtureService.customerStorefrontFixture.firstName} ${global.OrderFixtureService.customerStorefrontFixture.lastName}`);
+        browser
+            .expect.element(`${page.elements.dataGridRow}--0`)
+            .to.have.text.that.contains(`${global.OrderFixtureService.customerStorefrontFixture.firstName} ${global.OrderFixtureService.customerStorefrontFixture.lastName}`);
     },
     'open existing order': (browser) => {
         const page = orderPage(browser);
 
         browser
-            .clickContextMenuItem('.sw-order-list__order-view-action', page.elements.contextMenuButton, `${page.elements.dataGridRow}--0`)
+            .clickContextMenuItem(page.elements.contextMenuButton, {
+                menuActionSelector: '.sw-order-list__order-view-action',
+                scope: `${page.elements.dataGridRow}--0`
+            })
             .waitForElementVisible('.sw-order-detail')
             .assert.urlContains('#/sw/order/detail');
     },
@@ -66,7 +71,9 @@ module.exports = {
 
         browser
             .getLocationInView('.sw-order-detail-base__summary')
-            .clickContextMenuItem('.sw-context-menu__content', page.elements.contextMenuButton)
+            .clickContextMenuItem(page.elements.contextMenuButton, {
+                menuActionSelector: '.sw-context-menu__content'
+            })
             .expect.element(page.elements.smartBarHeader).to.have.text.that.contains(global.ProductFixtureService.productFixture.name);
     }
 };

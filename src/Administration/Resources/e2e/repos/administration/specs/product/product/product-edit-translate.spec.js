@@ -26,7 +26,10 @@ module.exports = {
         const page = productPage(browser);
 
         browser
-            .clickContextMenuItem('.sw-product-list__edit-action', page.elements.contextMenuButton, `${page.elements.dataGridRow}--0`)
+            .clickContextMenuItem(page.elements.contextMenuButton, {
+                menuActionSelector: '.sw-product-list__edit-action',
+                scope: `${page.elements.dataGridRow}--0`
+            })
             .waitForElementNotPresent(`.product-basic-form ${page.elements.loader}`)
             .expect.element(page.elements.smartBarHeader).to.have.text.that.equals(fixture.name);
     },
@@ -46,7 +49,7 @@ module.exports = {
 
         browser
             .fillField('input[name=sw-field--product-name]', 'Echt gutes Produkt', true)
-            .fillField('.ql-editor', 'Siehst du nicht, dass das ein wunderbares Produkt ist?', true, 'editor')
+            .fillField('.sw-text-editor__content-editor', 'Siehst du nicht, dass das ein wunderbares Produkt ist?', true, 'editor')
             .click(page.elements.productSaveAction)
             .checkNotification('Product "Echt gutes Produkt" has been saved successfully.');
     },

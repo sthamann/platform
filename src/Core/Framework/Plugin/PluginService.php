@@ -9,12 +9,12 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Language\LanguageEntity;
 use Shopware\Core\Framework\Plugin\Changelog\ChangelogService;
-use Shopware\Core\Framework\Plugin\Composer\PackageProvider;
+use Shopware\Core\Framework\Plugin\Exception\ExceptionCollection;
 use Shopware\Core\Framework\Plugin\Exception\PluginChangelogInvalidException;
 use Shopware\Core\Framework\Plugin\Exception\PluginComposerJsonInvalidException;
 use Shopware\Core\Framework\Plugin\Exception\PluginNotFoundException;
 use Shopware\Core\Framework\Plugin\Util\PluginFinder;
-use Shopware\Core\Framework\ShopwareHttpException;
+use Shopware\Core\Framework\Plugin\Util\VersionSanitizer;
 
 class PluginService
 {
@@ -39,11 +39,6 @@ class PluginService
     private $languageRepo;
 
     /**
-     * @var PackageProvider
-     */
-    private $composerPackageProvider;
-
-    /**
      * @var ChangelogService
      */
     private $changelogService;
@@ -53,44 +48,41 @@ class PluginService
      */
     private $pluginFinder;
 
+    /**
+     * @var VersionSanitizer
+     */
+    private $versionSanitizer;
+
     public function __construct(
         string $pluginDir,
         string $projectDir,
         EntityRepositoryInterface $pluginRepo,
         EntityRepositoryInterface $languageRepo,
-        PackageProvider $composerPackageProvider,
         ChangelogService $changelogService,
-        PluginFinder $pluginFinder
+        PluginFinder $pluginFinder,
+        VersionSanitizer $versionSanitizer
     ) {
         $this->pluginDir = $pluginDir;
         $this->projectDir = $projectDir;
         $this->pluginRepo = $pluginRepo;
         $this->languageRepo = $languageRepo;
-        $this->composerPackageProvider = $composerPackageProvider;
         $this->changelogService = $changelogService;
         $this->pluginFinder = $pluginFinder;
+        $this->versionSanitizer = $versionSanitizer;
     }
 
-    /**
-     * @return ShopwareHttpException[]
-     */
-    public function refreshPlugins(Context $shopwareContext, IOInterface $composerIO): array
+    public function refreshPlugins(Context $shopwareContext, IOInterface $composerIO): ExceptionCollection
     {
-        $pluginsFromFileSystem = $this->pluginFinder->findPlugins($this->pluginDir, $this->projectDir);
+        $errors = new ExceptionCollection();
+        $pluginsFromFileSystem = $this->pluginFinder->findPlugins($this->pluginDir, $this->projectDir, $errors, $composerIO);
 
         $installedPlugins = $this->getPlugins(new Criteria(), $shopwareContext);
 
         $plugins = [];
-        $errors = [];
         foreach ($pluginsFromFileSystem as $pluginFromFileSystem) {
             $pluginName = $pluginFromFileSystem->getName();
             $pluginPath = $pluginFromFileSystem->getPath();
-            try {
-                $info = $this->composerPackageProvider->getPluginInformation($pluginPath, $composerIO);
-            } catch (PluginComposerJsonInvalidException $e) {
-                $errors[] = $e;
-                continue;
-            }
+            $info = $pluginFromFileSystem->getComposerPackage();
 
             $autoload = $info->getAutoload();
             if (empty($autoload) || (empty($autoload['psr-4']) && empty($autoload['psr-0']))) {
@@ -101,7 +93,7 @@ class PluginService
                 continue;
             }
 
-            $pluginVersion = $info->getVersion();
+            $pluginVersion = $this->versionSanitizer->sanitizePluginVersion($info->getVersion());
             /** @var array $extra */
             $extra = $info->getExtra();
 
@@ -117,7 +109,7 @@ class PluginService
             $pluginData = [
                 'name' => $pluginName,
                 'composerName' => $info->getName(),
-                'path' => str_replace($this->projectDir, '', $pluginPath),
+                'path' => str_replace($this->projectDir . '/', '', $pluginPath),
                 'author' => $authors,
                 'copyright' => $extra['copyright'] ?? null,
                 'license' => implode(', ', $license),

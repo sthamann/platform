@@ -32,6 +32,7 @@ class DefinitionValidator
 {
     private const IGNORE_FIELDS = [
         'product.cover',
+        'order_line_item.cover',
         'customer.defaultBillingAddress',
         'customer.defaultShippingAddress',
         'customer.activeShippingAddress',
@@ -69,7 +70,7 @@ class DefinitionValidator
         'search_dictionary',
         'cart',
         'migration',
-        'storefront_api_context',
+        'sales_channel_api_context',
     ];
 
     /**

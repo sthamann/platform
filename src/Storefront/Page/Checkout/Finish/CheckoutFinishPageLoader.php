@@ -8,12 +8,13 @@ use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
-use Shopware\Core\Framework\Routing\InternalRequest;
+use Shopware\Core\Framework\Routing\Exception\MissingRequestParameterException;
 use Shopware\Core\Framework\Uuid\Exception\InvalidUuidException;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Framework\Page\PageLoaderInterface;
 use Shopware\Storefront\Framework\Page\PageWithHeaderLoader;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\HttpFoundation\Request;
 
 class CheckoutFinishPageLoader implements PageLoaderInterface
 {
@@ -41,7 +42,7 @@ class CheckoutFinishPageLoader implements PageLoaderInterface
         $this->genericLoader = $genericLoader;
     }
 
-    public function load(InternalRequest $request, SalesChannelContext $context)
+    public function load(Request $request, SalesChannelContext $context)
     {
         $page = $this->genericLoader->load($request, $context);
 
@@ -57,19 +58,22 @@ class CheckoutFinishPageLoader implements PageLoaderInterface
         return $page;
     }
 
-    private function getOrder(InternalRequest $request, SalesChannelContext $context): OrderEntity
+    private function getOrder(Request $request, SalesChannelContext $context): OrderEntity
     {
-        $orderId = $request->requireGet('orderId');
-
         $customer = $context->getCustomer();
         if ($customer === null) {
             throw new CustomerNotLoggedInException();
         }
 
+        $orderId = $request->get('orderId');
+        if (!$orderId) {
+            throw new MissingRequestParameterException('orderId', '/orderId');
+        }
+
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('order.orderCustomer.customerId', $customer->getId()));
         $criteria->addFilter(new EqualsFilter('order.id', $orderId));
-        $criteria->addAssociation('order.lineItems');
+        $criteria->addAssociationPath('lineItems.cover');
 
         try {
             $searchResult = $this->orderRepository->search($criteria, $context->getContext());

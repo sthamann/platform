@@ -2,8 +2,11 @@
 
 namespace Shopware\Core\Checkout\Promotion;
 
+use Shopware\Core\Checkout\Customer\CustomerCollection;
+use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Checkout\Promotion\Aggregate\PromotionDiscount\PromotionDiscountCollection;
 use Shopware\Core\Checkout\Promotion\Aggregate\PromotionSalesChannel\PromotionSalesChannelCollection;
+use Shopware\Core\Content\Rule\RuleCollection;
 use Shopware\Core\Content\Rule\RuleEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityIdTrait;
@@ -68,22 +71,12 @@ class PromotionEntity extends Entity
     /**
      * @var string|null
      */
-    protected $personaRuleId;
-
-    /**
-     * @var string|null
-     */
     protected $scopeRuleId;
 
     /**
      * @var string|null
      */
     protected $discountRuleId;
-
-    /**
-     * @var RuleEntity|null
-     */
-    protected $personaRule;
 
     /**
      * @var RuleEntity|null
@@ -103,7 +96,7 @@ class PromotionEntity extends Entity
     /**
      * @var PromotionSalesChannelCollection|null
      */
-    protected $promotionSalesChannels;
+    protected $salesChannels;
 
     /** @var string|null */
     protected $code;
@@ -112,6 +105,21 @@ class PromotionEntity extends Entity
      * @var PromotionDiscountCollection|null
      */
     protected $discounts;
+
+    /**
+     * @var RuleCollection|null
+     */
+    protected $orderRules;
+
+    /**
+     * @var RuleCollection|null
+     */
+    protected $personaRules;
+
+    /**
+     * @var CustomerCollection|null
+     */
+    protected $personaCustomers;
 
     public function getName(): ?string
     {
@@ -213,16 +221,6 @@ class PromotionEntity extends Entity
         $this->excludeLowerPriority = $excludeLowerPriority;
     }
 
-    public function getPersonaRuleId(): ?string
-    {
-        return $this->personaRuleId;
-    }
-
-    public function setPersonaRuleId(string $personaRuleId): void
-    {
-        $this->personaRuleId = $personaRuleId;
-    }
-
     public function getScopeRuleId(): ?string
     {
         return $this->scopeRuleId;
@@ -241,16 +239,6 @@ class PromotionEntity extends Entity
     public function setDiscountRuleId(string $discountRuleId): void
     {
         $this->discountRuleId = $discountRuleId;
-    }
-
-    public function getPersonaRule(): ?RuleEntity
-    {
-        return $this->personaRule;
-    }
-
-    public function setPersonaRule(RuleEntity $personaRule): void
-    {
-        $this->personaRule = $personaRule;
     }
 
     public function getScopeRule(): ?RuleEntity
@@ -293,14 +281,23 @@ class PromotionEntity extends Entity
         $this->discounts = $discounts;
     }
 
-    public function getPromotionSalesChannels(): ?PromotionSalesChannelCollection
+    /**
+     * Gets a list of all assigned sales channels for this promotion.
+     * Only customers within these channels are allowed
+     * to use this promotion.
+     */
+    public function getSalesChannels(): ?PromotionSalesChannelCollection
     {
-        return $this->promotionSalesChannels;
+        return $this->salesChannels;
     }
 
-    public function setPromotionSalesChannels(PromotionSalesChannelCollection $promotionSalesChannels): void
+    /**
+     * Sets a list of permitted sales channels for this promotion.
+     * Only customers within these channels are allowed to use this promotion.
+     */
+    public function setSalesChannels(?PromotionSalesChannelCollection $salesChannels): void
     {
-        $this->promotionSalesChannels = $promotionSalesChannels;
+        $this->salesChannels = $salesChannels;
     }
 
     public function getCode(): ?string
@@ -314,22 +311,116 @@ class PromotionEntity extends Entity
     }
 
     /**
+     * Gets a list of "order" related rules that need to
+     * be valid for this promotion.
+     */
+    public function getOrderRules(): ?RuleCollection
+    {
+        return $this->orderRules;
+    }
+
+    /**
+     * Sets what products are affected by the applied
+     * order conditions for this promotion.
+     */
+    public function setOrderRules(?RuleCollection $orderRules): void
+    {
+        $this->orderRules = $orderRules;
+    }
+
+    /**
+     * Gets a list of "persona" related rules that need to
+     * be valid for this promotion.
+     */
+    public function getPersonaRules(): ?RuleCollection
+    {
+        return $this->personaRules;
+    }
+
+    /**
+     * Sets what "personas" are allowed
+     * to use this promotion.
+     */
+    public function setPersonaRules(?RuleCollection $personaRules): void
+    {
+        $this->personaRules = $personaRules;
+    }
+
+    /**
+     * Gets a list of all customers that have a
+     * restricted access due to the explicit assignment
+     * within the persona condition settings of the promotion.
+     */
+    public function getPersonaCustomers(): ?CustomerCollection
+    {
+        return $this->personaCustomers;
+    }
+
+    /**
+     * Sets the customers that have explicit access to this promotion.
+     * This should be configured within the persona settings of the promotion.
+     */
+    public function setPersonaCustomers(?CustomerCollection $customers): void
+    {
+        $this->personaCustomers = $customers;
+    }
+
+    /**
      * Gets if the promotion is valid in the current context
      * based on its Persona Rule configuration.
      */
-    public function isPersonaValid(SalesChannelContext $context): bool
+    public function isPersonaConditionValid(SalesChannelContext $context): bool
     {
-        if ($this->getPersonaRule() === null) {
+        /** @var bool $hasRuleRestriction */
+        $hasRuleRestriction = $this->getPersonaRules() instanceof RuleCollection && count($this->getPersonaRules()->getElements()) > 0;
+
+        /** @var bool $hasCustomerRestrictions */
+        $hasCustomerRestrictions = $this->getPersonaCustomers() instanceof CustomerCollection && count($this->getPersonaCustomers()->getElements()) > 0;
+
+        // check if we even have a restriction
+        // otherwise the persona is valid
+        if (!$hasRuleRestriction && !$hasCustomerRestrictions) {
             return true;
         }
 
-        // verify if our persona rule from our promotion
-        // is part of our existing rules within the checkout context
-        if (!in_array($this->getPersonaRule()->getId(), $context->getRuleIds(), true)) {
-            return false;
+        // check if we have a list of rules
+        // and if any of them is in our current context
+        if ($hasRuleRestriction) {
+            /** @var string $ruleID */
+            foreach ($this->getPersonaRules()->getKeys() as $ruleID) {
+                // verify if our persona rule from our promotion
+                // is part of our existing rules within the checkout context
+                if (in_array($ruleID, $context->getRuleIds(), true)) {
+                    // ok at least 1 rule is valid
+                    // then this is ok
+                    return true;
+                }
+            }
         }
 
-        return true;
+        // if we are not already valid due to a rule
+        // then check if our customer might be assigned directly.
+        if ($hasCustomerRestrictions) {
+            /** @var CustomerEntity|null $currentCustomer */
+            $currentCustomer = $context->getCustomer();
+
+            // check if we have a customer.
+            // if we are not logged in, then our restriction is not valid
+            // and thus we return false.
+            if (!$currentCustomer instanceof CustomerEntity) {
+                return false;
+            }
+
+            /** @var CustomerCollection|null $customers */
+            $customers = $this->getPersonaCustomers();
+
+            // check if our customer ID exists in the keys of permitted customers of the promotion.
+            return key_exists($context->getCustomer()->getId(), $customers->getElements());
+        }
+
+        // as fallback, always
+        // make sure its invalid
+        return false;
     }
 
     /**

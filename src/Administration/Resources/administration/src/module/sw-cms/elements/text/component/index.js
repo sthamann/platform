@@ -1,4 +1,4 @@
-import { Component, Mixin } from 'src/core/shopware';
+import { Component, Mixin, State } from 'src/core/shopware';
 import template from './sw-cms-el-text.html.twig';
 import './sw-cms-el-text.scss';
 
@@ -12,8 +12,24 @@ Component.register('sw-cms-el-text', {
     data() {
         return {
             editable: true,
-            hasFocus: false
+            demoValue: ''
         };
+    },
+
+    computed: {
+        cmsPageState() {
+            return State.getStore('cmsPageState');
+        }
+    },
+
+    watch: {
+        'cmsPageState.currentDemoEntity': {
+            handler() {
+                if (this.element.config.content.source === 'mapped') {
+                    this.demoValue = this.getDemoValue(this.element.config.content.value) || '';
+                }
+            }
+        }
     },
 
     created() {
@@ -23,73 +39,25 @@ Component.register('sw-cms-el-text', {
     methods: {
         createdComponent() {
             this.initElementConfig('text');
-        },
 
-        getContent() {
-            return this.$refs.contentEditor.innerHTML;
-        },
-
-        onClick() {
-            this.hasFocus = true;
-        },
-
-        onFocus() {
-            this.setFocus();
-            document.execCommand('defaultParagraphSeparator', false, 'p');
-        },
-
-        onBlur() {
-            this.element.config.content.value = this.getContent();
-            this.$emit('element-update', this.element);
-        },
-
-        setFocus() {
-            if (!this.hasFocus) {
-                document.addEventListener('click', this.onDocumentClick);
-                this.hasFocus = true;
+            if (this.element.config.content.source === 'mapped') {
+                this.demoValue = this.getDemoValue(this.element.config.content.value) || '';
             }
         },
 
-        removeFocus() {
-            if (this.hasFocus) {
-                this.hasFocus = false;
-                document.removeEventListener('click', this.onDocumentClick);
+        onBlur(content) {
+            this.emitChanges(content);
+        },
+
+        onInput(content) {
+            this.emitChanges(content);
+        },
+
+        emitChanges(content) {
+            if (content !== this.element.config.content.value) {
+                this.element.config.content.value = content;
+                this.$emit('element-update', this.element);
             }
-        },
-
-        onDocumentClick(event) {
-            if (!event.path.includes(this.$el)) {
-                this.removeFocus();
-            }
-        },
-
-        onSetBold() {
-            this.hasFocus = true;
-            document.execCommand('bold', false, true);
-        },
-
-        onSetItalic() {
-            document.execCommand('italic', false, true);
-        },
-
-        onSetUnderline() {
-            document.execCommand('underline', false, true);
-        },
-
-        onSetJustifyLeft() {
-            document.execCommand('justifyLeft', false, true);
-        },
-
-        onSetJustifyRight() {
-            document.execCommand('justifyRight', false, true);
-        },
-
-        onSetJustifyCenter() {
-            document.execCommand('justifyCenter', false, true);
-        },
-
-        onSetJustifyFull() {
-            document.execCommand('justifyFull', false, true);
         }
     }
 });

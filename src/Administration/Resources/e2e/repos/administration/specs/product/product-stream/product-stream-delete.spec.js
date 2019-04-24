@@ -11,8 +11,9 @@ module.exports = {
     'navigate to product stream module': (browser) => {
         browser
             .openMainMenuEntry({
-                targetPath: '#/sw/product-stream/index',
-                mainMenuId: 'sw-product'
+                targetPath: '#/sw/product/stream/index',
+                mainMenuId: 'sw-product',
+                subMenuId: 'sw-product-stream'
             });
     },
     'check if new product stream exists in overview': (browser) => {
@@ -29,7 +30,10 @@ module.exports = {
         browser
 
             .click('.sw-sidebar__navigation .sw-sidebar-navigation-item')
-            .clickContextMenuItem(`${page.elements.contextMenu} .sw-context-menu-item__text`, page.elements.contextMenuButton, `${page.elements.gridRow}--0`)
+            .clickContextMenuItem(page.elements.contextMenuButton, {
+                menuActionSelector: `${page.elements.contextMenu} .sw-context-menu-item__text`,
+                scope: `${page.elements.gridRow}--0`
+            })
             .waitForElementNotPresent(page.elements.loader)
             .expect.element(page.elements.smartBarHeader).to.have.text.that.contains(global.AdminFixtureService.basicFixture.name);
     },
@@ -38,7 +42,7 @@ module.exports = {
 
         browser
             .openMainMenuEntry({
-                targetPath: '#/sw/product-stream/index',
+                targetPath: '#/sw/product/stream/index',
                 mainMenuId: 'sw-product',
                 subMenuId: 'sw-product-stream'
             })
@@ -49,6 +53,6 @@ module.exports = {
 
         browser
             .waitForElementNotPresent(page.elements.loader)
-            .expect.element(page.elements.smartBarAmount).to.have.text.that.contains('(1)');
+            .expect.element(page.elements.smartBarAmount).to.have.text.that.contains('(0)');
     }
 };

@@ -18,7 +18,7 @@ use Shopware\Core\System\SalesChannel\SalesChannelEntity;
 class PromotionGatewayTest extends TestCase
 {
     /**
-     * @var CheckoutContext
+     * @var SalesChannelContext
      */
     private $checkoutContext = null;
 
@@ -53,19 +53,23 @@ class PromotionGatewayTest extends TestCase
         $fakeRepo = new FakePromotionRepository();
         $gateway = new PromotionGateway($fakeRepo);
 
-        /* @var CheckoutContext $checkoutContext */
+        /* @var SalesChannelContext $checkoutContext */
         $gateway->getByContext($this->checkoutContext);
 
         $expectedCriteria = new Criteria([]);
         $expectedCriteria->addFilter(new MultiFilter(
             MultiFilter::CONNECTION_AND,
             [
-                $this->getExpectedActiveFilter(),
+                new EqualsFilter('active', true),
+                new EqualsFilter('promotion.salesChannels.salesChannelId', 'CH1'),
                 $this->getExpectedDateRangeFilter(),
                 $this->getExpectedRuleConditionFilters([]),
                 new EqualsFilter('codeType', PromotionEntity::CODE_TYPE_NO_CODE),
             ]
         ));
+
+        $expectedCriteria->addAssociation('personaRules');
+        $expectedCriteria->addAssociation('personaCustomers');
 
         static::assertEquals($expectedCriteria, $fakeRepo->getSearchedCriteria());
     }
@@ -84,15 +88,19 @@ class PromotionGatewayTest extends TestCase
         $fakeRepo = new FakePromotionRepository();
         $gateway = new PromotionGateway($fakeRepo);
 
-        /* @var CheckoutContext $checkoutContext */
+        /* @var SalesChannelContext $checkoutContext */
         $gateway->getByCodes(['CODE-1', 'CODE-2'], $this->checkoutContext);
 
         $expectedCriteria = new Criteria([]);
         $expectedCriteria->addFilter(new MultiFilter(MultiFilter::CONNECTION_AND, [
-            $this->getExpectedActiveFilter(),
+            new EqualsFilter('active', true),
+            new EqualsFilter('promotion.salesChannels.salesChannelId', 'CH1'),
             $this->getExpectedDateRangeFilter(),
             $this->getExpectedCodesFilter(['CODE-1', 'CODE-2']),
         ]));
+
+        $expectedCriteria->addAssociation('personaRules');
+        $expectedCriteria->addAssociation('personaCustomers');
 
         static::assertEquals($expectedCriteria, $fakeRepo->getSearchedCriteria());
     }
@@ -170,30 +178,21 @@ class PromotionGatewayTest extends TestCase
                 new MultiFilter(
                     MultiFilter::CONNECTION_AND,
                     [
-                        new EqualsFilter('personaRuleId', null),
                         new EqualsFilter('scopeRuleId', null),
+                        new EqualsFilter('promotion.orderRules.id', null),
                     ]
                 ),
                 new MultiFilter(
                     MultiFilter::CONNECTION_OR,
                     [
-                        new EqualsAnyFilter('personaRuleId', $contextRuleIds),
                         new EqualsAnyFilter('scopeRuleId', $contextRuleIds),
+                        new EqualsAnyFilter('promotion.orderRules.id', $contextRuleIds),
                     ]
                 ),
             ]
         );
 
         return $filterRules;
-    }
-
-    /**
-     * Gets the expected filter for the
-     * active flag of promotions
-     */
-    private function getExpectedActiveFilter(): Filter
-    {
-        return new EqualsFilter('active', true);
     }
 
     /**

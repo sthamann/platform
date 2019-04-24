@@ -1,5 +1,7 @@
 import { NEXT134 } from 'src/flag/feature_next134';
 import { Module } from 'src/core/shopware';
+import './service/cms.service';
+import './state/cms-page.state';
 import './mixin/sw-cms-element.mixin';
 import './blocks';
 import './elements';
@@ -14,7 +16,7 @@ import enGB from './snippet/en_GB.json';
 Module.register('sw-cms', {
     flag: NEXT134,
     type: 'core',
-    name: 'Content Management',
+    name: 'sw-cms.general.mainMenuItemGeneral',
     description: 'The module for creating content.',
     color: '#ff68b4',
     icon: 'default-object-marketing',

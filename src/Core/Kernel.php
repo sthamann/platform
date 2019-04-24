@@ -7,6 +7,7 @@ use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\FetchMode;
+use Shopware\Core\Framework\Api\Controller\FallbackController;
 use Shopware\Core\Framework\Framework;
 use Shopware\Core\Framework\Migration\MigrationStep;
 use Shopware\Core\Framework\Plugin;
@@ -20,6 +21,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Symfony\Component\HttpKernel\Kernel as HttpKernel;
+use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollectionBuilder;
 
 class Kernel extends HttpKernel
@@ -186,6 +188,7 @@ class Kernel extends HttpKernel
 
         $this->addBundleRoutes($routes);
         $this->addApiRoutes($routes);
+        $this->addFallbackRoute($routes);
     }
 
     /**
@@ -294,7 +297,10 @@ SQL;
 
         $activeNonDestructiveMigrations = array_intersect($activeMigrations, $nonDestructiveMigrations);
 
-        $connectionVariables = ['SET @@group_concat_max_len = CAST(IF(@@group_concat_max_len > 320000, @@group_concat_max_len, 320000) AS UNSIGNED)'];
+        $connectionVariables = [
+            'SET @@group_concat_max_len = CAST(IF(@@group_concat_max_len > 320000, @@group_concat_max_len, 320000) AS UNSIGNED)',
+            "SET sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));",
+        ];
         foreach ($activeNonDestructiveMigrations as $migration) {
             $connectionVariables[] = sprintf(
                 'SET %s = TRUE',
@@ -327,11 +333,11 @@ SQL;
             }
 
             foreach ($psr4 as $namespace => $path) {
-                $this->classLoader->addPsr4($namespace, $this->getProjectDir() . $plugin['path'] . '/' . $path);
+                $this->classLoader->addPsr4($namespace, $this->getProjectDir() . '/' . $plugin['path'] . '/' . $path);
             }
 
             foreach ($psr0 as $namespace => $path) {
-                $this->classLoader->add($namespace, $this->getProjectDir() . $plugin['path'] . '/' . $path);
+                $this->classLoader->add($namespace, $this->getProjectDir() . '/' . $plugin['path'] . '/' . $path);
             }
         }
     }
@@ -341,8 +347,13 @@ SQL;
         foreach ($plugins as $pluginData) {
             $className = $pluginData['name'];
 
-            if (!class_exists($className)) {
-                throw new \RuntimeException(sprintf('Unable to load plugin class "%s"', $className));
+            $pluginClassFilePath = $this->classLoader->findFile($className);
+            if ($pluginClassFilePath === false) {
+                continue;
+            }
+
+            if (!file_exists($pluginClassFilePath)) {
+                continue;
             }
 
             /** @var Plugin $plugin */
@@ -356,5 +367,15 @@ SQL;
 
             self::$plugins->add($plugin);
         }
+    }
+
+    private function addFallbackRoute(RouteCollectionBuilder $routes): void
+    {
+        // detail routes
+        $route = new Route('/');
+        $route->setMethods(['GET']);
+        $route->setDefault('_controller', FallbackController::class . '::rootFallback');
+
+        $routes->addRoute($route, 'root.fallback');
     }
 }
