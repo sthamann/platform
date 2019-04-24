@@ -52,8 +52,8 @@
             <tag name="shopware.entity.definition" entity="product_property"/>
         </service>
 
-        <service id="Shopware\Core\Content\Product\Aggregate\ProductRating\ProductRatingDefinition">
-            <tag name="shopware.entity.definition" entity="product_rating"/>
+        <service id="Shopware\Core\Content\Product\Aggregate\ProductReview\ProductReviewDefinition">
+            <tag name="shopware.entity.definition" entity="product_review"/>
         </service>
 
         <service id="Shopware\Core\Content\Product\Aggregate\ProductManufacturer\ProductManufacturerDefinition">
@@ -146,8 +146,8 @@
             <tag name="shopware.entity.definition" entity="delivery_time"/>
         </service>
 
-        <service id="Shopware\Core\Content\Product\Storefront\ProductRatingService">
-            <argument id="product_rating.repository" type="service"/>
+        <service id="Shopware\Core\Content\Product\Storefront\ProductReviewService">
+            <argument id="product_review.repository" type="service"/>
             <argument id="event_dispatcher" type="service"/>
             <argument type="service" id="Shopware\Core\Framework\Validation\DataValidator"/>
         </service>

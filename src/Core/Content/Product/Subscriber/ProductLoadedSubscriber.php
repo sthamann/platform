@@ -22,13 +22,13 @@ class ProductLoadedSubscriber implements EventSubscriberInterface
     {
         /** @var ProductEntity $product */
         foreach ($event->getEntities() as $product) {
-            $ratings = $product->getRatings();
+            $reviews = $product->getReviews();
             $avgPoints = 0;
-            if ($ratings){
-                foreach ($ratings as $rating){
-                    $avgPoints += $rating->getPoints();
+            if ($reviews !== null){
+                foreach ($reviews as $review){
+                    $avgPoints += $review->getPoints();
                 }
-                $avgPoints = $avgPoints / count($product->getRatings());
+                $avgPoints = $avgPoints / count($product->getReviews());
             }
             $product->ratingAvg = $avgPoints;
         }

@@ -3,7 +3,7 @@
 namespace Shopware\Storefront\PageController;
 
 use Shopware\Core\Checkout\Customer\Storefront\AccountRegistrationService;
-use Shopware\Core\Content\Product\Storefront\ProductRatingService;
+use Shopware\Core\Content\Product\Storefront\ProductReviewService;
 use Shopware\Core\Framework\Routing\InternalRequest;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\Framework\Validation\Exception\ConstraintViolationException;
@@ -24,14 +24,14 @@ class ProductPageController extends StorefrontController
     private $detailPageLoader;
 
     /**
-     * @var ProductRatingService
+     * @var ProductReviewService
      */
-    private $productRatingService;
+    private $productReviewService;
 
-    public function __construct(PageLoaderInterface $detailPageLoader,ProductRatingService $productRatingService)
+    public function __construct(PageLoaderInterface $detailPageLoader,ProductReviewService $productReviewService)
     {
         $this->detailPageLoader = $detailPageLoader;
-        $this->productRatingService = $productRatingService;
+        $this->productReviewService = $productReviewService;
     }
 
     /**
@@ -47,9 +47,9 @@ class ProductPageController extends StorefrontController
     }
 
     /**
-     * @Route("/detail/{productId}/rating", name="frontend.detail.rating.save", methods={"POST"})
+     * @Route("/detail/{productId}/rating", name="frontend.detail.review.save", methods={"POST"})
      */
-    public function saveRating(string $productId, RequestDataBag $data, SalesChannelContext $context): Response
+    public function saveReview(string $productId, RequestDataBag $data, SalesChannelContext $context): Response
     {
         if ($context->getCustomer()) {
             //return $this->redirectToRoute('frontend.account.home.page');
@@ -57,7 +57,7 @@ class ProductPageController extends StorefrontController
         }
 
         try {
-            $this->productRatingService->saveRating($productId,$data,$context);
+            $this->productReviewService->saveReview($productId,$data,$context);
 
         } catch (ConstraintViolationException $formViolations) {
 

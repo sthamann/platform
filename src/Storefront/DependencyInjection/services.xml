@@ -266,7 +266,7 @@
 
         <service id="Shopware\Storefront\PageController\ProductPageController" public="true">
             <argument type="service" id="Shopware\Storefront\Page\Product\ProductPageLoader"/>
-            <argument type="service" id="Shopware\Core\Content\Product\Storefront\ProductRatingService"/>
+            <argument type="service" id="Shopware\Core\Content\Product\Storefront\ProductReviewService"/>
 
         </service>
 

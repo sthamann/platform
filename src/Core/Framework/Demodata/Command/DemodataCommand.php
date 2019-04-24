@@ -14,7 +14,7 @@ use Shopware\Core\Content\MailTemplate\MailTemplateDefinition;
 use Shopware\Core\Content\Media\MediaDefinition;
 use Shopware\Core\Content\Navigation\NavigationDefinition;
 use Shopware\Core\Content\Product\Aggregate\ProductManufacturer\ProductManufacturerDefinition;
-use Shopware\Core\Content\Product\Aggregate\ProductRating\ProductRatingDefinition;
+use Shopware\Core\Content\Product\Aggregate\ProductReview\ProductReviewDefinition;
 use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Content\ProductStream\ProductStreamDefinition;
 use Shopware\Core\Content\Property\PropertyGroupDefinition;
@@ -113,7 +113,7 @@ class DemodataCommand extends Command
         $request->add(MediaDefinition::class, (int) $input->getOption('media'));
         $request->add(CmsPageDefinition::class, 50);
         $request->add(NavigationDefinition::class, 1);
-        $request->add(ProductRatingDefinition::class, (int) $input->getOption('ratings'));
+        $request->add(ProductReviewDefinition::class, (int) $input->getOption('ratings'));
 
 
         if (next754()) {

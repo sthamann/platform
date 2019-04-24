@@ -21,12 +21,12 @@ use Symfony\Component\Validator\Constraints\LessThanOrEqual;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Range;
 
-class ProductRatingService
+class ProductReviewService
 {
     /**
      * @var EntityRepositoryInterface
      */
-    private $ratingRepository;
+    private $reviewRepository;
 
     /**
      * @var EventDispatcherInterface
@@ -39,15 +39,15 @@ class ProductRatingService
     private $validator;
 
     public function __construct(
-        EntityRepositoryInterface $ratingRepository,
+        EntityRepositoryInterface $reviewRepository,
         EventDispatcherInterface $eventDispatcher,
         DataValidator $validator    ) {
-        $this->ratingRepository = $ratingRepository;
+        $this->reviewRepository = $reviewRepository;
         $this->eventDispatcher = $eventDispatcher;
         $this->validator = $validator;
     }
 
-    public function saveRating(string $productId, DataBag $data,  SalesChannelContext $context): void
+    public function saveReview(string $productId, DataBag $data,  SalesChannelContext $context): void
     {
         $customer = $context->getCustomer();
         $languageId = $context->getContext()->getLanguageId();
@@ -59,7 +59,7 @@ class ProductRatingService
         }
 
 
-        $this->validateRating($data, $context->getContext());
+        $this->validateReview($data, $context->getContext());
 
         $rating = array(
             'productId' => $productId,
@@ -73,11 +73,11 @@ class ProductRatingService
             'points' => $data->get("points")
         );
 
-        $this->ratingRepository->create([$rating], $context->getContext());
+        $this->reviewRepository->create([$rating], $context->getContext());
 
     }
 
-    private function validateRating(DataBag $data, Context $context): void
+    private function validateReview(DataBag $data, Context $context): void
     {
 
         $definition = new DataValidationDefinition('product.create_rating');

@@ -1,8 +1,8 @@
 import { Component } from 'src/core/shopware';
 import Criteria from 'src/core/data-new/criteria.data';
-import template from './sw-rating-list.html.twig';
+import template from './sw-review-list.html.twig';
 
-Component.register('sw-rating-list', {
+Component.register('sw-review-list', {
     template,
 
     inject: ['repositoryFactory', 'context'],
@@ -22,36 +22,36 @@ Component.register('sw-rating-list', {
             return [{
                 property: 'product',
                 dataIndex: 'product',
-                label: this.$tc('sw-rating.list.columnProduct'),
-                routerLink: 'sw.rating.detail',
+                label: this.$tc('sw-review.list.columnProduct'),
+                routerLink: 'sw.review.detail',
                 primary: true
             },
             {
                 property: 'points',
                 dataIndex: 'points',
-                label: this.$tc('sw-rating.list.columnPoints'),
+                label: this.$tc('sw-review.list.columnPoints'),
                 align: 'center'
             },
             {
                 property: 'user',
                 dataIndex: 'externalUser',
-                label: this.$tc('sw-rating.list.columnUser')
+                label: this.$tc('sw-review.list.columnUser')
             },
             {
                 property: 'createdAt',
                 dataIndex: 'createdAt',
-                label: this.$tc('sw-rating.list.columnCreatedAt')
+                label: this.$tc('sw-review.list.columnCreatedAt')
             },
             {
                 property: 'status',
                 dataIndex: 'status',
-                label: this.$tc('sw-rating.list.columnStatus'),
+                label: this.$tc('sw-review.list.columnStatus'),
                 align: 'center'
             },
             {
                 property: 'comment',
                 dataIndex: 'comment',
-                label: this.$tc('sw-rating.list.columnComment'),
+                label: this.$tc('sw-review.list.columnComment'),
                 align: 'center'
             }];
         }
@@ -63,7 +63,7 @@ Component.register('sw-rating-list', {
 
     methods: {
         createdComponent() {
-            this.repository = this.repositoryFactory.create('product_rating');
+            this.repository = this.repositoryFactory.create('product_review');
 
             this.criteria = new Criteria();
 

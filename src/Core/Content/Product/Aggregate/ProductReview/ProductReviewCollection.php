@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Shopware\Core\Content\Product\Aggregate\ProductRating;
+namespace Shopware\Core\Content\Product\Aggregate\ProductReview;
 
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 
@@ -13,10 +13,10 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
  * @method ProductRatingEntity|null first()
  * @method ProductRatingEntity|null last()
  */
-class ProductRatingCollection extends EntityCollection
+class ProductReviewCollection extends EntityCollection
 {
     protected function getExpectedClass(): string
     {
-        return ProductRatingEntity::class;
+        return ProductReviewEntity::class;
     }
 }

@@ -3,7 +3,7 @@
 namespace Shopware\Core\Framework\Demodata\Generator;
 
 use Shopware\Core\Checkout\Customer\CustomerDefinition;
-use Shopware\Core\Content\Product\Aggregate\ProductRating\ProductRatingDefinition;
+use Shopware\Core\Content\Product\Aggregate\ProductReview\ProductReviewDefinition;
 use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
@@ -12,7 +12,7 @@ use Shopware\Core\Framework\Demodata\DemodataContext;
 use Shopware\Core\Framework\Demodata\DemodataGeneratorInterface;
 use Shopware\Core\Framework\Uuid\Uuid;
 
-class ProductRatingGenerator implements DemodataGeneratorInterface
+class ProductReviewGenerator implements DemodataGeneratorInterface
 {
     /**
      * @var EntityWriterInterface
@@ -26,7 +26,7 @@ class ProductRatingGenerator implements DemodataGeneratorInterface
 
     public function getDefinition(): string
     {
-        return ProductRatingDefinition::class;
+        return ProductReviewDefinition::class;
     }
 
     public function generate(int $numberOfItems, DemodataContext $context, array $options = []): void
@@ -55,11 +55,11 @@ class ProductRatingGenerator implements DemodataGeneratorInterface
         $writeContext = WriteContext::createFromContext($context->getContext());
 
         foreach (array_chunk($payload, 100) as $chunk) {
-            $this->writer->upsert(ProductRatingDefinition::class, $chunk, $writeContext);
+            $this->writer->upsert(ProductReviewDefinition::class, $chunk, $writeContext);
             $context->getConsole()->progressAdvance(\count($chunk));
         }
 
         $context->getConsole()->progressFinish();
-        $context->add(ProductRatingDefinition::class, ...array_column($payload, 'id'));
+        $context->add(ProductReviewDefinition::class, ...array_column($payload, 'id'));
     }
 }

@@ -343,24 +343,24 @@ class ProductEntity extends Entity
     protected $visibilities;
 
     /**
-     * @var ProductRatingCollection|null
+     * @var ProductReviewCollection|null
      */
-    protected $ratings;
+    protected $reviews;
 
     /**
      * @return ProductRatingCollection|null
      */
-    public function getRatings(): ?ProductRatingCollection
+    public function getReviews(): ?ProductReviewCollection
     {
-        return $this->ratings;
+        return $this->reviews;
     }
 
     /**
-     * @param ProductRatingCollection|null $ratings
+     * @param ProductReviewCollection|null reviews
      */
-    public function setRatings(?ProductRatingCollection $ratings): void
+    public function setReviews(?ProductReviewCollection $reviews): void
     {
-        $this->ratings = $ratings;
+        $this->reviews = $reviews;
     }
 
     /**

@@ -55,7 +55,7 @@
             <tag name="shopware.demodata_generator"/>
         </service>
 
-        <service id="Shopware\Core\Framework\Demodata\Generator\ProductRatingGenerator">
+        <service id="Shopware\Core\Framework\Demodata\Generator\ProductReviewGenerator">
             <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter" />
             <tag name="shopware.demodata_generator"/>
         </service>
