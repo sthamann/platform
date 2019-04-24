@@ -73,9 +73,9 @@ class ProductPageController extends StorefrontController
     }
 
     /**
-     * @Route("/detail/{productId}/rating", name="frontend.detail.rating.save", methods={"POST"})
+     * @Route("/detail/{productId}/rating", name="frontend.detail.review.save", methods={"POST"})
      */
-    public function saveRating(string $productId, RequestDataBag $data, SalesChannelContext $context): Response
+    public function saveReview(string $productId, RequestDataBag $data, SalesChannelContext $context): Response
     {
         if ($context->getCustomer()) {
             //return $this->redirectToRoute('frontend.account.home.page');

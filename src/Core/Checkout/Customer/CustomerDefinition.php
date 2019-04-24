@@ -104,7 +104,6 @@ class CustomerDefinition extends EntityDefinition
             (new OneToManyAssociationField('addresses', CustomerAddressDefinition::class, 'customer_id', 'id'))->addFlags(new CascadeDelete()),
             (new OneToManyAssociationField('orderCustomers', OrderCustomerDefinition::class, 'customer_id', 'id'))->addFlags(new RestrictDelete()),
             new ManyToManyAssociationField('tags', TagDefinition::class, CustomerTagDefinition::class, 'customer_id', 'tag_id'),
-
             new ManyToManyAssociationField('promotions', PromotionDefinition::class, PromotionPersonaCustomerDefinition::class, 'customer_id', 'promotion_id'),
             (new OneToManyAssociationField('ratings', ProductRatingDefinition::class, 'customer_id'))->addFlags(new CascadeDelete()),
         ]);
