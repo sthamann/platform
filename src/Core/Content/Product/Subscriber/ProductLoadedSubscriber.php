@@ -30,6 +30,7 @@ class ProductLoadedSubscriber implements EventSubscriberInterface
                 }
                 $avgPoints = $avgPoints / count($product->getReviews());
             }
+
             $product->ratingAvg = $avgPoints;
         }
     }

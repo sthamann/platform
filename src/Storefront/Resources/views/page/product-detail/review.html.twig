@@ -1,6 +1,11 @@
 {% block page_product_detail_review_container %}
     {#TODO: replace demo login flag with context data#}
-    {% set loginStatus =  1 %}
+	{% if not context.customer %}
+		{% set loginStatus = 0 %}
+	{% else %}
+		{% set loginStatus = 1 %}
+	{% endif %}
+
 
     {#TODO: replace items per list config value#}
     {% set reviewsPerListPage = 10 %}
@@ -26,11 +31,11 @@
 
 
     {# TODO: replace product review count "productReviewCount"#}
-    {% set productReviewCount = 0 + productRating1Count + productRating2Count + productRating3Count + productRating4Count + productRating5Count %}
+    {% set productReviewCount = page.product.reviews|length %}
 
     {# TODO: replace average product rating "productAvgRating"#}
     {% if productReviewCount > 0 %}
-        {% set productAvgRating = (productRating5Count * 5 + productRating4Count * 4 + productRating3Count * 3 + productRating2Count * 2 + productRating1Count) / productReviewCount %}
+        {% set productAvgRating = page.product.ratingAvg  %}
         {% set productAvgRating = productAvgRating|round(2, 'floor') %}
     {% endif %}
 
@@ -56,6 +61,7 @@
 
 
     <div class="product-detail-review tab-pane-container">
+
         {% block page_product_detail_review_asid %}
             <div class="row product-detail-review-content">
                 {% block page_product_detail_review_aside %}
@@ -135,13 +141,16 @@
 												{% if (listReviewsCount > 1 and listReviewsCount > reviewsPerListPage) %}
 													<small><strong>{{ currentListPage }}</strong> - <strong>{{ reviewsPerListPage }}</strong> {{ "detail.reviewCountBefore"|trans }} <strong>{{ listReviewsCount }}</strong> {{ "detail.reviewCountAfter"|trans({'%count%': listReviewsCount }) }}</small>
 												{% else %}
+													{#
+													!!! Achtung: Wirft Fehler !!!
 													<small><strong>{{ listReviewsCount }}</strong> {{ "detail.reviewCountAfter"|trans({'%count%': listReviewsCount }) }}</small>
+													#}
 												{% endif %}
 											</p>
 										{% endblock %}
 
 										{% block page_product_detail_review_list_content %}
-											{% for review in page.product.ratings %}
+											{% for review in page.product.reviews %}
 												<div class="product-detail-review-list-content">
 													{% sw_include '@Storefront/page/product-detail/review-item.html.twig' %}
 												</div>

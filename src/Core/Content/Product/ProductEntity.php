@@ -11,6 +11,7 @@ use Shopware\Core\Content\Product\Aggregate\ProductManufacturer\ProductManufactu
 use Shopware\Core\Content\Product\Aggregate\ProductMedia\ProductMediaCollection;
 use Shopware\Core\Content\Product\Aggregate\ProductMedia\ProductMediaEntity;
 use Shopware\Core\Content\Product\Aggregate\ProductPrice\ProductPriceCollection;
+use Shopware\Core\Content\Product\Aggregate\ProductReview\ProductReviewCollection;
 use Shopware\Core\Content\Product\Aggregate\ProductTranslation\ProductTranslationCollection;
 use Shopware\Core\Content\Product\Aggregate\ProductVisibility\ProductVisibilityCollection;
 use Shopware\Core\Content\Property\Aggregate\PropertyGroupOption\PropertyGroupOptionCollection;
@@ -352,6 +353,12 @@ class ProductEntity extends Entity
      */
     protected $tagIds;
 
+    /**
+     * @var ProductReviewCollection
+     */
+    protected $reviews;
+
+
     public function __construct()
     {
         $this->prices = new ProductPriceCollection();
@@ -360,6 +367,10 @@ class ProductEntity extends Entity
     public function __toString()
     {
         return (string) $this->getName();
+    }
+
+    public function getReviews(){
+        return $this->reviews;
     }
 
     public function getParentId(): ?string

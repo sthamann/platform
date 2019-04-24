@@ -57,8 +57,8 @@
 
 					{% block page_product_detail_reviews %}
 						{#TODO: Replace with real product rating data#}
-						{% set productRatingAvg = 4.58 %}
-						{% set productRatingCount = 15 %}
+						{% set productRatingAvg = page.product.ratingAvg %}
+						{% set productRatingCount = page.product.reviews|length %}
 
 						{% if productRatingCount > 0 %}
 							<p class="product-detail-reviews">
