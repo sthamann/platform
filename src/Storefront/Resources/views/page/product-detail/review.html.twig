@@ -14,11 +14,11 @@
     {% set currentListPage = 1 %}
 
     {# TODO: replace product rating data #}
-    {% set productRating5Count = random(400, 500) %}
-    {% set productRating4Count = random(100, 200) %}
-    {% set productRating3Count = random(10, 20) %}
-    {% set productRating2Count = 0 %}
-    {% set productRating1Count = random(0, 25) %}
+    {% set productRating5Count = page.product.ratingMatrix[5] %}
+    {% set productRating4Count = page.product.ratingMatrix[4] %}
+    {% set productRating3Count = page.product.ratingMatrix[3] %}
+    {% set productRating2Count = page.product.ratingMatrix[2] %}
+    {% set productRating1Count = page.product.ratingMatrix[1] %}
 
 
     {#  Not reviews available demo
