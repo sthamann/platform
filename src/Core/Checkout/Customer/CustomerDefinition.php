@@ -7,7 +7,8 @@ use Shopware\Core\Checkout\Customer\Aggregate\CustomerGroup\CustomerGroupDefinit
 use Shopware\Core\Checkout\Customer\Aggregate\CustomerTag\CustomerTagDefinition;
 use Shopware\Core\Checkout\Order\Aggregate\OrderCustomer\OrderCustomerDefinition;
 use Shopware\Core\Checkout\Payment\PaymentMethodDefinition;
-use Shopware\Core\Content\Product\Aggregate\ProductReview\ProductReviewDefinition;
+use Shopware\Core\Checkout\Promotion\Aggregate\PromotionPersonaCustomer\PromotionPersonaCustomerDefinition;
+use Shopware\Core\Checkout\Promotion\PromotionDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\AttributesField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\BoolField;
@@ -30,10 +31,10 @@ use Shopware\Core\Framework\DataAbstractionLayer\Field\StringField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\UpdatedAtField;
 use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
 use Shopware\Core\Framework\Language\LanguageDefinition;
-use Shopware\Core\Framework\Tag\TagDefinition;
 use Shopware\Core\System\NumberRange\DataAbstractionLayer\NumberRangeField;
 use Shopware\Core\System\SalesChannel\SalesChannelDefinition;
 use Shopware\Core\System\Salutation\SalutationDefinition;
+use Shopware\Core\System\Tag\TagDefinition;
 
 class CustomerDefinition extends EntityDefinition
 {
@@ -103,8 +104,8 @@ class CustomerDefinition extends EntityDefinition
             (new OneToManyAssociationField('addresses', CustomerAddressDefinition::class, 'customer_id', 'id'))->addFlags(new CascadeDelete()),
             (new OneToManyAssociationField('orderCustomers', OrderCustomerDefinition::class, 'customer_id', 'id'))->addFlags(new RestrictDelete()),
             new ManyToManyAssociationField('tags', TagDefinition::class, CustomerTagDefinition::class, 'customer_id', 'tag_id'),
-            (new OneToManyAssociationField('ratings', ProductReviewDefinition::class, 'customer_id'))->addFlags(new CascadeDelete()),
 
+            new ManyToManyAssociationField('promotions', PromotionDefinition::class, PromotionPersonaCustomerDefinition::class, 'customer_id', 'promotion_id'),
         ]);
     }
 }
