@@ -14,7 +14,6 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Shopware\Core\Content\Product\Storefront\ProductReviewService;
 
 class ProductPageController extends StorefrontController
 {
@@ -78,9 +77,8 @@ class ProductPageController extends StorefrontController
      */
     public function saveReview(string $productId, RequestDataBag $data, SalesChannelContext $context): Response
     {
-        if ($context->getCustomer()) {
-            //return $this->redirectToRoute('frontend.account.home.page');
-            echo 'Eingeloggt';
+        if (!$context->getCustomer()) {
+            return $this->redirectToRoute('frontend.account.home.page');
         }
 
         try {

@@ -81,12 +81,6 @@ class ProductPageLoader implements PageLoaderInterface
         $this->productDefinition = $productDefinition;
     }
 
-    public function addReviews($criteria){
-        $reviewCriteria = new Criteria();
-        $reviewCriteria->addFilter(new EqualsFilter('status',1));
-        $criteria->addAssociation('ratings',$reviewCriteria);
-    }
-
     public function load(Request $request, SalesChannelContext $context): ProductPage
     {
         $page = $this->pageWithHeaderLoader->load($request, $context);
@@ -159,7 +153,10 @@ class ProductPageLoader implements PageLoaderInterface
         $criteria->addAssociation('media');
         $criteria->addAssociation('cover');
         $criteria->addAssociationPath('properties.group');
-        $this->addReviews($criteria);
+        // Add product reviews
+        $reviewCriteria = new Criteria();
+        $reviewCriteria->addFilter(new EqualsFilter('status', 1));
+        $criteria->addAssociation('reviews', $reviewCriteria);
 
         $this->eventDispatcher->dispatch(
             ProductPageCriteriaEvent::NAME,

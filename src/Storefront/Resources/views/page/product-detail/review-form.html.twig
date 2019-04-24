@@ -1,4 +1,7 @@
 {% block page_product_detail_review_form %}
+    {% if not context.customer %}
+        <h1 style="color:#F00">Nicht eingeloggt</h1>
+    {% endif %}
     <form class="review-form"
           action="{{ path('frontend.detail.review.save', { productId: page.product.id }) }}"
           method="post">

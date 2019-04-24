@@ -348,6 +348,11 @@ class ProductEntity extends Entity
      */
     protected $tagIds;
 
+    /**
+     * @var ProductRatingCollection
+     */
+    protected $reviews;
+
     public function __construct()
     {
         $this->prices = new ProductPriceCollection();
@@ -358,9 +363,9 @@ class ProductEntity extends Entity
         return (string) $this->getName();
     }
 
-    public function getRatings(): ?ProductRatingCollection
+    public function getReviews()
     {
-        return $this->ratings;
+        return $this->reviews;
     }
 
     public function setRatings(?ProductRatingCollection $ratings): void

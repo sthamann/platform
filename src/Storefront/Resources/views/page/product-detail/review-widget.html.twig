@@ -1,0 +1,146 @@
+{% block page_product_detail_review_widget %}
+	{# TODO: fix spacing for sticky infobox and replace top inline style #}
+	<div class="sticky-top product-detail-review-widget" style="top:20px;">
+		{% block page_product_detail_review_info %}
+			{% if productReviewCount > 0 %}
+				<div class="row">
+					<div class="col-8 product-detail-review-info">
+						{% block page_product_detail_review_title %}
+							<h3 class="product-detail-review-title">
+								<i class="far fa-user"></i>
+								{{ productReviewCount }}
+								{{ "detail.reviewTitle"|trans({'%count%': productReviewCount }) }}
+							</h3>
+						{% endblock %}
+
+						{% block page_product_detail_review_overview %}
+							<div class="product-detail-review-rating" itemprop="aggregateRating" itemscope itemtype="https://schema.org/AggregateRating">
+								<meta itemprop="ratingValue" content="{{ productAvgRating }} ">
+								<meta itemprop="bestRating" content="5">
+								<meta itemprop="ratingCount" content="{{ productReviewCount }} ">
+								<p class="h4">
+									{{ productAvgRating|round(1) }}
+									{% sw_include '@Storefront/component/review/rating.html.twig' with {
+										points: productAvgRating,
+										style: 'text-primary'
+									} %}
+								</p>
+							</div>
+						{% endblock %}
+
+					</div>
+					<div class="col product-detail-review-cover">
+						{% block page_product_detail_review_image %}
+							<img src="{{ page.product.cover.media.url }}"
+								 class="img-fluid product-detail-review-media"
+								 alt="{{ page.product.name }}"
+							/>
+						{%  endblock %}
+
+					</div>
+				</div>
+				<hr>
+				{% block page_product_detail_review_filter %}
+					{#TODO: fix vertical styling and replace margin top inline style#}
+					{% macro ratingPercentLine(points, count, share, text) %}
+						{% block page_product_detail_review_filter_box %}
+							<div class="row product-detail-review-filter">
+							{% block page_product_detail_review_filter_checkbox %}
+								<div class="col-md-7 col-lg-4 product-detail-review-checkbox">
+									<div class="custom-control custom-checkbox">
+										<input type="checkbox" class="custom-control-input" id="reviewRating{{ points }}" {{ count }} {%  if count < 1 %}disabled{% endif %}>
+										<label class="custom-control-label text-nowrap" for="reviewRating{{ points }}"><small>{{ text }}</small></label>
+									</div>
+								</div>
+							{% endblock %}
+
+							{% block page_product_detail_review_filter_point %}
+								<div class="col-1 product-detail-review-point">
+									{% sw_include '@Storefront/component/review/point.html.twig' with {
+										style: 'text-primary'
+									} %}
+								</div>
+							{% endblock %}
+
+							{% block page_product_detail_review_filter_progressbar %}
+								<div class="col d-none d-lg-block product-detail-review-progressbar">
+									<div class="progress" style="height: 14px; margin-top:4px;">
+										<div class="progress-bar" role="progressbar" style="width: {{ share }}%;" aria-valuenow="{{ share }}" aria-valuemin="0" aria-valuemax="100"></div>
+									</div>
+								</div>
+							{% endblock %}
+
+							{% block page_product_detail_review_filter_share %}
+								<div class="col-sm-3 col-2 product-detail-review-share">
+									<p><small>{{ share|round }}%</small></p>
+								</div>
+								</div>
+							{% endblock %}
+
+						{% endblock %}
+
+					{% endmacro %}
+
+					{% import _self as line %}
+
+					{{ line.ratingPercentLine(
+						5,
+						productRating5Count,
+						productRating5Percent,
+						"detail.reviewFivePointRatingText"|trans
+					)
+					}}
+
+					{{ line.ratingPercentLine(
+						4,
+						productRating4Count,
+						productRating4Percent,
+						"detail.reviewFourPointRatingText"|trans
+					)
+					}}
+					{{ line.ratingPercentLine(
+						3,
+						productRating3Count,
+						productRating3Percent,
+						"detail.reviewThreePointRatingText"|trans
+					)
+					}}
+					{{ line.ratingPercentLine(
+						2,
+						productRating2Count,
+						productRating2Percent,
+						"detail.reviewTwoPointRatingText"|trans
+					)
+					}}
+					{{ line.ratingPercentLine(
+						1,
+						productRating1Count,
+						productRating1Percent,
+						"detail.reviewOnePointRatingText"|trans
+					)
+					}}
+				{% endblock %}
+
+				{% block page_product_detail_review_filter_divider %}
+					<hr/>
+				{% endblock %}
+
+			{% endif %}
+		{% endblock %}
+
+		{% block page_product_detail_review_form_teaser %}
+			<div class="product-detail-review-teaser">
+
+				{% if not context.customer %}
+					<h4 style="color:#F00">Not logged in!!! Ajax Login !!!</h4>
+				{% endif %}
+				<h4>{{ "detail.reviewTeaserTitle"|trans }}</h4>
+				<p>{{ "detail.reviewTeaserText"|trans }}</p>
+				<button class="btn btn-primary" type="button" data-toggle="collapse" data-target=".multi-collapse" aria-expanded="false" aria-controls="review-form review-list">
+					{{ "detail.reviewTeaserButton"|trans }}
+				</button>
+			</div>
+		{% endblock %}
+
+	</div>
+{% endblock %}

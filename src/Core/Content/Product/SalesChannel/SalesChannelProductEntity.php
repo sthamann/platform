@@ -4,6 +4,7 @@ namespace Shopware\Core\Content\Product\SalesChannel;
 
 use Shopware\Core\Checkout\Cart\Price\Struct\CalculatedPrice;
 use Shopware\Core\Checkout\Cart\Price\Struct\PriceCollection;
+use Shopware\Core\Content\Product\Aggregate\ProductRating\ProductRatingCollection;
 use Shopware\Core\Content\Product\ProductEntity;
 use Shopware\Core\Content\Property\PropertyGroupCollection;
 
@@ -30,6 +31,16 @@ class SalesChannelProductEntity extends ProductEntity
      * @var PropertyGroupCollection|null
      */
     protected $sortedProperties;
+
+    /**
+     * @var ProductRatingCollection
+     */
+    protected $reviews;
+
+    public function getReviews()
+    {
+        return $this->reviews;
+    }
 
     public function isAvailable(): bool
     {
