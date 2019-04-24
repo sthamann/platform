@@ -37,6 +37,7 @@ class SalesChannelProductSubscriber implements EventSubscriberInterface
         /** @var SalesChannelProductEntity $product */
         foreach ($event->getEntities() as $product) {
             $this->calculatePrices($event->getSalesChannelContext(), $product);
+            
         }
     }
 

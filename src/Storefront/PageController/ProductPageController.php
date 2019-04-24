@@ -17,9 +17,15 @@ class ProductPageController extends StorefrontController
      */
     private $detailPageLoader;
 
-    public function __construct(PageLoaderInterface $detailPageLoader)
+    /**
+     * @var ProductReviewService
+     */
+    private $productReviewService;
+
+    public function __construct(PageLoaderInterface $detailPageLoader,ProductReviewService $productReviewService)
     {
         $this->detailPageLoader = $detailPageLoader;
+        $this->productReviewService = $productReviewService;
     }
 
     /**
@@ -29,6 +35,29 @@ class ProductPageController extends StorefrontController
     {
         $page = $this->detailPageLoader->load($request, $context);
 
-        return $this->renderStorefront('@Storefront/page/product-detail/index.html.twig', ['page' => $page]);
+        $ratingSuccess = $request->get("success");
+
+        return $this->renderStorefront('@Storefront/page/product-detail/index.html.twig', ['page' => $page,'ratingSuccess'=>$ratingSuccess]);
+    }
+
+    /**
+     * @Route("/detail/{productId}/rating", name="frontend.detail.review.save", methods={"POST"})
+     */
+    public function saveReview(string $productId, RequestDataBag $data, SalesChannelContext $context): Response
+    {
+        if ($context->getCustomer()) {
+            //return $this->redirectToRoute('frontend.account.home.page');
+            echo "Eingeloggt";
+        }
+
+        try {
+            $this->productReviewService->saveReview($productId,$data,$context);
+
+        } catch (ConstraintViolationException $formViolations) {
+
+            return $this->forward('Shopware\Storefront\PageController\ProductPageController::index', ['productId'=>$productId,'success'=>-1,'formViolations' => $formViolations], ['productId' => $productId]);
+        }
+
+        return new RedirectResponse($this->generateUrl('frontend.detail.page',['productId'=>$productId,'success'=>1]));
     }
 }

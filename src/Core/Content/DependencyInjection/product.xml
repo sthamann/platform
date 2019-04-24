@@ -40,6 +40,10 @@
             <tag name="shopware.entity.definition" entity="product_property"/>
         </service>
 
+        <service id="Shopware\Core\Content\Product\Aggregate\ProductReview\ProductReviewDefinition">
+            <tag name="shopware.entity.definition" entity="product_review"/>
+        </service>
+
         <service id="Shopware\Core\Content\Product\Aggregate\ProductManufacturer\ProductManufacturerDefinition">
             <tag name="shopware.entity.definition" entity="product_manufacturer"/>
             <tag name="shopware.composite_search.definition"  priority="300"/>
@@ -151,6 +155,12 @@
 
         <service id="Shopware\Core\Content\Product\SalesChannel\ProductPriceDefinitionBuilderInterface"
                  class="Shopware\Core\Content\Product\SalesChannel\ProductPriceDefinitionBuilder">
+        </service>
+
+        <service id="Shopware\Core\Content\Product\Storefront\ProductReviewService">
+            <argument id="product_review.repository" type="service"/>
+            <argument id="event_dispatcher" type="service"/>
+            <argument type="service" id="Shopware\Core\Framework\Validation\DataValidator"/>
         </service>
     </services>
 </container>                
