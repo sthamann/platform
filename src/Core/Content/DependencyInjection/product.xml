@@ -5,31 +5,18 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <service id="Shopware\Core\Content\Product\Storefront\StorefrontProductRepository">
-            <argument type="service" id="product.repository"/>
+        <service id="Shopware\Core\Content\Product\SalesChannel\SalesChannelProductSubscriber">
+            <tag name="kernel.event_subscriber"/>
             <argument type="service" id="Shopware\Core\Checkout\Cart\Price\QuantityPriceCalculator"/>
-            <tag name="shopware.traceable" label="product.storefront-repository"/>
-        </service>
-
-        <service id="Shopware\Core\Content\Product\Storefront\StorefrontProductController" public="true">
-            <argument type="service" id="Shopware\Core\Content\Product\Storefront\StorefrontProductRepository"/>
-            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Search\RequestCriteriaBuilder"/>
-            <call method="setContainer">
-                <argument type="service" id="service_container"/>
-            </call>
-        </service>
-
-        <service id="Shopware\Core\Content\Category\Storefront\StorefrontCategoryController" public="true">
-            <argument type="service" id="category.repository"/>
-            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Search\RequestCriteriaBuilder"/>
-            <call method="setContainer">
-                <argument type="service" id="service_container"/>
-            </call>
         </service>
 
         <service id="Shopware\Core\Content\Product\ProductDefinition">
             <tag name="shopware.entity.definition" entity="product"/>
             <tag name="shopware.composite_search.definition"  priority="600"/>
+        </service>
+
+        <service id="Shopware\Core\Content\Product\SalesChannel\SalesChannelProductDefinition">
+            <tag name="shopware.sales_channel.entity.definition" entity="product"/>
         </service>
 
         <service id="Shopware\Core\Content\Product\Aggregate\ProductCategory\ProductCategoryDefinition">
@@ -50,10 +37,6 @@
 
         <service id="Shopware\Core\Content\Product\Aggregate\ProductProperty\ProductPropertyDefinition">
             <tag name="shopware.entity.definition" entity="product_property"/>
-        </service>
-
-        <service id="Shopware\Core\Content\Product\Aggregate\ProductReview\ProductReviewDefinition">
-            <tag name="shopware.entity.definition" entity="product_review"/>
         </service>
 
         <service id="Shopware\Core\Content\Product\Aggregate\ProductManufacturer\ProductManufacturerDefinition">
@@ -146,15 +129,23 @@
             <tag name="shopware.entity.definition" entity="delivery_time"/>
         </service>
 
-        <service id="Shopware\Core\Content\Product\Storefront\ProductReviewService">
-            <argument id="product_review.repository" type="service"/>
-            <argument id="event_dispatcher" type="service"/>
-            <argument type="service" id="Shopware\Core\Framework\Validation\DataValidator"/>
+        <service id="Shopware\Core\Content\Product\Cms\ListingGateway">
+            <argument type="service" id="sales_channel.product.repository" />
         </service>
 
-        <service id="Shopware\Core\Content\Product\Subscriber\ProductLoadedSubscriber">
-            <tag name="kernel.event_subscriber"/>
+        <service id="Shopware\Core\Content\Product\Cms\ListingGatewayInterface" alias="Shopware\Core\Content\Product\Cms\ListingGateway" />
+
+        <service id="Shopware\Core\Content\Product\Cms\Type\ProductBoxTypeDataResolver">
+            <tag name="shopware.cms.data_resolver" />
         </service>
 
+        <service id="Shopware\Core\Content\Product\Cms\Type\ProductListingTypeDataResolver">
+            <argument type="service" id="Shopware\Core\Content\Product\Cms\ListingGatewayInterface" />
+            <tag name="shopware.cms.data_resolver" />
+        </service>
+
+        <service id="Shopware\Core\Content\Product\Cms\Type\ProductSliderTypeDataResolver">
+            <tag name="shopware.cms.data_resolver"/>
+        </service>
     </services>
 </container>                
