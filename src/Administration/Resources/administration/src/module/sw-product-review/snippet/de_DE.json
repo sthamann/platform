@@ -1,12 +1,12 @@
 {
-  "sw-rating": {
+  "sw-review": {
     "general": {
       "mainMenuItemList": "Bewertungen",
       "mainMenuItemGeneral": "Bewertungen",
       "placeholderSearchBar": "Durchsuche alle Bewertungen"
     },
     "list": {
-      "textRatingOverview": "Bewertungen",
+      "textReviewOverview": "Bewertungen",
       "columnProduct": "Produkt",
       "columnPoints": "Punkte",
       "columnUser": "Benutzer",

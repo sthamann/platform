@@ -1,12 +1,12 @@
 {
-  "sw-rating": {
+  "sw-review": {
     "general": {
-      "mainMenuItemList": "Rating",
-      "mainMenuItemGeneral": "Ratings",
-      "placeholderSearchBar": "Search ratings"
+      "mainMenuItemList": "Reviews",
+      "mainMenuItemGeneral": "Reviews",
+      "placeholderSearchBar": "Search reviews"
     },
     "list": {
-      "textRatingOverview": "Ratings",
+      "textReviewOverview": "Reviews",
       "columnProduct": "Product",
       "columnPoints": "Points",
       "columnUser": "User",
@@ -15,7 +15,7 @@
       "columnComment": "Commented"
     },
     "detail": {
-      "textHeadline": "Rating",
+      "textHeadline": "Review",
       "buttonCancel": "Cancel",
       "buttonSave": "Save",
       "cardTitleRatingInfo": "Information",
@@ -34,7 +34,7 @@
       "labelComment": "Comment",
       "titleCardComment": "Comment",
       "titleSaveSuccess": "Success",
-      "messageSaveSuccess": "The rating \"{name}\" has been saved successful."
+      "messageSaveSuccess": "The review \"{name}\" has been saved successful."
     }
   }
 }

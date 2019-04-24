@@ -47,11 +47,6 @@
             <tag name="shopware.entity.definition" entity="product_keyword_dictionary"/>
         </service>
 
-
-        <service id="Shopware\Core\Content\Product\Aggregate\ProductRating\ProductRatingDefinition">
-            <tag name="shopware.entity.definition" entity="product_rating"/>
-        </service>
-
         <service id="Shopware\Core\Content\Product\Aggregate\ProductReview\ProductReviewDefinition">
             <tag name="shopware.entity.definition" entity="product_review"/>
         </service>

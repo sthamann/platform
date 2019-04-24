@@ -1,20 +1,20 @@
 import { Module } from 'src/core/shopware';
-import './page/sw-rating-list';
-import './page/sw-rating-detail';
+import './page/sw-review-list';
+import './page/sw-review-detail';
 
 import deDE from './snippet/de_DE.json';
 import enGB from './snippet/en_GB.json';
 
-Module.register('sw-rating', {
+Module.register('sw-review', {
     type: 'core',
-    name: 'Rating',
-    description: 'Manages the ratings of the oroducts',
+    name: 'Reviews',
+    description: 'Manages the customer reviews of oroducts',
     version: '1.0.0',
     targetVersion: '1.0.0',
     color: '#57D9A3',
     icon: 'default-symbol-products',
     favicon: 'icon-module-products.png',
-    entity: 'product_rating',
+    entity: 'product_review',
 
     snippets: {
         'de-DE': deDE,
@@ -24,24 +24,25 @@ Module.register('sw-rating', {
     routes: {
         index: {
             components: {
-                default: 'sw-rating-list'
+                default: 'sw-review-list'
             },
             path: 'index'
         },
         detail: {
-            component: 'sw-rating-detail',
+            component: 'sw-review-detail',
             path: 'detail/:id',
             meta: {
-                parentPath: 'sw.rating.index'
+                parentPath: 'sw.review.index'
             }
         }
     },
 
     navigation: [{
-        path: 'sw.rating.index',
-        label: 'sw-rating.general.mainMenuItemList',
-        id: 'sw-rating',
+        path: 'sw.review.index',
+        label: 'sw-review.general.mainMenuItemList',
+        id: 'sw-review',
         parent: 'sw-product',
-        color: '#57D9A3'
+        color: '#57D9A3',
+        position: 100
     }]
 });

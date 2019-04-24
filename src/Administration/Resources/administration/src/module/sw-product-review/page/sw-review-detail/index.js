@@ -2,10 +2,10 @@ import { Component, Mixin } from 'src/core/shopware';
 import Criteria from 'src/core/data-new/criteria.data';
 
 import { warn } from 'src/core/service/utils/debug.utils';
-import template from './sw-rating-detail.html.twig';
-import './sw-rating-detail.scss';
+import template from './sw-review-detail.html.twig';
+import './sw-review-detail.scss';
 
-Component.register('sw-rating-detail', {
+Component.register('sw-review-detail', {
     template,
 
     inject: ['repositoryFactory', 'context'],
@@ -18,8 +18,8 @@ Component.register('sw-rating-detail', {
     data() {
         return {
             isLoading: null,
-            ratingId: null,
-            rating: {},
+            reviewId: null,
+            review: {},
             repository: null,
             productRepository: null,
             product: null
@@ -38,11 +38,11 @@ Component.register('sw-rating-detail', {
 
     methods: {
         createdComponent() {
-            this.repository = this.repositoryFactory.create('product_rating');
+            this.repository = this.repositoryFactory.create('product_review');
             this.productRepository = this.repositoryFactory.create('product');
 
             if (this.$route.params.id) {
-                this.ratingId = this.$route.params.id;
+                this.reviewId = this.$route.params.id;
 
                 this.loadEntityData();
             }
@@ -55,9 +55,9 @@ Component.register('sw-rating-detail', {
             // criteria.addAssociation('product');
             criteria.addAssociation('language');
 
-            this.repository.get(this.ratingId, this.context, criteria).then((rating) => {
-                this.rating = rating;
-                this.productRepository.get(this.rating.productId, this.context).then(product => {
+            this.repository.get(this.reviewId, this.context, criteria).then((review) => {
+                this.review = review;
+                this.productRepository.get(this.review.productId, this.context).then(product => {
                     this.product = product;
                 });
                 this.isLoading = false;
@@ -65,14 +65,14 @@ Component.register('sw-rating-detail', {
         },
 
         onSave() {
-            const ratingName = this.rating.title;
-            const titleSaveSuccess = this.$tc('sw-rating.detail.titleSaveSuccess');
-            const messageSaveSuccess = this.$tc('sw-rating.detail.messageSaveSuccess', 0, { name: ratingName });
+            const reviewName = this.review.title;
+            const titleSaveSuccess = this.$tc('sw-review.detail.titleSaveSuccess');
+            const messageSaveSuccess = this.$tc('sw-review.detail.messageSaveSuccess', 0, { name: reviewName });
             const titleSaveError = this.$tc('global.notification.notificationSaveErrorTitle');
             const messageSaveError = this.$tc(
-                'global.notification.notificationSaveErrorMessage', 0, { entityName: ratingName }
+                'global.notification.notificationSaveErrorMessage', 0, { entityName: reviewName }
             );
-            this.repository.save(this.rating, this.context).then(() => {
+            this.repository.save(this.review, this.context).then(() => {
                 this.createNotificationSuccess({
                     title: titleSaveSuccess,
                     message: messageSaveSuccess

@@ -11,7 +11,7 @@ use Shopware\Core\Content\Product\Aggregate\ProductManufacturer\ProductManufactu
 use Shopware\Core\Content\Product\Aggregate\ProductMedia\ProductMediaCollection;
 use Shopware\Core\Content\Product\Aggregate\ProductMedia\ProductMediaEntity;
 use Shopware\Core\Content\Product\Aggregate\ProductPrice\ProductPriceCollection;
-use Shopware\Core\Content\Product\Aggregate\ProductRating\ProductRatingCollection;
+use Shopware\Core\Content\Product\Aggregate\ProductReview\ProductReviewCollection;
 use Shopware\Core\Content\Product\Aggregate\ProductSearchKeyword\ProductSearchKeywordCollection;
 use Shopware\Core\Content\Product\Aggregate\ProductTranslation\ProductTranslationCollection;
 use Shopware\Core\Content\Product\Aggregate\ProductVisibility\ProductVisibilityCollection;
@@ -337,19 +337,13 @@ class ProductEntity extends Entity
      * @var ProductVisibilityCollection|null
      */
     protected $visibilities;
-
-    /**
-     * @var ProductRatingCollection|null
-     */
-    protected $ratings;
-
     /**
      * @var array|null
      */
     protected $tagIds;
 
     /**
-     * @var ProductRatingCollection
+     * @var ProductReviewCollection
      */
     protected $reviews;
 
@@ -373,9 +367,9 @@ class ProductEntity extends Entity
         return $this->reviews;
     }
 
-    public function setRatings(?ProductRatingCollection $ratings): void
+    public function setRatings(?ProductReviewCollection $ratings): void
     {
-        $this->ratings = $ratings;
+        $this->reviews = $ratings;
     }
 
     public function getParentId(): ?string

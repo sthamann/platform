@@ -5,7 +5,7 @@ namespace Shopware\Core\Migration;
 use Doctrine\DBAL\Connection;
 use Shopware\Core\Framework\Migration\MigrationStep;
 
-class Migration1554900301AddRatingTable extends MigrationStep
+class Migration1554900301AddReviewTable extends MigrationStep
 {
     public function getCreationTimestamp(): int
     {
@@ -17,10 +17,10 @@ class Migration1554900301AddRatingTable extends MigrationStep
         // implement update
 
         $connection->executeUpdate('
-            DROP TABLE IF EXISTS `product_rating`;
+            DROP TABLE IF EXISTS `product_review`;
         ');
         $connection->executeUpdate('
-            CREATE TABLE `product_rating` (
+            CREATE TABLE `product_review` (
                 `id` BINARY(16) NOT NULL,
                 `product_id` BINARY(16) NULL,
                 `customer_id` BINARY(16) NULL,
@@ -41,14 +41,14 @@ class Migration1554900301AddRatingTable extends MigrationStep
                 `created_at` DATETIME(3) NOT NULL,
                 `product_version_id` BINARY(16) NOT NULL,
                 PRIMARY KEY (`id`),
-                KEY `fk.product_rating.product_id` (`product_id`,`product_version_id`),
-                KEY `fk.product_rating.customer_id` (`customer_id`),
-                KEY `fk.product_rating.sales_channel_id` (`sales_channel_id`),
-                KEY `fk.product_rating.language_id` (`language_id`),
-                CONSTRAINT `fk.product_rating.product_id` FOREIGN KEY (`product_id`,`product_version_id`) REFERENCES `product` (`id`,`version_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-                CONSTRAINT `fk.product_rating.customer_id` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-                CONSTRAINT `fk.product_rating.sales_channel_id` FOREIGN KEY (`sales_channel_id`) REFERENCES `sales_channel` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-                CONSTRAINT `fk.product_rating.language_id` FOREIGN KEY (`language_id`) REFERENCES `language` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+                KEY `fk.product_review.product_id` (`product_id`,`product_version_id`),
+                KEY `fk.product_review.customer_id` (`customer_id`),
+                KEY `fk.product_review.sales_channel_id` (`sales_channel_id`),
+                KEY `fk.product_review.language_id` (`language_id`),
+                CONSTRAINT `fk.product_review.product_id` FOREIGN KEY (`product_id`,`product_version_id`) REFERENCES `product` (`id`,`version_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+                CONSTRAINT `fk.product_review.customer_id` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+                CONSTRAINT `fk.product_review.sales_channel_id` FOREIGN KEY (`sales_channel_id`) REFERENCES `sales_channel` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+                CONSTRAINT `fk.product_review.language_id` FOREIGN KEY (`language_id`) REFERENCES `language` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
         ');
     }

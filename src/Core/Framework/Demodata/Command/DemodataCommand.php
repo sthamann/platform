@@ -11,7 +11,7 @@ use Shopware\Core\Content\MailTemplate\Aggregate\MailHeaderFooter\MailHeaderFoot
 use Shopware\Core\Content\MailTemplate\MailTemplateDefinition;
 use Shopware\Core\Content\Media\MediaDefinition;
 use Shopware\Core\Content\Product\Aggregate\ProductManufacturer\ProductManufacturerDefinition;
-use Shopware\Core\Content\Product\Aggregate\ProductRating\ProductRatingDefinition;
+use Shopware\Core\Content\Product\Aggregate\ProductReview\ProductReviewDefinition;
 use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Content\ProductStream\ProductStreamDefinition;
 use Shopware\Core\Content\Property\PropertyGroupDefinition;
@@ -103,7 +103,7 @@ class DemodataCommand extends Command
 
         $request->add(OrderDefinition::class, (int) $input->getOption('orders'));
         $request->add(CmsPageDefinition::class, 50);
-        $request->add(ProductRatingDefinition::class, (int) $input->getOption('ratings'));
+        $request->add(ProductReviewDefinition::class, (int) $input->getOption('ratings'));
 
         $request->add(
             CustomFieldSetDefinition::class,

@@ -1,24 +1,24 @@
-{% block sw_rating_list %}
-    <sw-page class="sw-rating-list">
+{% block sw_review_list %}
+    <sw-page class="sw-review-list">
 
-        {% block sw_rating_list_search_bar %}
+        {% block sw_review_list_search_bar %}
             <template slot="search-bar">
-                <sw-search-bar initialSearchType="product_rating"
+                <sw-search-bar initialSearchType="product_review"
                                :initialSearch="term"
                                @search="onSearch">
                 </sw-search-bar>
             </template>
         {% endblock %}
 
-        {% block sw_rating_list_smart_bar_header %}
+        {% block sw_review_list_smart_bar_header %}
             <template slot="smart-bar-header">
-                {% block sw_rating_list_smart_bar_header_title %}
+                {% block sw_review_list_smart_bar_header_title %}
                     <h2>
-                        {% block sw_rating_list_smart_bar_header_title_text %}
-                            {{ $tc('sw-rating.list.textRatingOverview') }}
+                        {% block sw_review_list_smart_bar_header_title_text %}
+                            {{ $tc('sw-review.list.textReviewOverview') }}
                         {% endblock %}
 
-                        {% block sw_rating_list_smart_bar_header_amount %}
+                        {% block sw_review_list_smart_bar_header_amount %}
                             <span v-if="!isLoading" class="sw-page__smart-bar-amount">
                                 ({{ items.total }})
                             </span>
@@ -28,17 +28,17 @@
             </template>
         {% endblock %}
 
-        {% block sw_rating_list_content %}
+        {% block sw_review_list_content %}
             <template slot="content">
-                {% block sw_rating_list_content_list %}
+                {% block sw_review_list_content_list %}
                     <sw-entity-listing
                             v-if="items"
                             ref="listing"
                             :items="items"
                             :repository="repository"
                             :columns="columns"
-                            detailRoute="sw.rating.detail">
-                        {% block sw_rating_list_content_list_status %}
+                            detailRoute="sw.review.detail">
+                        {% block sw_review_list_content_list_status %}
                             <template slot="column-status" slot-scope="{ item }">
                                 <template v-if="item.status">
                                     <sw-icon name="default-basic-checkmark-line" size="12" color="green"></sw-icon>
@@ -48,12 +48,12 @@
                                 </template>
                             </template>
                         {% endblock %}
-                        {% block sw_rating_list_content_list_created_at %}
+                        {% block sw_review_list_content_list_created_at %}
                             <template slot="column-createdAt" slot-scope="{ item }">
                                 {{ item.createdAt | date }}
                             </template>
                         {% endblock %}
-                        {% block sw_rating_list_content_list_user %}
+                        {% block sw_review_list_content_list_user %}
                             <template slot="column-user" slot-scope="{ item }">
                                 <template v-if="item.customerId">
                                         {{ item.customer.firstName }} {{ item.customer.lastName }}
@@ -63,16 +63,16 @@
                                 </template>
                             </template>
                         {% endblock %}
-                        {% block sw_rating_list_content_list_product %}
+                        {% block sw_review_list_content_list_product %}
                             <template slot="column-product" slot-scope="{ item }">
                                 <template v-if="item.productId">
-                                    <router-link :to="{ name: 'sw.rating.detail', params: { id: item.id } }">
+                                    <router-link :to="{ name: 'sw.review.detail', params: { id: item.id } }">
                                         {{ item.product.name }}
                                     </router-link>
                                 </template>
                             </template>
                         {% endblock %}
-                        {% block sw_rating_list_content_list_points %}
+                        {% block sw_review_list_content_list_points %}
                             <template slot="column-points" slot-scope="{ item }">
                                     <sw-icon v-for="i in item.points"
                                              :key="i"
@@ -81,7 +81,7 @@
                                     </sw-icon>
                             </template>
                         {% endblock %}
-                        {% block sw_rating_list_content_list_comment %}
+                        {% block sw_review_list_content_list_comment %}
                             <template slot="column-comment" slot-scope="{ item }">
                                 <template v-if="item.comment && item.comment.length > 0">
                                     <sw-icon name="default-basic-checkmark-line" size="12" color="green"></sw-icon>

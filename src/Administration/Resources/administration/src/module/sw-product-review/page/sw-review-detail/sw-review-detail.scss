@@ -1,7 +1,7 @@
 @import "~scss/variables";
 
-.sw-rating-detail {
-    .sw-rating-detail__container {
+.sw-review-detail {
+    .sw-review-detail__container {
         margin-bottom: 16px;
     }
 
@@ -17,7 +17,7 @@
         }
     }
 
-    .sw-rating-detail__label-content {
+    .sw-review-detail__label-content {
         display: block;
         line-height: 16px;
         font-size: 14px;

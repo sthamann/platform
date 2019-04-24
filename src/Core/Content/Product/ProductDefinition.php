@@ -11,7 +11,7 @@ use Shopware\Core\Content\Product\Aggregate\ProductMedia\ProductMediaDefinition;
 use Shopware\Core\Content\Product\Aggregate\ProductOption\ProductOptionDefinition;
 use Shopware\Core\Content\Product\Aggregate\ProductPrice\ProductPriceDefinition;
 use Shopware\Core\Content\Product\Aggregate\ProductProperty\ProductPropertyDefinition;
-use Shopware\Core\Content\Product\Aggregate\ProductRating\ProductRatingDefinition;
+use Shopware\Core\Content\Product\Aggregate\ProductReview\ProductReviewDefinition;
 use Shopware\Core\Content\Product\Aggregate\ProductSearchKeyword\ProductSearchKeywordDefinition;
 use Shopware\Core\Content\Product\Aggregate\ProductTag\ProductTagDefinition;
 use Shopware\Core\Content\Product\Aggregate\ProductTranslation\ProductTranslationDefinition;
@@ -200,7 +200,7 @@ class ProductDefinition extends EntityDefinition
             //association for keyword mapping for search algorithm
             (new OneToManyAssociationField('searchKeywords', ProductSearchKeywordDefinition::class, 'product_id'))->addFlags(new CascadeDelete(), new Inherited()),
             (new OneToManyAssociationField('visibilities', ProductVisibilityDefinition::class, 'product_id'))->addFlags(new CascadeDelete()),
-            (new OneToManyAssociationField('ratings', ProductRatingDefinition::class, 'product_id'))->addFlags(new CascadeDelete()),
+            (new OneToManyAssociationField('reviews', ProductReviewDefinition::class, 'product_id'))->addFlags(new CascadeDelete()),
         ]);
     }
 }

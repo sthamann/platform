@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Shopware\Core\Content\Product\Aggregate\ProductRating;
+namespace Shopware\Core\Content\Product\Aggregate\ProductReview;
 
 use Shopware\Core\Checkout\Customer\CustomerDefinition;
 use Shopware\Core\Content\Product\ProductDefinition;
@@ -25,21 +25,21 @@ use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
 use Shopware\Core\Framework\Language\LanguageDefinition;
 use Shopware\Core\System\SalesChannel\SalesChannelDefinition;
 
-class ProductRatingDefinition extends EntityDefinition
+class ProductReviewDefinition extends EntityDefinition
 {
     public function getEntityName(): string
     {
-        return 'product_rating';
+        return 'product_review';
     }
 
     public function getCollectionClass(): string
     {
-        return ProductRatingCollection::class;
+        return ProductReviewCollection::class;
     }
 
     public function getEntityClass(): string
     {
-        return ProductRatingEntity::class;
+        return ProductReviewEntity::class;
     }
 
     protected function defineFields(): FieldCollection
