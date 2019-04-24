@@ -3,8 +3,6 @@
 namespace Shopware\Core\Content\Product;
 
 use Shopware\Core\Checkout\Cart\Delivery\Struct\DeliveryDate;
-use Shopware\Core\Checkout\Cart\Price\Struct\PriceDefinitionCollection;
-use Shopware\Core\Checkout\Cart\Price\Struct\QuantityPriceDefinition;
 use Shopware\Core\Checkout\Cart\Tax\Struct\TaxRule;
 use Shopware\Core\Checkout\Cart\Tax\Struct\TaxRuleCollection;
 use Shopware\Core\Content\Category\CategoryCollection;
@@ -13,18 +11,15 @@ use Shopware\Core\Content\Product\Aggregate\ProductManufacturer\ProductManufactu
 use Shopware\Core\Content\Product\Aggregate\ProductMedia\ProductMediaCollection;
 use Shopware\Core\Content\Product\Aggregate\ProductMedia\ProductMediaEntity;
 use Shopware\Core\Content\Product\Aggregate\ProductPrice\ProductPriceCollection;
-use Shopware\Core\Content\Product\Aggregate\ProductPrice\ProductPriceEntity;
-use Shopware\Core\Content\Product\Aggregate\ProductRating\ProductRatingCollection;
 use Shopware\Core\Content\Product\Aggregate\ProductTranslation\ProductTranslationCollection;
 use Shopware\Core\Content\Product\Aggregate\ProductVisibility\ProductVisibilityCollection;
 use Shopware\Core\Content\Property\Aggregate\PropertyGroupOption\PropertyGroupOptionCollection;
-use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityIdTrait;
 use Shopware\Core\Framework\Pricing\Price;
 use Shopware\Core\Framework\Pricing\PriceRuleCollection;
 use Shopware\Core\Framework\Search\SearchDocumentCollection;
-use Shopware\Core\Framework\Tag\TagCollection;
+use Shopware\Core\System\Tag\TagCollection;
 use Shopware\Core\System\Tax\TaxEntity;
 use Shopware\Core\System\Unit\UnitEntity;
 
@@ -233,6 +228,16 @@ class ProductEntity extends Entity
     protected $packUnit;
 
     /**
+     * @var array|null
+     */
+    protected $variantRestrictions;
+
+    /**
+     * @var string[]|null
+     */
+    protected $configuratorGroupSorting;
+
+    /**
      * @var TaxEntity|null
      */
     protected $tax;
@@ -341,27 +346,6 @@ class ProductEntity extends Entity
      * @var ProductVisibilityCollection|null
      */
     protected $visibilities;
-
-    /**
-     * @var ProductReviewCollection|null
-     */
-    protected $reviews;
-
-    /**
-     * @return ProductRatingCollection|null
-     */
-    public function getReviews(): ?ProductReviewCollection
-    {
-        return $this->reviews;
-    }
-
-    /**
-     * @param ProductReviewCollection|null reviews
-     */
-    public function setReviews(?ProductReviewCollection $reviews): void
-    {
-        $this->reviews = $reviews;
-    }
 
     /**
      * @var array|null
@@ -778,127 +762,6 @@ class ProductEntity extends Entity
         $this->maxDeliveryTime = $maxDeliveryTime;
     }
 
-    public function getPriceDefinitions(Context $context): PriceDefinitionCollection
-    {
-        $taxRules = $this->getTaxRuleCollection();
-
-        $rules = $this->getPrices();
-
-        /** @var ProductPriceCollection|null $prices */
-        $prices = $rules->getPricesForContext($context);
-
-        if (!$prices) {
-            return new PriceDefinitionCollection();
-        }
-
-        $prices->sortByQuantity();
-
-        $definitions = $prices->map(function (ProductPriceEntity $rule) use ($taxRules, $context) {
-            $quantity = $rule->getQuantityEnd() ?? $rule->getQuantityStart();
-
-            return new QuantityPriceDefinition(
-                $rule->getPrice()->getPriceForContext($context),
-                $taxRules,
-                $context->getCurrencyPrecision(),
-                $quantity,
-                true
-            );
-        });
-
-        return new PriceDefinitionCollection($definitions);
-    }
-
-    public function getPriceDefinition(Context $context): QuantityPriceDefinition
-    {
-        return new QuantityPriceDefinition(
-            $this->getPrice()->getPriceForContext($context),
-            $this->getTaxRuleCollection(),
-            $context->getCurrencyPrecision(),
-            1,
-            true
-        );
-    }
-
-    public function getListingPriceDefinition(Context $context): QuantityPriceDefinition
-    {
-        $taxRules = $this->getTaxRuleCollection();
-
-        if ($this->getListingPrices()) {
-            $prices = $this->getListingPrices();
-        } else {
-            $prices = $this->getPrices()->filter(
-                function (ProductPriceEntity $price) {
-                    return $price->getQuantityEnd() === null;
-                }
-            );
-        }
-
-        $prices = $prices->getPricesForContext($context);
-
-        if (!$prices) {
-            return new QuantityPriceDefinition(
-                $this->getPrice()->getPriceForContext($context),
-                $taxRules,
-                $context->getCurrencyPrecision(),
-                1,
-                true
-            );
-        }
-
-        if ($prices->count() <= 0) {
-            return new QuantityPriceDefinition(
-                $this->getPrice()->getPriceForContext($context),
-                $taxRules,
-                $context->getCurrencyPrecision(),
-                1,
-                true
-            );
-        }
-
-        /** @var ProductPriceEntity $price */
-        $price = $prices->first();
-
-        return new QuantityPriceDefinition(
-            $price->getPrice()->getPriceForContext($context),
-            $taxRules,
-            $context->getCurrencyPrecision(),
-            1,
-            true
-        );
-    }
-
-    public function getPriceDefinitionForQuantity(Context $context, int $quantity): QuantityPriceDefinition
-    {
-        // TODO@DR consider tax state of sales channel context (NEXT-286)
-        $taxRules = $this->getTaxRuleCollection();
-
-        /** @var ProductPriceCollection $rules */
-        $rules = $this->getPrices();
-
-        /** @var ProductPriceCollection|null $prices */
-        $prices = $rules->getPricesForContext($context);
-
-        if (!$prices) {
-            return new QuantityPriceDefinition(
-                $this->getPrice()->getPriceForContext($context),
-                $taxRules,
-                $context->getCurrencyPrecision(),
-                $quantity,
-                true
-            );
-        }
-
-        $price = $prices->getQuantityPrice($quantity);
-
-        return new QuantityPriceDefinition(
-            $price->getPrice()->getPriceForContext($context),
-            $taxRules,
-            $context->getCurrencyPrecision(),
-            $quantity,
-            true
-        );
-    }
-
     public function getTaxRuleCollection(): TaxRuleCollection
     {
         return new TaxRuleCollection([
@@ -1151,5 +1014,25 @@ class ProductEntity extends Entity
     public function setTagIds(array $tagIds): void
     {
         $this->tagIds = $tagIds;
+    }
+
+    public function getVariantRestrictions(): ?array
+    {
+        return $this->variantRestrictions;
+    }
+
+    public function setVariantRestrictions(?array $variantRestrictions): void
+    {
+        $this->variantRestrictions = $variantRestrictions;
+    }
+
+    public function getConfiguratorGroupSorting(): ?array
+    {
+        return $this->configuratorGroupSorting;
+    }
+
+    public function setConfiguratorGroupSorting(?array $configuratorGroupSorting): void
+    {
+        $this->configuratorGroupSorting = $configuratorGroupSorting;
     }
 }
