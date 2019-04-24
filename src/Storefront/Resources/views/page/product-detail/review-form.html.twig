@@ -1,6 +1,6 @@
 {% block page_product_detail_review_form %}
     <form class="review-form"
-          action="{{ path('frontend.detail.rating.save', { productId: page.product.id }) }}"
+          action="{{ path('frontend.detail.review.save', { productId: page.product.id }) }}"
           method="post">
         {% block page_product_detail_review_form_details %}
             <div class="form-row">
