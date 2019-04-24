@@ -65,6 +65,12 @@ class ProductPageLoader implements PageLoaderInterface
         $this->slotDataResolver = $slotDataResolver;
     }
 
+    public function addReviews($criteria){
+        $reviewCriteria = new Criteria();
+        $reviewCriteria->addFilter(new EqualsFilter('status',1));
+        $criteria->addAssociation('ratings',$reviewCriteria);
+    }
+
     public function load(Request $request, SalesChannelContext $context): ProductPage
     {
         $page = $this->pageWithHeaderLoader->load($request, $context);
@@ -129,6 +135,7 @@ class ProductPageLoader implements PageLoaderInterface
         $criteria->addAssociation('media');
         $criteria->addAssociation('cover');
         $criteria->addAssociationPath('properties.group');
+        $this->addReviews($criteria);
 
         /** @var SalesChannelProductEntity|null $product */
         $product = $this->productRepository->search($criteria, $context)->get($productId);
