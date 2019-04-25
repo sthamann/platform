@@ -8,9 +8,11 @@
 			{% endblock %}
 
 			{% block component_account_login_form %}
-				<form class="login-form"
-				      action="{{ path('frontend.account.login') }}"
-				      method="post">
+					{% block component_account_login_form_tag %}
+						<form class="login-form"
+							action="{{ path('frontend.account.login') }}"
+							method="post">
+					{% endblock %}
 					{% block component_account_login_form_redirect %}
 						<input type="hidden"
 						       name="redirectTo"

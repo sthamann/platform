@@ -14,6 +14,7 @@ use Shopware\Core\Content\MailTemplate\MailTemplateDefinition;
 use Shopware\Core\Content\Media\MediaDefinition;
 use Shopware\Core\Content\Navigation\NavigationDefinition;
 use Shopware\Core\Content\Product\Aggregate\ProductManufacturer\ProductManufacturerDefinition;
+use Shopware\Core\Content\Product\Aggregate\ProductReview\ProductReviewDefinition;
 use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Content\ProductStream\ProductStreamDefinition;
 use Shopware\Core\Content\Property\PropertyGroupDefinition;
@@ -68,6 +69,8 @@ class DemodataCommand extends Command
 
         $this->addOption('with-media', 'y', InputOption::VALUE_OPTIONAL, 'Enables media for products', 1);
 
+        $this->addOption('ratings', 'r', InputOption::VALUE_OPTIONAL, 'Rating count', 100);
+
         if (next754()) {
             $this->addOption('attribute-sets', null, InputOption::VALUE_REQUIRED, 'Attribute set count', 4);
 
@@ -110,6 +113,8 @@ class DemodataCommand extends Command
         $request->add(MediaDefinition::class, (int) $input->getOption('media'));
         $request->add(CmsPageDefinition::class, 50);
         $request->add(NavigationDefinition::class, 1);
+        $request->add(ProductReviewDefinition::class, (int) $input->getOption('ratings'));
+
 
         if (next754()) {
             $request->add(

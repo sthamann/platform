@@ -41,6 +41,7 @@ class SalesChannelProductDefinition extends ProductDefinition implements SalesCh
                 ]
             )
         );
+
     }
 
     protected static function defineFields(): FieldCollection

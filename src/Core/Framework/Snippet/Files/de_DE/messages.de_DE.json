@@ -229,7 +229,9 @@
         "ordernumberLabel": "Artikel-Nr.:",
         "addProduct": "In den Warenkorb",
         "tabsDescription": "Beschreibung",
-        "descriptionTitle": "Produktinformationen",
+        "tabsRating": "Bewertungen",
+      "descriptionTitle": "Produktinformationen",
+        "ratingTitle":      "Bewertungen",
         "priceUnitName": "Inhalt:"
     },
     "footer": {

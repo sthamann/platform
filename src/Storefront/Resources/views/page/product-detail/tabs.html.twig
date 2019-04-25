@@ -6,7 +6,7 @@
 					<ul class="nav nav-tabs card-header-tabs" id="product-detail-tabs" role="tablist">
 						{% block page_product_detail_tabs_navigation_description %}
 							<li class="nav-item">
-								<a class="nav-link active"
+								<a class="nav-link {% if (ratingSuccess != 1) and (ratingSuccess != -1)  %}active{% endif %}"
 								   id="description-tab"
 								   data-toggle="tab"
 								   data-offcanvas-tab="true"
@@ -19,6 +19,21 @@
 								</a>
 							</li>
 						{% endblock %}
+                        {% block page_product_detail_tabs_navigation_review %}
+                            <li class="nav-item">
+                                <a class="nav-link {% if (ratingSuccess == 1) or (ratingSuccess == -1)  %}active{% endif %}"
+                                   id="review-tab"
+                                   data-toggle="tab"
+                                   data-offcanvas-tab="true"
+                                   href="#review-tab-pane"
+                                   role="tab"
+                                   aria-controls="review-tab-pane"
+                                   aria-selected="true">
+                                    {{ "detail.tabsRating"|trans }}
+                                    <i class="fas fa-chevron-right nav-link-icon"></i>
+                                </a>
+                            </li>
+                        {% endblock %}
 					</ul>
 				{% endblock %}
 			</div>
@@ -29,13 +44,21 @@
 				{% block page_product_detail_tabs_content_container %}
 					<div class="tab-content">
 						{% block page_product_detail_tabs_content_description %}
-							<div class="tab-pane fade show active"
+							<div class="tab-pane fade show {% if (ratingSuccess != 1) and (ratingSuccess != -1)  %}active{% endif %}"
 							     id="description-tab-pane"
 							     role="tabpanel"
 							     aria-labelledby="description-tab">
 								{% sw_include '@Storefront/page/product-detail/description.html.twig' %}
 							</div>
 						{% endblock %}
+                        {% block page_product_detail_tabs_content_review %}
+                            <div class="tab-pane fade show {% if (ratingSuccess == 1) or (ratingSuccess == -1)  %}active{% endif %}"
+                                 id="review-tab-pane"
+                                 role="tabpanel"
+                                 aria-labelledby="rewview-tab">
+                                {% sw_include '@Storefront/page/product-detail/review.html.twig' %}
+                            </div>
+                        {% endblock %}
 					</div>
 				{% endblock %}
 			</div>

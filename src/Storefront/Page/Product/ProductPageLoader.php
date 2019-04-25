@@ -129,6 +129,10 @@ class ProductPageLoader implements PageLoaderInterface
         $criteria->addAssociation('media');
         $criteria->addAssociation('cover');
         $criteria->addAssociationPath('properties.group');
+        // Add product reviews
+        $reviewCriteria = new Criteria();
+        $reviewCriteria->addFilter(new EqualsFilter('status',1));
+        $criteria->addAssociation('reviews',$reviewCriteria);
 
         $this->eventDispatcher->dispatch(
             ProductPageCriteriaEvent::NAME,
