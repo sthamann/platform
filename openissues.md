@@ -2,6 +2,8 @@
 
 ~~- An fälschich verwendeten Stellen "Rating" auch intern in "Review" umbenennen - insbesondere Modul-Prefix. Das Rating ist nur ein Teil der Review und daher wollten wir da auch die Begriffe korrekt verwenden um nicht maximal zu verwirren. Das Modul heißt "Reviews" ("Kundenbewertungen" / "Rezensionen") und ein Element einer Review ist das Rating ("(Be-)Wertung") sowie der Title ("Titel") und der Content ("Inhalt)~~
 
+## Database
+- es fehlt noch die reviews_attributes zum Hinzufügen von cutome attributes (wie z.B. externalReviewId)
 ## Developer
 ~~- Create Demo Reviews to Products~~ 
 - Review API
