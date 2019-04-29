@@ -35,7 +35,8 @@ class ProductLoadedSubscriber implements EventSubscriberInterface
                     $avgPoints += $review->getPoints();
                     $ratingMatrix[$review->getPoints()]++;
                 }
-                $avgPoints = $avgPoints / count($product->getReviews());
+                $reviewCount = $product->getReviews()->count();
+                $avgPoints = $reviewCount > 0 ? $avgPoints / $reviewCount : 0;
             }
 
             $product->ratingAvg = $avgPoints;

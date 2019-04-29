@@ -21,6 +21,7 @@ use Shopware\Core\System\SalesChannel\Entity\SalesChannelRepository;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Framework\Page\PageLoaderInterface;
 use Shopware\Storefront\Framework\Page\PageWithHeaderLoader;
+use Shopware\Storefront\Pagelet\Product\Review\ProductReviewPageletLoader;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -51,18 +52,25 @@ class ProductPageLoader implements PageLoaderInterface
      */
     private $slotDataResolver;
 
+    /**
+     * @var ProductReviewPageletLoader|PageLoaderInterface
+     */
+    private $productReviewPageletLoader;
+
     public function __construct(
         PageLoaderInterface $pageWithHeaderLoader,
         SalesChannelRepository $productRepository,
         EventDispatcherInterface $eventDispatcher,
         SalesChannelCmsPageRepository $cmsPageRepository,
-        SlotDataResolver $slotDataResolver
+        SlotDataResolver $slotDataResolver,
+        PageLoaderInterface $productReviewPageletLoader
     ) {
         $this->eventDispatcher = $eventDispatcher;
         $this->pageWithHeaderLoader = $pageWithHeaderLoader;
         $this->productRepository = $productRepository;
         $this->cmsPageRepository = $cmsPageRepository;
         $this->slotDataResolver = $slotDataResolver;
+        $this->productReviewPageletLoader = $productReviewPageletLoader;
     }
 
     public function load(Request $request, SalesChannelContext $context): ProductPage
@@ -77,6 +85,8 @@ class ProductPageLoader implements PageLoaderInterface
 
         $product = $this->loadProduct($productId, $context);
         $page->setProduct($product);
+
+        $page->setReviews($this->productReviewPageletLoader->load($request, $context));
 
         if ($cmsPage = $this->getCmsPage($context)) {
             $this->loadSlotData($cmsPage, $context, $product);
