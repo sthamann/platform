@@ -23,6 +23,7 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Framework\Page\PageLoaderInterface;
 use Shopware\Storefront\Framework\Page\PageWithHeaderLoader;
 use Shopware\Storefront\Page\Product\Configurator\ProductPageConfiguratorLoader;
+use Shopware\Storefront\Pagelet\Product\Review\ProductReviewPageletLoader;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -63,6 +64,11 @@ class ProductPageLoader implements PageLoaderInterface
      */
     private $configuratorLoader;
 
+    /**
+     * @var ProductReviewPageletLoader|PageLoaderInterface
+     */
+    private $productReviewPageletLoader;
+
     public function __construct(
         PageLoaderInterface $pageWithHeaderLoader,
         SalesChannelRepository $productRepository,
@@ -70,7 +76,8 @@ class ProductPageLoader implements PageLoaderInterface
         SalesChannelCmsPageRepository $cmsPageRepository,
         SlotDataResolver $slotDataResolver,
         ProductPageConfiguratorLoader $configuratorLoader,
-        ProductDefinition $productDefinition
+        ProductDefinition $productDefinition,
+        PageLoaderInterface $productReviewPageletLoader
     ) {
         $this->eventDispatcher = $eventDispatcher;
         $this->pageWithHeaderLoader = $pageWithHeaderLoader;
@@ -79,6 +86,7 @@ class ProductPageLoader implements PageLoaderInterface
         $this->slotDataResolver = $slotDataResolver;
         $this->configuratorLoader = $configuratorLoader;
         $this->productDefinition = $productDefinition;
+        $this->productReviewPageletLoader = $productReviewPageletLoader;
     }
 
     public function load(Request $request, SalesChannelContext $context): ProductPage
@@ -95,6 +103,8 @@ class ProductPageLoader implements PageLoaderInterface
 
         $product = $this->loadProduct($productId, $context);
         $page->setProduct($product);
+
+        $page->setReviews($this->productReviewPageletLoader->load($request, $context));
 
         $page->setConfiguratorSettings(
             $this->configuratorLoader->load($product, $context)

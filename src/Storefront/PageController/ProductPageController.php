@@ -77,6 +77,7 @@ class ProductPageController extends StorefrontController
      */
     public function saveReview(string $productId, RequestDataBag $data, SalesChannelContext $context): Response
     {
+        // If customer is not logged in, redirect to homepage
         if (!$context->getCustomer()) {
             return $this->redirectToRoute('frontend.account.home.page');
         }

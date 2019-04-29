@@ -6,6 +6,7 @@ use Shopware\Core\Content\Cms\CmsPageEntity;
 use Shopware\Core\Content\Product\SalesChannel\SalesChannelProductEntity;
 use Shopware\Core\Content\Property\PropertyGroupCollection;
 use Shopware\Storefront\Framework\Page\PageWithHeader;
+use Shopware\Storefront\Framework\Page\StorefrontSearchResult;
 
 class ProductPage extends PageWithHeader
 {
@@ -23,6 +24,11 @@ class ProductPage extends PageWithHeader
      * @var PropertyGroupCollection
      */
     protected $configuratorSettings;
+
+    /**
+     * @var StorefrontSearchResult
+     */
+    protected $reviews;
 
     public function getProduct(): SalesChannelProductEntity
     {
@@ -52,5 +58,15 @@ class ProductPage extends PageWithHeader
     public function setConfiguratorSettings(PropertyGroupCollection $configuratorSettings): void
     {
         $this->configuratorSettings = $configuratorSettings;
+    }
+
+    public function getReviews(): StorefrontSearchResult
+    {
+        return $this->reviews;
+    }
+
+    public function setReviews(StorefrontSearchResult $reviews): void
+    {
+        $this->reviews = $reviews;
     }
 }
