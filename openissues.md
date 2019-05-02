@@ -35,9 +35,9 @@
     - Jepp, baue ich noch ein
     --> Wunderbar
 
-~~*- Anzahl an Likes zur Review
+~~- Anzahl an Likes zur Review
     - Ich würde die Likes im DB-Schema drin lassen (weil coole erste Erweiterung) die aber aus dem "Prototypen" rauslassen
-    --> Ok, stellen wir dann zurück*~~
+    --> Ok, stellen wir dann zurück~~
 
 ~~- Aktuelle Seite der Review-Liste (Paging) 
     - Paging, das müsste ja per Ajax laufen, da müssen wir gucken wie wir das machen - im Augenblick holt er ja immer alle Bewertungen eines Produkts immer wenn ein Produkt geladen wird,
