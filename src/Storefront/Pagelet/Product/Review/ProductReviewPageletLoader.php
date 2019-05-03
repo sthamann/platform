@@ -27,7 +27,6 @@ final class ProductReviewPageletLoader implements PageLoaderInterface
      */
     private $eventDispatcher;
 
-
     public function __construct(
         EntityRepositoryInterface $reviewRepository,
         EventDispatcherInterface $eventDispatcher
@@ -35,7 +34,6 @@ final class ProductReviewPageletLoader implements PageLoaderInterface
         $this->reviewRepository = $reviewRepository;
         $this->eventDispatcher = $eventDispatcher;
     }
-
 
     public function load(Request $request, SalesChannelContext $context): StorefrontSearchResult
     {
@@ -45,9 +43,10 @@ final class ProductReviewPageletLoader implements PageLoaderInterface
             throw new MissingRequestParameterException('productId');
         }
 
-        $sort = (string)$request->get('sort', self::DEFAULT_SORT);
-        $page = (int)$request->get('page', 1);
-        $limit = (int)$request->get('limit', self::LIMIT);
+        $sort = (string) $request->get('sort', self::DEFAULT_SORT);
+        $page = (int) $request->get('page', 1);
+        $limit = (int) $request->get('limit', self::LIMIT);
+        $points = (int) $request->get('points');
         $offset = $limit * ($page - 1);
 
         $criteria = (new Criteria())
@@ -55,6 +54,10 @@ final class ProductReviewPageletLoader implements PageLoaderInterface
             ->setOffset($offset)
             ->addFilter(new EqualsFilter('status', 1), new EqualsFilter('productId', $productId))
             ->addSorting(new FieldSorting('createdAt', $sort));
+
+        if ($points > 0) {
+            $criteria->addFilter(new EqualsFilter('points', $points));
+        }
 
         $reviews = $this->reviewRepository->search($criteria, $context->getContext())->getEntities();
 
