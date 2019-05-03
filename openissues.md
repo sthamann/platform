@@ -1,9 +1,10 @@
 ## Allgemein
 
 ## Database
-- es fehlt noch die reviews_attributes zum Hinzufügen von cutome attributes (wie z.B. externalReviewId)
+- es fehlt noch die reviews_attributes zum Hinzufügen von cutome attributes (wie z.B. externalReviewId) (ERLEDIGT)
     - Was meinst du damit genau? Die Tabelle product_review hat ja bereits ein JSON Field "attributes", das sollte auch bereits funktionieren
     - **Todo:** Attributes wurden in custom_fields umbenannt, beim nächsten Merge mit dem Master müssen wir das auch bei den Reviews glattziehen
+    - Perfekt (SOMIT erstmal DONE)
     
 ## Developer
 - Review API
@@ -19,7 +20,11 @@
         - product_review.aggregation.result.loaded
         - product_review.id.search.result.loaded
     - **Todo:** Neben dem Business-Event review.pagelet.loaded.event müssten noch weitere in der Code-Basis definiert werden (Neue Bewertung, Freigegebene Bewertung etc.)
-    
+    - **Vorschlag:**
+        - product_review.published
+        - product_review.unpublished
+        - product_review.comment
+                 
 - Code-Qualität
     - **Info:** Ich habe die Service-Klasse nach Core/Product/SalesChannel verschoben
     - **Info:** Ich habe die Ermittlung des Bewertungsdurchschnitts in einen Indexer überführt (ProductRatingAverageIndexer), der den Schnitt ermittelt und in das Feld rating_average an das Produkt schreibt
@@ -27,6 +32,8 @@
     - **Info:** Die Bewertungsmatrix wird jetzt im ProductPageLoader ermittelt, an der selben Stelle könnte man z.b. auch nach Sprache oder Verified Status gruppieren
     - **Todo:** Josh, du müsstest mal schauen ob du mit der Matrix so klar kommst oder ob wir die php-seitig noch anders aufbauen müssen
 
+- Mögliche spätere Erweiterung:
+    - Da man den Inhalt der Bewertung nicht verändern kann, sollte man den Kunden kontaktieren können, also eine E-Mail schreiben, dass seine Bewertung nicht ganz korrekt ist und so nicht veröffentlicht werden kann. Man bräuchte dann nur je Review ein Button "Review by user" mit einer Angabe des Grundes (Shop bewertet, Beledigungen, etc.)
 ## View Daten
 
 - Anzahl an Reviews in anderen Sprachen 
