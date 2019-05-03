@@ -2,7 +2,7 @@
 
 namespace Shopware\Storefront\PageController;
 
-use Shopware\Core\Content\Product\SalesChannel\ProductRatingService;
+use Shopware\Core\Content\Product\SalesChannel\ProductReviewService;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\Framework\Validation\Exception\ConstraintViolationException;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
@@ -28,18 +28,18 @@ class ProductPageController extends StorefrontController
     private $combinationFinder;
 
     /**
-     * @var ProductRatingService
+     * @var ProductReviewService
      */
-    private $productRatingService;
+    private $productReviewService;
 
     public function __construct(
         PageLoaderInterface $productPageLoader,
         ProductCombinationFinder $combinationFinder,
-        ProductRatingService $productRatingService
+        ProductReviewService $productRatingService
     ) {
         $this->productPageLoader = $productPageLoader;
         $this->combinationFinder = $combinationFinder;
-        $this->productRatingService = $productRatingService;
+        $this->productReviewService = $productRatingService;
     }
 
     /**
@@ -77,13 +77,10 @@ class ProductPageController extends StorefrontController
      */
     public function saveReview(string $productId, RequestDataBag $data, SalesChannelContext $context): Response
     {
-        // If customer is not logged in, redirect to homepage
-        if (!$context->getCustomer()) {
-            return $this->redirectToRoute('frontend.account.home.page');
-        }
+        $this->denyAccessUnlessLoggedIn();
 
         try {
-            $this->productRatingService->saveRating($productId, $data, $context);
+            $this->productReviewService->saveReview($productId, $data, $context);
         } catch (ConstraintViolationException $formViolations) {
             return $this->forward('Shopware\Storefront\PageController\ProductPageController::index', ['productId' => $productId, 'success' => -1, 'formViolations' => $formViolations], ['productId' => $productId]);
         }

@@ -1,63 +1,50 @@
 ## Allgemein
 
-~~- An fälschich verwendeten Stellen "Rating" auch intern in "Review" umbenennen - insbesondere Modul-Prefix. Das Rating ist nur ein Teil der Review und daher wollten wir da auch die Begriffe korrekt verwenden um nicht maximal zu verwirren. Das Modul heißt "Reviews" ("Kundenbewertungen" / "Rezensionen") und ein Element einer Review ist das Rating ("(Be-)Wertung") sowie der Title ("Titel") und der Content ("Inhalt)~~
-
 ## Database
 - es fehlt noch die reviews_attributes zum Hinzufügen von cutome attributes (wie z.B. externalReviewId)
---> Aktuell haben wir noch keine Erweiterungen vorgesehen und würden hier dem globalen Schema von SW6 folgen.
-
+    - Was meinst du damit genau? Die Tabelle product_review hat ja bereits ein JSON Field "attributes", das sollte auch bereits funktionieren
+    - **Todo:** Attributes wurden in custom_fields umbenannt, beim nächsten Merge mit dem Master müssen wir das auch bei den Reviews glattziehen
+    
 ## Developer
-~~- Create Demo Reviews to Products~~ 
 - Review API
-    - Ich denke wir müssen die Rating Funktionalität auch in der Storefront API bereitstellen, habe aber noch keine Ahnung wo ich da ansetzen muss
---> CRUD Funktionen kann Shopware automtisch. Mehr Ahnung haben wir leider auch nicht ;)    
-
+    - **Todo:** In Product/SalesChannel/ habe ich schon einen SalesChannelProductController angelegt, der muss aber noch mit Leben gefüllt werden
+    
 - Review Events
     - Wir sollten Systemevents an den wichtigsten Stellen werfen
-    --> Pagelet loaded Event wurde bereits implementiert. 
+    - **Info:** Es gibt nun folgende System-/DAL-Events
+        - product_review.loaded
+        - product_review.written
+        - product_review.deleted
+        - product_review.search.result.loaded
+        - product_review.aggregation.result.loaded
+        - product_review.id.search.result.loaded
+    - **Todo:** Neben dem Business-Event review.pagelet.loaded.event müssten noch weitere in der Code-Basis definiert werden (Neue Bewertung, Freigegebene Bewertung etc.)
+    
 - Code-Qualität
-    - Da sind noch ein paar ekelige Stellen drin, wo wir nochmal gucken müssen, das wir das sauberer machen, z.B. Ablageort des RatingService etc.
-    --> Bestimmt
+    - **Info:** Ich habe die Service-Klasse nach Core/Product/SalesChannel verschoben
+    - **Info:** Ich habe die Ermittlung des Bewertungsdurchschnitts in einen Indexer überführt (ProductRatingAverageIndexer), der den Schnitt ermittelt und in das Feld rating_average an das Produkt schreibt
+    - **Todo:** Aktuell ist das so das der bei einem Varianten-Produkt den Durchschnitt immer über alle Varianten errechnet, das müsste man ggf. später konfigurierbar machen
+    - **Info:** Die Bewertungsmatrix wird jetzt im ProductPageLoader ermittelt, an der selben Stelle könnte man z.b. auch nach Sprache oder Verified Status gruppieren
+    - **Todo:** Josh, du müsstest mal schauen ob du mit der Matrix so klar kommst oder ob wir die php-seitig noch anders aufbauen müssen
 
 ## View Daten
 
-~~- Anzahl an Reviews mit 1, 2, 3, 4, 5 Punkten für das Produkt~~
-
-~~- Average Rating des Produkts~~ 
-
-~~- Anzahl an Reviews des Produkts~~ 
-
 - Anzahl an Reviews in anderen Sprachen 
-    - Für den ersten Wurf sollten wir ggf. eine Konfigurationsoption Bewertungen nur in User-Sprache anzeigen Ja / Nein nehmen und das später weiter ausbauen
-    --> Wir schauen ob wir das nicht gleich im ersten Wurf schon richtig gelöst bekommen, da ein Umbau vom Aufwand her gefühlt auf das Selbe hinausläuft. 
+    - **Todo**  Siehe oben, das lässt sich relativ einfach lösen in dem man analog zur Bewertungsmatrix an der selben Stelle nach language_id gruppiert
     
 - Info zur Review ob Kunde das Produkt gekauft hat
-    - Jepp, baue ich noch ein
-    --> Wunderbar
-
-~~- Anzahl an Likes zur Review
-    - Ich würde die Likes im DB-Schema drin lassen (weil coole erste Erweiterung) die aber aus dem "Prototypen" rauslassen
-    --> Ok, stellen wir dann zurück~~
-
-~~- Aktuelle Seite der Review-Liste (Paging) 
-    - Paging, das müsste ja per Ajax laufen, da müssen wir gucken wie wir das machen - im Augenblick holt er ja immer alle Bewertungen eines Produkts immer wenn ein Produkt geladen wird,
-    also z.B. auch im Listing - das ist aus Performance-Sicht wahrscheinlich noch nicht so ideal - müssen wir diskutieren, weiß auch nicht wo die Ajax Controller liegen
-    --> Hier war wirklich die Ziffer der aktuellen Seite gemeint und wurde bereits durch Uli gelöst. ~~
-
-~~- Restriction der Review-Form Action auf eingeloggte User~~
+    - **Info** Das ist grundsätzlich drin im Code (RatingService) habe aber noch nicht getestet ob das funktioniert und es fehlt noch die passende Datenbank-Spalte (verified_buyer)
 
 - Email und Name als Parameter bei der Abgabe einer Bewertung entfernen
-    - Kannst du aus der Storefront rausnehmen, das wird dann fix im Service gehandelt
-    --> Offen, löst @Josh dann beim nächsten Durchgang
+    - Die Felder stehen weiterhin in der Datenbank (später konfigurierbar ob anonyme Bewertungen erlaubt sind)
+    - In der Storefront sind die schon ausgebaut und nicht eingeloggte User können keine Bewertung schreiben
 
 - Kundenname aus seinen Daten laden und zur Review ausgeben
-    - Ich würde das aus Performancegründen beim Speichern statisch in die Datenbank schreiben und nicht dynamisch laden
-    --> Offen, löst @Josh dann beim nächsten Durchgang
-
-~~- Information ob Kunde das Produkt im Shop gekauft hat zuer Bewertung ausgeben < DUPLIKAT
+    - Das müsste eigentlich schon gehen, da ja die Review mit der Customer-Tabelle verknüpft ist - falls nicht bitte melden
 
 - Soll Anzahl an Bewertungen pro Page in der Liste konfigurierbar sein? Wenn ja, dann brauchen wir den Config-Wert. Mein Vorschlag wären einfach 10 pro Seite hart mit reinzunehmen.~~
-    ~~--> Wurde mittels Konstante (10) gelöst ~~
+    - Wurde mittels Konstante (10) gelöst
+    - **Todo** Müssen wir später im Einstellungsdialog noch konfigurierbar machen  
     
 ## AJAX Actions
 
@@ -73,20 +60,14 @@
 - SortBy: Im Default sollen die Bewertungen nach Anzahl an Likes, Datum sortiert werden. Zusätzlich gibt es noch die Option nur nach Datum zu sortieren.
     --> Kümmert sich @Uli drum
     
-~~- Paging: initial werden nur die ersten 10 Reviews und somit Seite 1 der Liste geladen. Die weiteren Seiten werden dann per AJAX nachgeladen. 
-    --> Erledigt~~
-
-~~- Like: Eingeloggte User sollen die Möglichkeit haben Reviews zu liken. Ebenso wird dem User angezeigt welche Einträge er bereits geliked hat und hat dann entsprechend die Möglichkeit wieder zu entliken.~~ 
-
 ## Admin
+- **Info** Aaron hat von mir die aktuellen Admin-Sichten bekommen, wir sollten das Product-Design Feedback abwarten
 
-~~- "Positive" + "Negative" Felder entfernen sofern nicht benötigt~~ Sollten wir erstmal rauslassen
-
+- Generell fehlt noch die komplette Konfigurierbarkeit - das müssen wir implementieren sobald die Grundeinstellungen fertig drin sind, im Idealfall kann man dann pro
+Saleschannel entscheiden ob man Reviews erlauben will und falls ja welche Detailkonfiguration man möchte
+    - Spannend wären: Bewertungen Ja / Nein, Bewertungen nur für eingeloggte User, Anzahl Bewertungen pro Seite, Sprachabhängige Bewertunge ausblenden, Varianten Bewertungen zusammenfassen, ...
 - Switch zum Aktivieren der Review weiter nach oben (gerne in Spalte neben dem  Status-Flag)
     --> Noch offen und sollte noch verschoben werden
-
-~~*- Anzahl an Likes ausgeben und/oder die Customer als Liste ausgeben die Review geliked haben Sollten wir erstmal rauslassen*~~
-
 - Bewertungen zum Produkt in der Detail des Produkts anzeigen (dachte ich hätte das bei Timo schon gesehen - evtl nicht committed)
     - Ist in irgendeiner kaputten form drin, ggf. nehmen wir Timo mit in die Whatsapp Gruppe ?
     --> Timo ist drin und wenn ich das richtig sehe, dann besteht das "Problem" weiterhin
