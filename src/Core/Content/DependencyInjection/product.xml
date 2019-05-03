@@ -77,6 +77,13 @@
             <argument type="service" id="product.repository"/>
         </service>
 
+        <service id="Shopware\Core\Content\Product\DataAbstractionLayer\Indexing\ProductRatingAverageIndexer">
+            <argument id="event_dispatcher" type="service"/>
+            <argument id="Shopware\Core\Content\Product\Util\EventIdExtractor" type="service"/>
+            <argument id="Doctrine\DBAL\Connection" type="service"/>
+            <tag name="shopware.dbal_indexing.indexer" priority="900"/>
+        </service>
+
         <service id="Shopware\Core\Content\Product\DataAbstractionLayer\Indexing\ProductOptionIndexer">
             <argument type="service" id="event_dispatcher"/>
             <argument type="service" id="Shopware\Core\Content\Product\Util\EventIdExtractor"/>
@@ -157,13 +164,11 @@
                  class="Shopware\Core\Content\Product\SalesChannel\ProductPriceDefinitionBuilder">
         </service>
 
-        <service id="Shopware\Core\Content\Product\Storefront\ProductReviewService">
+        <service id="Shopware\Core\Content\Product\SalesChannel\ProductReviewService">
             <argument id="product_review.repository" type="service"/>
             <argument id="event_dispatcher" type="service"/>
             <argument type="service" id="Shopware\Core\Framework\Validation\DataValidator"/>
-        </service>
-        <service id="Shopware\Core\Content\Product\Subscriber\ProductLoadedSubscriber">
-            <tag name="kernel.event_subscriber"/>
+            <argument type="service" id="order.repository"/>
         </service>
     </services>
 </container>                

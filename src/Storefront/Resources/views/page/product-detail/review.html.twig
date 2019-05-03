@@ -35,7 +35,7 @@
 
     {# TODO: replace average product rating "productAvgRating"#}
     {% if productReviewCount > 0 %}
-        {% set productAvgRating = page.product.ratingAvg  %}
+        {% set productAvgRating = page.product.ratingAverage  %}
         {% set productAvgRating = productAvgRating|round(2, 'floor') %}
     {% endif %}
 

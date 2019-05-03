@@ -14,6 +14,7 @@ use Shopware\Core\Content\Property\Aggregate\PropertyGroupOption\PropertyGroupOp
 use Shopware\Core\Content\Property\PropertyGroupCollection;
 use Shopware\Core\Content\Property\PropertyGroupDefinition;
 use Shopware\Core\Content\Property\PropertyGroupEntity;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\CountAggregation;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Routing\Exception\MissingRequestParameterException;
@@ -143,6 +144,7 @@ class ProductPageLoader implements PageLoaderInterface
         $reviewCriteria = new Criteria();
         $reviewCriteria->addFilter(new EqualsFilter('status',1));
         $criteria->addAssociation('reviews',$reviewCriteria);
+        $criteria->addAggregation(new CountAggregation('product.reviews.id','ratingMatrix','product.reviews.points'));
 
         $this->eventDispatcher->dispatch(
             ProductPageCriteriaEvent::NAME,
@@ -150,7 +152,9 @@ class ProductPageLoader implements PageLoaderInterface
         );
 
         /** @var SalesChannelProductEntity|null $product */
-        $product = $this->productRepository->search($criteria, $context)->get($productId);
+        $result = $this->productRepository->search($criteria, $context);
+
+        $product = $result->get($productId);
 
         if (!$product) {
             throw new ProductNotFoundException($productId);

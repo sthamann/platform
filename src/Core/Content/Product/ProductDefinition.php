@@ -165,7 +165,7 @@ class ProductDefinition extends EntityDefinition
             (new ListField('tag_ids', 'tagIds', IdField::class))->addFlags(new Inherited(), new WriteProtected()),
             (new PriceRulesJsonField('listing_prices', 'listingPrices'))->addFlags(new Inherited(), new WriteProtected()),
             (new ManyToManyAssociationField('categoriesRo', CategoryDefinition::class, ProductCategoryTreeDefinition::class, 'product_id', 'category_id'))->addFlags(new CascadeDelete(), new WriteProtected()),
-
+            (new FloatField('rating_average','ratingAverage'))->addFlags(new WriteProtected()),
             (new IntField('min_delivery_time', 'minDeliveryTime'))->addFlags(new Inherited()),
             (new IntField('max_delivery_time', 'maxDeliveryTime'))->addFlags(new Inherited()),
             (new IntField('restock_time', 'restockTime'))->addFlags(new Inherited()),

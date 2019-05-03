@@ -1,9 +1,13 @@
 <?php declare(strict_types=1);
 
-namespace Shopware\Core\Content\Product\Storefront;
+namespace Shopware\Core\Content\Product\SalesChannel;
 
+use Shopware\Core\Checkout\Cart\Exception\CustomerNotLoggedInException;
+use Shopware\Core\Content\Product\Cart\ProductCollector;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Event\DataMappingEvent;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\Framework\Validation\BuildValidationEvent;
@@ -37,14 +41,21 @@ class ProductReviewService
      * @var DataValidator
      */
     private $validator;
+    /**
+     * @var EntityRepositoryInterface
+     */
+    private $orderRepository;
 
     public function __construct(
         EntityRepositoryInterface $reviewRepository,
         EventDispatcherInterface $eventDispatcher,
-        DataValidator $validator    ) {
+        DataValidator $validator,
+        EntityRepositoryInterface $orderRepository
+    ) {
         $this->reviewRepository = $reviewRepository;
         $this->eventDispatcher = $eventDispatcher;
         $this->validator = $validator;
+        $this->orderRepository = $orderRepository;
     }
 
     public function saveReview(string $productId, DataBag $data,  SalesChannelContext $context): void
@@ -52,14 +63,30 @@ class ProductReviewService
         $customer = $context->getCustomer();
         $languageId = $context->getContext()->getLanguageId();
         $salesChannelId = $context->getContext()->getSalesChannelId();
+
         if (isset($customer)){
             $customerId = $context->getCustomer()->getId();
-        }else {
-            $customerId = null;
+        } else {
+            throw new CustomerNotLoggedInException();
         }
 
-
         $this->validateReview($data, $context->getContext());
+
+        // Spalte verifiedBuyer hinzufügen
+
+        /** @var EntityRepositoryInterface $repo */
+
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('order.lineItems.payload.id',$productId));
+        $criteria->addFilter(new EqualsFilter('order.lineItems.type', ProductCollector::LINE_ITEM_TYPE));
+        $criteria->addFilter(new EqualsFilter('order.customerId', $customer->getId()));
+
+        // todo check if order didn't canceled
+        $criteria->setLimit(1);
+
+        $exists = $this->orderRepository->searchIds($criteria,$context->getContext());
+
+        $buyed = \count($exists->getIds()) > 0;
 
         $rating = array(
             'productId' => $productId,

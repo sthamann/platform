@@ -358,6 +358,11 @@ class ProductEntity extends Entity
      */
     protected $reviews;
 
+    /**
+     * @var float|null
+     */
+    protected $ratingAverage;
+
 
     public function __construct()
     {
@@ -1046,4 +1051,21 @@ class ProductEntity extends Entity
     {
         $this->configuratorGroupSorting = $configuratorGroupSorting;
     }
+
+    /**
+     * @return float|null
+     */
+    public function getRatingAverage(): ?float
+    {
+        return $this->ratingAverage;
+    }
+
+    /**
+     * @param float|null $ratingAverage
+     */
+    public function setRatingAverage(?float $ratingAverage): void
+    {
+        $this->ratingAverage = $ratingAverage;
+    }
+
 }
