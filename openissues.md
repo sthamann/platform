@@ -61,8 +61,12 @@
 - FilterByPoints: Reviews sollen per AJAX nach Punkten gefiltert werden können. Sind keine Filter gesetzt, so werden alle Einträge angezeigt, sind ein oder mehrer Optionen gewählt, so werden nur die Einträge der gewählten Optionen angezeigt (ODER)
     --> Kümmert sich @Uli drum
     
+    --> **Done**
+    
 - FilterByLanguage: Im Default möchten wir nur Reviews in der Sprache des Users anzeigen. D.h. wir müssen die Lokalisierung des Users übergeben um nur die Einträge in seiner Sprache zu erhalten. Um das Verhalten zu steuern benötigen wir die obigen Daten bezüglich Bewertungen gesamt und Bewertungen in anderen Sprachen. 
     --> Kümmert sich @Uli drum
+    
+    --> **Done**
     
 - SortBy: Im Default sollen die Bewertungen nach Anzahl an Likes, Datum sortiert werden. Zusätzlich gibt es noch die Option nur nach Datum zu sortieren.
     --> Kümmert sich @Uli drum
