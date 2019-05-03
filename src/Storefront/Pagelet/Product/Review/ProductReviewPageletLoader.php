@@ -2,6 +2,7 @@
 
 namespace Shopware\Storefront\Pagelet\Product\Review;
 
+use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
@@ -17,6 +18,10 @@ final class ProductReviewPageletLoader implements PageLoaderInterface
 {
     private const DEFAULT_SORT = 'DESC';
     private const LIMIT = 10;
+    private const DEFAULT_PAGE = 1;
+    private const ACTIVE_STATUS = 1;
+    private const ALL_LANGUAGES = 'all';
+
     /**
      * @var EntityRepositoryInterface
      */
@@ -37,29 +42,9 @@ final class ProductReviewPageletLoader implements PageLoaderInterface
 
     public function load(Request $request, SalesChannelContext $context): StorefrontSearchResult
     {
-        $productId = $request->get('productId');
+        $criteria = $this->createReviewCriteria($request, $context);
 
-        if (!$productId) {
-            throw new MissingRequestParameterException('productId');
-        }
-
-        $sort = (string) $request->get('sort', self::DEFAULT_SORT);
-        $page = (int) $request->get('page', 1);
-        $limit = (int) $request->get('limit', self::LIMIT);
-        $points = (int) $request->get('points');
-        $offset = $limit * ($page - 1);
-
-        $criteria = (new Criteria())
-            ->setLimit($limit)
-            ->setOffset($offset)
-            ->addFilter(new EqualsFilter('status', 1), new EqualsFilter('productId', $productId))
-            ->addSorting(new FieldSorting('createdAt', $sort));
-
-        if ($points > 0) {
-            $criteria->addFilter(new EqualsFilter('points', $points));
-        }
-
-        $reviews = $this->reviewRepository->search($criteria, $context->getContext())->getEntities();
+        $reviews = $this->getAllReviews($criteria, $context, $request);
 
         $pagelet = StorefrontSearchResult::createFrom($reviews);
 
@@ -69,5 +54,67 @@ final class ProductReviewPageletLoader implements PageLoaderInterface
         );
 
         return $pagelet;
+    }
+
+    /**
+     * get reviews with the users language
+     * if there aren't any reviews then get them with any language
+     */
+    private function getAllReviews(Criteria $criteria, SalesChannelContext $context, Request $request): EntityCollection
+    {
+        if ($request->get('language') !== self::ALL_LANGUAGES) {
+            $languageCriteria = clone $criteria;
+            $languageCriteria->addFilter(new EqualsFilter('languageId', $this->getLanguageId($context)));
+
+            $reviews = $this->reviewRepository->search($languageCriteria, $context->getContext())->getEntities();
+
+            if ($reviews->count() > 0) {
+                return $reviews;
+            }
+        }
+
+        return $this->reviewRepository->search($criteria, $context->getContext())->getEntities();
+    }
+
+    /**
+     * @throws MissingRequestParameterException
+     */
+    private function createReviewCriteria(Request $request, SalesChannelContext $context): Criteria
+    {
+        $productId = $request->get('productId');
+        if (!$productId) {
+            throw new MissingRequestParameterException('productId');
+        }
+
+        $limit = (int) $request->get('limit', self::LIMIT);
+        $page = (int) $request->get('page', self::DEFAULT_PAGE);
+        $offset = $limit * ($page - 1);
+
+        $sort = (string) $request->get('sort', self::DEFAULT_SORT);
+
+        $criteria = (new Criteria())
+            ->setLimit($limit)
+            ->setOffset($offset)
+            ->addSorting(new FieldSorting('createdAt', $sort))
+            ->addFilter(
+                new EqualsFilter('status', self::ACTIVE_STATUS),
+                new EqualsFilter('productId', $productId)
+            );
+
+        $points = (int) $request->get('points');
+        if ($points > 0) {
+            $criteria->addFilter(new EqualsFilter('points', $points));
+        }
+
+        return $criteria;
+    }
+
+    private function getLanguageId(SalesChannelContext $context): string
+    {
+        if ($context->getCustomer()) {
+            return $context->getCustomer()->getLanguageId();
+        }
+
+        return $context->getSalesChannel()->getLanguageId();
     }
 }
