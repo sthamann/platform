@@ -87,15 +87,6 @@
             <tag name="shopware.dbal_indexing.indexer" priority="900"/>
         </service>
 
-        <service id="Shopware\Core\Content\Product\DataAbstractionLayer\Indexing\ProductOptionIndexer">
-            <argument type="service" id="event_dispatcher"/>
-            <argument type="service" id="Shopware\Core\Content\Product\Util\EventIdExtractor"/>
-            <argument type="service" id="Doctrine\DBAL\Connection"/>
-            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Dbal\Common\IteratorFactory"/>
-            <argument type="service" id="Shopware\Core\Content\Product\ProductDefinition"/>
-            <tag name="shopware.dbal_indexing.indexer" priority="300"/>
-        </service>
-
         <service id="Shopware\Core\Content\Product\SearchKeyword\ProductSearchKeywordAnalyzer">
             <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Search\Term\Tokenizer"/>
         </service>

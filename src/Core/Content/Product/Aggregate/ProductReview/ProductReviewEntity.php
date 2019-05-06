@@ -78,21 +78,21 @@ class ProductReviewEntity extends Entity
     /**
      * @var SalesChannelEntity|null
      */
-    private $sales_channel;
-    private $language;
-    private $customer;
+    protected $sales_channel;
+    protected $language;
+    protected $customer;
     /**
      * @var ProductEntity|null
      */
-    private $product;
+    protected $product;
     /**
      * @var string|null
      */
-    private $content;
+    protected $content;
     /**
      * @var string|null
      */
-    private $title;
+    protected $title;
 
     //properties#
     public function getId(): string
