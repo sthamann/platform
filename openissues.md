@@ -58,6 +58,8 @@
 - Review-Login: Wird statt der Review-Form angezeigt wenn User nicht eingeloggt. Soll per AJAX den User einloggen und im Erfolgsfall im Anschluss dann die Review-Form anzeigen. 
     --> Kümmert sich @Uli drum
     
+    --> **Done** Login und Reviewabgabe via Ajax möglich
+    
 - FilterByPoints: Reviews sollen per AJAX nach Punkten gefiltert werden können. Sind keine Filter gesetzt, so werden alle Einträge angezeigt, sind ein oder mehrer Optionen gewählt, so werden nur die Einträge der gewählten Optionen angezeigt (ODER)
     --> Kümmert sich @Uli drum
     
