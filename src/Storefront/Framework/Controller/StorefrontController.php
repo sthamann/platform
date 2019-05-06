@@ -26,23 +26,17 @@ abstract class StorefrontController extends AbstractController
     protected function createActionResponse(Request $request): Response
     {
         if ($request->get('redirectTo')) {
-            $params = $request->get('redirectParameters');
-
-            if (is_string($params)) {
-                $params = json_decode($params, true);
-            }
-
-            if (empty($params)) {
-                $params = [];
-            }
+            $params = $this->decodeParam($request, 'redirectParameters');
 
             return $this->redirectToRoute($request->get('redirectTo'), $params);
         }
 
         if ($request->get('forwardTo')) {
+            $params = $this->decodeParam($request, 'forwardParameters');
+
             $router = $this->container->get('router');
 
-            $url = $this->generateUrl($request->get('forwardTo'));
+            $url = $this->generateUrl($request->get('forwardTo'), $params);
 
             // for the route matching the request method is set to "GET" because
             // this method is not ought to be used as a post passthrough
@@ -53,7 +47,7 @@ abstract class StorefrontController extends AbstractController
             $route = $router->match($url);
             $router->getContext()->setMethod($method);
 
-            return $this->forward($route['_controller']);
+            return $this->forward($route['_controller'], $params);
         }
 
         return new Response();
@@ -95,5 +89,20 @@ abstract class StorefrontController extends AbstractController
         }
 
         throw new CustomerNotLoggedInException();
+    }
+
+    protected function decodeParam(Request $request, string $param): array
+    {
+        $params = $request->get($param);
+
+        if (is_string($params)) {
+            $params = json_decode($params, true);
+        }
+
+        if (empty($params)) {
+            $params = [];
+        }
+
+        return $params;
     }
 }

@@ -73,7 +73,7 @@ class ProductPageController extends StorefrontController
     }
 
     /**
-     * @Route("/detail/{productId}/rating", name="frontend.detail.review.save", methods={"POST"})
+     * @Route("/detail/{productId}/rating", name="frontend.detail.review.save", methods={"POST"}, defaults={"XmlHttpRequest"=true})
      */
     public function saveReview(string $productId, RequestDataBag $data, SalesChannelContext $context): Response
     {
@@ -82,9 +82,9 @@ class ProductPageController extends StorefrontController
         try {
             $this->productReviewService->saveReview($productId, $data, $context);
         } catch (ConstraintViolationException $formViolations) {
-            return $this->forward('Shopware\Storefront\PageController\ProductPageController::index', ['productId' => $productId, 'success' => -1, 'formViolations' => $formViolations], ['productId' => $productId]);
+            return $this->forward('Shopware\Storefront\PageletController\ProductPageletController::loadReview', ['productId' => $productId, 'success' => -1, 'formViolations' => $formViolations], ['productId' => $productId]);
         }
 
-        return new RedirectResponse($this->generateUrl('frontend.detail.page', ['productId' => $productId, 'success' => 1]));
+        return $this->forward('Shopware\Storefront\PageletController\ProductPageletController::loadReview', ['productId' => $productId, 'success' => 1]);
     }
 }

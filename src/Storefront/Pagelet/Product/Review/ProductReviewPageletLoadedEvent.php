@@ -5,7 +5,6 @@ namespace Shopware\Storefront\Pagelet\Product\Review;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Event\NestedEvent;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
-use Shopware\Storefront\Framework\Page\StorefrontSearchResult;
 use Symfony\Component\HttpFoundation\Request;
 
 class ProductReviewPageletLoadedEvent extends NestedEvent
@@ -13,7 +12,7 @@ class ProductReviewPageletLoadedEvent extends NestedEvent
     public const NAME = 'review.pagelet.loaded.event';
 
     /**
-     * @var StorefrontSearchResult
+     * @var ProductReviewPagelet
      */
     protected $pagelet;
 
@@ -27,7 +26,7 @@ class ProductReviewPageletLoadedEvent extends NestedEvent
      */
     protected $request;
 
-    public function __construct(StorefrontSearchResult $pagelet, SalesChannelContext $context, Request $request)
+    public function __construct(ProductReviewPagelet $pagelet, SalesChannelContext $context, Request $request)
     {
         $this->pagelet = $pagelet;
         $this->context = $context;
@@ -49,7 +48,7 @@ class ProductReviewPageletLoadedEvent extends NestedEvent
         return $this->context;
     }
 
-    public function getPagelet(): StorefrontSearchResult
+    public function getPagelet(): ProductReviewPagelet
     {
         return $this->pagelet;
     }

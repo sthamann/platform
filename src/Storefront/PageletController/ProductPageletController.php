@@ -29,6 +29,6 @@ class ProductPageletController extends StorefrontController
     {
         $page = $this->reviewPageletLoader->load($request, $context);
 
-        return $this->renderStorefront('page/product-detail/review.html.twig', ['page' => $page]);
+        return $this->renderStorefront('page/product-detail/review.html.twig', ['page' => $page, 'ratingSuccess' => $request->get('success')]);
     }
 }

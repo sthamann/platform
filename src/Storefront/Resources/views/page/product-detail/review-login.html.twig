@@ -17,6 +17,16 @@
 	{{ parent() }}
 {% endblock %}
 
+{% block component_account_login_form_redirect %}
+	<input type="hidden"
+		   name="redirectTo"
+		   value="{{ 'widgets.reviews' }}">
+
+	<input type="hidden"
+		   name="redirectParameters"
+		   value='{"productId": "{{page.product.id}}"}'>
+{% endblock %}
+
 {% block component_account_login_submit %}
 	<div class="float-left">
 	{{ parent() }}

@@ -31,7 +31,7 @@
 
 
     {# TODO: replace product review count "productReviewCount"#}
-    {% set productReviewCount = page.product.reviews|length %}
+    {% set productReviewCount = page.reviews|length %}
 
     {# TODO: replace average product rating "productAvgRating"#}
     {% if productReviewCount > 0 %}

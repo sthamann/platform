@@ -2,7 +2,6 @@
 
 namespace Shopware\Storefront\Pagelet\Product\Review;
 
-use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
@@ -40,13 +39,13 @@ final class ProductReviewPageletLoader implements PageLoaderInterface
         $this->eventDispatcher = $eventDispatcher;
     }
 
-    public function load(Request $request, SalesChannelContext $context): StorefrontSearchResult
+    public function load(Request $request, SalesChannelContext $context): ProductReviewPagelet
     {
-        $criteria = $this->createReviewCriteria($request, $context);
+        $criteria = $this->createReviewCriteria($request);
 
         $reviews = $this->getAllReviews($criteria, $context, $request);
 
-        $pagelet = StorefrontSearchResult::createFrom($reviews);
+        $pagelet = new ProductReviewPagelet($request->get('productId'), $reviews);
 
         $this->eventDispatcher->dispatch(
             ProductReviewPageletLoadedEvent::NAME,
@@ -60,7 +59,7 @@ final class ProductReviewPageletLoader implements PageLoaderInterface
      * get reviews with the users language
      * if there aren't any reviews then get them with any language
      */
-    private function getAllReviews(Criteria $criteria, SalesChannelContext $context, Request $request): EntityCollection
+    private function getAllReviews(Criteria $criteria, SalesChannelContext $context, Request $request): StorefrontSearchResult
     {
         if ($request->get('language') !== self::ALL_LANGUAGES) {
             $languageCriteria = clone $criteria;
@@ -69,17 +68,19 @@ final class ProductReviewPageletLoader implements PageLoaderInterface
             $reviews = $this->reviewRepository->search($languageCriteria, $context->getContext())->getEntities();
 
             if ($reviews->count() > 0) {
-                return $reviews;
+                return StorefrontSearchResult::createFrom($reviews);
             }
         }
 
-        return $this->reviewRepository->search($criteria, $context->getContext())->getEntities();
+        $reviews = $this->reviewRepository->search($criteria, $context->getContext())->getEntities();
+
+        return StorefrontSearchResult::createFrom($reviews);
     }
 
     /**
      * @throws MissingRequestParameterException
      */
-    private function createReviewCriteria(Request $request, SalesChannelContext $context): Criteria
+    private function createReviewCriteria(Request $request): Criteria
     {
         $productId = $request->get('productId');
         if (!$productId) {

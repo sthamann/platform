@@ -184,7 +184,7 @@ class AccountPageController extends StorefrontController
     }
 
     /**
-     * @Route("/account/login", name="frontend.account.login", methods={"POST"})
+     * @Route("/account/login", name="frontend.account.login", methods={"POST"}, defaults={"XmlHttpRequest"=true})
      */
     public function loginCustomer(Request $request, RequestDataBag $data, SalesChannelContext $context): Response
     {
@@ -200,11 +200,11 @@ class AccountPageController extends StorefrontController
         } catch (BadCredentialsException | UnauthorizedHttpException $e) {
         }
 
-        $data->set('password', null);
+        $request->request->remove('password');
 
-        return $this->forward('Shopware\Storefront\PageController\AccountPageController::login', [
-            'loginError' => true,
-        ]);
+        $this->addFlash('danger', $this->translator->trans('account.loginBadCredentials'));
+
+        return $this->createActionResponse($request);
     }
 
     /**

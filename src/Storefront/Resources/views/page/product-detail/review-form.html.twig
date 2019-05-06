@@ -3,14 +3,25 @@
         <h1 style="color:#F00">Nicht eingeloggt</h1>
     {% endif %}
 
-    {% set url = path('frontend.detail.review.save', { productId: page.product.id }) %}
-    {% if page.product.parentId %}
-        {% set url = path('frontend.detail.review.save', { productId: page.product.parentId }) %}
+    {% if page.product is defined %}
+        {% set url = path('frontend.detail.review.save', { productId: page.product.id }) %}
+        {% if page.product.parentId %}
+            {% set url = path('frontend.detail.review.save', { productId: page.product.parentId }) %}
+        {% endif %}
+    {% else %} {# there is no product in the review paglet #}
+        {% set url = path('frontend.detail.review.save', { productId: page.productId }) %}
     {% endif %}
 
     <form class="review-form"
           action="{{ url }}"
           method="post">
+        <input type="hidden"
+               name="forwardTo"
+               value="{{ 'widgets.reviews' }}">
+
+        <input type="hidden"
+               name="forwardParameters"
+               value='{"productId": "{{page.product.id}}"}'>
         {% block page_product_detail_review_form_details %}
             <div class="form-row">
                 {% block page_product_detail_review_form_summary %}

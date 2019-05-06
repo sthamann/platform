@@ -105,7 +105,7 @@ class ProductPageLoader implements PageLoaderInterface
         $product = $this->loadProduct($productId, $context);
         $page->setProduct($product);
 
-        $page->setReviews($this->productReviewPageletLoader->load($request, $context));
+        $page->setReviews($this->productReviewPageletLoader->load($request, $context)->getReviews());
 
         $page->setConfiguratorSettings(
             $this->configuratorLoader->load($product, $context)
@@ -165,10 +165,10 @@ class ProductPageLoader implements PageLoaderInterface
         $criteria->addAssociation('cover');
         $criteria->addAssociationPath('properties.group');
         // Add product reviews
-        $reviewCriteria = new Criteria();
-        $reviewCriteria->addFilter(new EqualsFilter('status', 1));
-        $criteria->addAssociation('reviews', $reviewCriteria);
-        $criteria->addAggregation(new CountAggregation('product.reviews.id', 'ratingMatrix', 'product.reviews.points'));
+//        $reviewCriteria = new Criteria();
+//        $reviewCriteria->addFilter(new EqualsFilter('status', 1));
+//        $criteria->addAssociation('reviews', $reviewCriteria);
+//        $criteria->addAggregation(new CountAggregation('product.reviews.id', 'ratingMatrix', 'product.reviews.points'));
 
         $this->eventDispatcher->dispatch(
             ProductPageCriteriaEvent::NAME,
