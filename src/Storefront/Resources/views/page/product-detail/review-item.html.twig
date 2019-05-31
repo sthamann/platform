@@ -5,7 +5,7 @@
 	{# TODO: replace like count #}
 	{% set reviewLikeCount = random(0, 30) %}
 
-	<div class="product-detail-review-item" itemprop="review" itemscope itemtype="http://schema.org/Review">
+	<div class="product-detail-review-item" itemprop="review" itemscope itemtype="https://schema.org/Review">
 		<meta itemprop="datePublished" content="{{ review.createdAt|date }}">
 		<meta itemprop="name" content="{{ review.title|e }}">
 		{% block page_product_detail_review_item_info %}
