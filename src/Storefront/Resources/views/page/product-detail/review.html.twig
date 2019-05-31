@@ -59,7 +59,6 @@
         {% set productRating1Percent = productRating1Count/productReviewCount*100 %}
     {% endif %}
 
-
     <div class="product-detail-review tab-pane-container">
 
         {% block page_product_detail_review_asid %}
@@ -104,91 +103,98 @@
 
                         {% block page_product_detail_review_list_container %}
                             <div id="review-list" class="collapse multi-collapse product-detail-review-list {% if ratingSuccess != -1 %}show{% endif %}" itemprop="review-list">
-                            	{% if productReviewCount > 0 %}
-									{% block page_product_detail_review_list %}
-										{% block page_product_detail_review_list_actions %}
-											<div class="row product-detail-review-actions">
-												<div class="col-md-6 product-detail-review-language">
-													{% if foreignReviewsCount > 0 %}
-														<div class="custom-control custom-switch">
-															<input type="checkbox"
-																   class="custom-control-input"
-																   id="hideForeignReviews"
-																   name="hideForeignReviews"
-																   {% if productReviewCount - foreignReviewsCount == 0 %}disabled{% elseif foreignReviewsCount > 0%}checked{% endif %}>
-															<label class="custom-control-label" for="hideForeignReviews"><small>{{ "detail.reviewLanguageFilterLabel"|trans }}</small></label>
+								{% block page_product_detail_review_list_inner_container %}
+								{#TODO r8itcool: Replace with own template with data ean#}
+								<div class="product-detail-review-list-inner-wrapper">
+									{% if productReviewCount > 0 %}
+										{% block page_product_detail_review_list %}
+											{% block page_product_detail_review_list_actions %}
+												<div class="row product-detail-review-actions">
+													<div class="col-md-6 product-detail-review-language">
+														{% if foreignReviewsCount > 0 %}
+															<div class="custom-control custom-switch">
+																<input type="checkbox"
+																	class="custom-control-input"
+																	id="hideForeignReviews"
+																	name="hideForeignReviews"
+																	{% if productReviewCount - foreignReviewsCount == 0 %}disabled{% elseif foreignReviewsCount > 0%}checked{% endif %}>
+																<label class="custom-control-label" for="hideForeignReviews"><small>{{ "detail.reviewLanguageFilterLabel"|trans }}</small></label>
+															</div>
+														{% endif %}
+													</div>
+													<div class="col-md-6 product-detail-review-sortby">
+														<div class="float-right">
+															<form class="form-inline">
+																<label class="my-1 mr-2" for="sortby"><small>{{ "detail.reviewSortLabel"|trans }}</small></label>
+																<select class="custom-select custom-select-sm" name="sortby" id="sortby">
+																	<option selected>{{ "detail.reviewSortTopLabel"|trans }}</option>
+																	<option value="1">{{ "detail.reviewSortNewLabel"|trans }}</option>
+																</select>
+															</form>
 														</div>
-													{% endif %}
-												</div>
-												<div class="col-md-6 product-detail-review-sortby">
-													<div class="float-right">
-														<form class="form-inline">
-															<label class="my-1 mr-2" for="sortby"><small>{{ "detail.reviewSortLabel"|trans }}</small></label>
-															<select class="custom-select custom-select-sm" name="sortby" id="sortby">
-																<option selected>{{ "detail.reviewSortTopLabel"|trans }}</option>
-																<option value="1">{{ "detail.reviewSortNewLabel"|trans }}</option>
-															</select>
-														</form>
 													</div>
 												</div>
-											</div>
-											{# TODO: fix vertical spacing to hr and replace margin top inline style#}
-											<hr style="margin-top:10px; margin-bottom:5px"/>
-											{# TODO: calculate reviews in current language in list #}
-											{% set listReviewsCount = productReviewCount - foreignReviewsCount %}
-											{# TODO fix if reviews in foreign language are more than in customer language#}
-											{% if listReviewsCount < 0 %}
-												{% set listReviewsCount = 0 %}
-											{% endif %}
-
-											<p class="text-right product-detail-review-counter">
-												{% if (listReviewsCount > 1 and listReviewsCount > reviewsPerListPage) %}
-													<small><strong>{{ currentListPage }}</strong> - <strong>{{ reviewsPerListPage }}</strong> {{ "detail.reviewCountBefore"|trans }} <strong>{{ listReviewsCount }}</strong> {{ "detail.reviewCountAfter"|trans({'%count%': listReviewsCount }) }}</small>
-												{% elseif listReviewsCount > 0 %} {# TODO fix detail.reviewCountAfter snippet for listReviewsCount = 0#}
-													<small><strong>{{ listReviewsCount }}</strong> {{ "detail.reviewCountAfter"|trans({'%count%': listReviewsCount }) }}</small>
+												{# TODO: fix vertical spacing to hr and replace margin top inline style#}
+												<hr style="margin-top:10px; margin-bottom:5px"/>
+												{# TODO: calculate reviews in current language in list #}
+												{% set listReviewsCount = productReviewCount - foreignReviewsCount %}
+												{# TODO fix if reviews in foreign language are more than in customer language#}
+												{% if listReviewsCount < 0 %}
+													{% set listReviewsCount = 0 %}
 												{% endif %}
-											</p>
+
+												<p class="text-right product-detail-review-counter">
+													{% if (listReviewsCount > 1 and listReviewsCount > reviewsPerListPage) %}
+														<small><strong>{{ currentListPage }}</strong> - <strong>{{ reviewsPerListPage }}</strong> {{ "detail.reviewCountBefore"|trans }} <strong>{{ listReviewsCount }}</strong> {{ "detail.reviewCountAfter"|trans({'%count%': listReviewsCount }) }}</small>
+													{% elseif listReviewsCount > 0 %} {# TODO fix detail.reviewCountAfter snippet for listReviewsCount = 0#}
+														<small><strong>{{ listReviewsCount }}</strong> {{ "detail.reviewCountAfter"|trans({'%count%': listReviewsCount }) }}</small>
+													{% endif %}
+												</p>
+											{% endblock %}
+
+											{% block page_product_detail_review_list_content %}
+												{% for review in page.reviews %}
+													<div class="product-detail-review-list-content">
+														{% sw_include '@Storefront/page/product-detail/review-item.html.twig' %}
+													</div>
+												{% endfor %}
+											{% endblock %}
+
+											{% block page_product_detail_review_list_paging %}
+												{% set listReviewsCount = productReviewCount - foreignReviewsCount %}
+												{% if listReviewsCount > reviewsPerListPage %}
+													{# TODO: add paging - maybe through a paging component ;) #}
+													<nav class="product-detail-review-list-pagination" aria-label="Review pagination">
+														<ul class="pagination justify-content-center">
+															<li class="page-item disabled">
+																<a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+															</li>
+															<li class="page-item"><a class="page-link" href="#">1</a></li>
+															<li class="page-item"><a class="page-link" href="#">2</a></li>
+															<li class="page-item"><a class="page-link" href="#">3</a></li>
+															<li class="page-item">
+																<a class="page-link" href="#">Next</a>
+															</li>
+														</ul>
+													</nav>
+												{% endif %}
+											{% endblock %}
+
 										{% endblock %}
 
-										{% block page_product_detail_review_list_content %}
-											{% for review in page.reviews %}
-												<div class="product-detail-review-list-content">
-													{% sw_include '@Storefront/page/product-detail/review-item.html.twig' %}
-												</div>
-											{% endfor %}
+									{% else %}
+
+										{% block page_product_detail_review_list_empty %}
+											{% sw_include '@Storefront/layout/_utilities/alert.html.twig' with {
+												type: "info",
+												content: "detail.reviewListEmpty"|trans
+											} %}
 										{% endblock %}
 
-										{% block page_product_detail_review_list_paging %}
-											{% set listReviewsCount = productReviewCount - foreignReviewsCount %}
-											{% if listReviewsCount > reviewsPerListPage %}
-												{# TODO: add paging - maybe through a paging component ;) #}
-												<nav class="product-detail-review-list-pagination" aria-label="Review pagination">
-													<ul class="pagination justify-content-center">
-														<li class="page-item disabled">
-															<a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
-														</li>
-														<li class="page-item"><a class="page-link" href="#">1</a></li>
-														<li class="page-item"><a class="page-link" href="#">2</a></li>
-														<li class="page-item"><a class="page-link" href="#">3</a></li>
-														<li class="page-item">
-															<a class="page-link" href="#">Next</a>
-														</li>
-													</ul>
-												</nav>
-											{% endif %}
-										{% endblock %}
+									{% endif %}
 
-									{% endblock %}
-
-								{% else %}
-									{% block page_product_detail_review_list_empty %}
-										{% sw_include '@Storefront/layout/_utilities/alert.html.twig' with {
-											type: "info",
-											content: "detail.reviewListEmpty"|trans
-										} %}
-									{% endblock %}
-
-								{% endif %}
+								{% endblock %}
+								
                         	</div>
                         {% endblock %}
 
