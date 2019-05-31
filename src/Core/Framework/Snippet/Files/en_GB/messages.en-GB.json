@@ -264,6 +264,7 @@
         "subscriptionPersistedSuccess": "You have just subscribed to our newsletter.\n To complete the registration look in your e-mail box for a confirmation mail.",
         "subscriptionPersistedInfo": "If you have not received a mail please repeat the process or contact the shop operator.",
         "subscriptionRevokeSuccess": "You have successfully unsubscribed from the newsletter.",
+        "subscriptionConfirmationSuccess": "You have successfully subscribed to the newsletter!",
         "subscriptionConfirmationFailed": "newsletter subscription did not work properly, please contact us",
         "subscriptionCompleted": "Thank you! We have entered your address."
     },
@@ -278,8 +279,6 @@
         "dataColumnQuantity": "Quantity",
         "dataColumnPrice": "Unit price",
         "dataColumnReferencePrice": "Reference price",
-        "tabsRating": "Ratings",
-        "ratingTitle": "Ratings",
         "tabsReview": "Reviews",
         "reviewTitle": "{1} Review|]1,Inf[ Reviews",
         "noReviewTitle": "No Review found. Be the first to review the product.",
