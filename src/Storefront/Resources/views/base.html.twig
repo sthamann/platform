@@ -8,7 +8,7 @@
 {% block base_html %}
 <html lang="{{ "meta.xmlLang"|trans }}"
       itemscope="itemscope"
-      itemtype="http://schema.org/WebPage">
+      itemtype="https://schema.org/WebPage">
 {% endblock %}
 
 {% block base_head %}
@@ -97,44 +97,44 @@
     {% endblock %}
 
     {% block base_body_script %}
-    {% block base_script_token %}
-        <script>
-            window.accessKey = '{{ page.context.salesChannel.accessKey }}';
-            window.contextToken = '{{ page.context.token }}';
-        </script>
-    {% endblock %}
+        {% block base_script_token %}
+            <script>
+                window.accessKey = '{{ page.context.salesChannel.accessKey }}';
+                window.contextToken = '{{ page.context.token }}';
+            </script>
+        {% endblock %}
 
-    {% block base_script_router %}
-        {# Register all routes that will be needed in JavaScript to the window.router object #}
-        <script>
-            window.activeNavigationId = '{{ page.header.navigation.active.id }}';
-            window.router = {
-                'frontend.cart.detail': '{{ path('frontend.cart.detail') }}',
-                'frontend.checkout.finish.page': '{{ path('frontend.checkout.finish.page') }}',
-                'widgets.checkout.info': '{{ path('widgets.checkout.info') }}',
-                'widgets.menu.offcanvas': '{{ path('widgets.menu.offcanvas') }}',
-                'widgets.cms.page': '{{ path('widgets.cms.page') }}',
-                'widgets.cms.navigation.page': '{{ path('widgets.cms.navigation.page') }}',
-            };
-        </script>
-    {% endblock %}
+        {% block base_script_router %}
+            {# Register all routes that will be needed in JavaScript to the window.router object #}
+            <script>
+                window.activeNavigationId = '{{ page.header.navigation.active.id }}';
+                window.router = {
+                    'frontend.cart.detail': '{{ path('frontend.cart.detail') }}',
+                    'frontend.checkout.finish.page': '{{ path('frontend.checkout.finish.page') }}',
+                    'widgets.checkout.info': '{{ path('widgets.checkout.info') }}',
+                    'widgets.menu.offcanvas': '{{ path('widgets.menu.offcanvas') }}',
+                    'widgets.cms.page': '{{ path('widgets.cms.page') }}',
+                    'widgets.cms.navigation.page': '{{ path('widgets.cms.navigation.page') }}',
+                };
+            </script>
+        {% endblock %}
 
-    {% block base_script_breakpoints %}
-        {# Register the available viewport breakpoints the window.breakpoints object #}
-        <script>
-            window.breakpoints = {{ shopware.theme.breakpoint|json_encode()|raw }};
-        </script>
-    {% endblock %}
+        {% block base_script_breakpoints %}
+            {# Register the available viewport breakpoints the window.breakpoints object #}
+            <script>
+                window.breakpoints = {{ shopware.theme.breakpoint|json_encode()|raw }};
+            </script>
+        {% endblock %}
 
-    {% block base_script_hmr_mode %}
-        {% if isHMRMode %}
-        <script type="text/javascript"
-                src="{{ app.request.server.get('APP_URL') }}:9999/js/main.bundle.js"></script>
-        {% else %}
-        <script type="text/javascript"
-                src="{{ asset('js/main.bundle.js') }}"></script>
-        {% endif %}
-    {% endblock %}
+        {% block base_script_hmr_mode %}
+            {% if isHMRMode %}
+            <script type="text/javascript"
+                    src="{{ app.request.server.get('APP_URL') }}:9999/js/main.bundle.js"></script>
+            {% else %}
+            <script type="text/javascript"
+                    src="{{ asset('js/main.bundle.js') }}"></script>
+            {% endif %}
+        {% endblock %}
     {% endblock %}
     </body>
 {% endblock %}
