@@ -38,11 +38,13 @@ Module.register('sw-review', {
     },
 
     navigation: [{
-        path: 'sw.review.index',
-        label: 'sw-review.general.mainMenuItemList',
         id: 'sw-review',
-        parent: 'sw-product',
+        label: 'sw-review.general.mainMenuItemList',
         color: '#57D9A3',
-        position: 100
+        path: 'sw.review.index',
+        icon: 'default-symbol-products',
+        parent: 'sw-catalogue',
+        position: 20
     }]
+
 });
