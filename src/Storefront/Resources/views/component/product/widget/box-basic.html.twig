@@ -1,9 +1,28 @@
 {% block component_product_box %}
-    <div class="card product-box box-{{ layout }}">
+    <div class="card product-box box-{{ layout }}"
+         itemscope
+         itemtype="https://schema.org/Product">
         {% block component_product_box_content %}
             <div class="card-body">
                 {% block component_product_box_badges %}
                     {% sw_include '@Storefront/component/product/widget/badges.html.twig' %}
+                {% endblock %}
+
+                {% block component_product_box_rich_snippets_brand %}
+                    <meta itemprop="brand"
+                          content="{{ product.manufacturer.translated.name }}"/>
+                {% endblock %}
+
+                {% block component_product_box_rich_snippets_gtin13 %}
+                    {% if product.ean %}
+                        <meta itemprop="gtin13"
+                              content="{{ product.ean }}"/>
+                    {% endif %}
+                {% endblock %}
+
+                {% block component_product_box_rich_snippets_mpn %}
+                    <meta itemprop="mpn"
+                          content="{{ product.productNumber }}"/>
                 {% endblock %}
                 
                 {% block component_product_box_image %}
@@ -25,6 +44,26 @@
                 
                 {% block component_product_box_info %}
                     <div class="product-info">
+
+                        {% block component_product_rating %}
+                            <div class="product-info-rating">
+                                {% set productRatingAvg = page.product.ratingAverage %}
+                                {% set productRatingCount = page.reviews|length %}
+                                {% if productRatingCount > 0 %}
+                                    <p class="product-detail-reviews">
+                                        <span class="product-detail-reviews-stars-block">
+                                            <strong class="product-detail-reviews-average">{{ productRatingAvg|round(1) }}</strong>
+                                            {% sw_include '@Storefront/component/review/rating.html.twig' with {
+                                                points: productRatingAvg,
+                                                style: 'text-primary'
+                                            } %}
+                                        </span>
+                                        <a data-toggle="tab" class="product-detail-reviews-link" data-offcanvas-tab="true" href="#review-tab-pane" aria-controls="review-tab-pane">{{ "detail.reviewLinkText"|trans({'%count%': productRatingCount }) }}</a>
+                                    </p>
+                                {% endif %}
+                            </div>
+                        {% endblock %}
+
                         {% block component_product_box_name %}
                             <a href="{{ path('frontend.detail.page', {'productId': product.id}) }}"
                                class="product-name"
