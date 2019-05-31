@@ -282,6 +282,7 @@
         "ratingTitle": "Ratings",
         "tabsReview": "Reviews",
         "reviewTitle": "{1} Review|]1,Inf[ Reviews",
+        "noReviewTitle": "No Review found. Be the first to review the product.",
         "reviewVerifiedItemTooltip": "Verified buyer of this product",
         "reviewCommentLabel": "Our Feedback: ",
         "reviewLinkText": "{1} Show review|]1,Inf[ Show reviews",
